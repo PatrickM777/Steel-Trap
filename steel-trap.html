@@ -1,0 +1,2370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Steel Trap - Relational Reasoning & N-Back Suite</title>
+  <style>
+    /* STEEL TRAP SUITE EXACT AESTHETIC */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: #000000;
+      color: #c0c0c0;
+      font-family: "Lucida Console", "Courier New", Courier, monospace;
+      padding: 10px;
+      user-select: none;
+    }
+    a { color: #55aaff; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* LAYOUT CONTAINERS */
+    .app-wrapper {
+      max-width: 1140px;
+      margin: 0 auto;
+      border: 2px solid #333333;
+      padding: 12px;
+      background-color: #050505;
+    }
+
+    /* AUTH MODAL */
+    #auth-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(0, 0, 0, 0.95);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+    .auth-box {
+      border: 2px solid #555;
+      background: #111;
+      padding: 24px;
+      width: 440px;
+      box-shadow: 0 0 15px #222;
+    }
+    .auth-title { color: #00ff66; font-size: 16px; font-weight: bold; margin-bottom: 15px; text-align: center; }
+    .auth-tabs { display: flex; margin-bottom: 15px; border-bottom: 1px solid #444; }
+    .auth-tab { flex: 1; padding: 8px; text-align: center; cursor: pointer; color: #888; background: #1a1a1a; }
+    .auth-tab.active { background: #333; color: #fff; font-weight: bold; border-bottom: 2px solid #00ff66; }
+    .auth-input-group { margin-bottom: 12px; }
+    .auth-input-group label { display: block; font-size: 12px; color: #aaa; margin-bottom: 4px; }
+    .auth-input-group input {
+      width: 100%; padding: 6px 8px; background: #000; border: 1px solid #555; color: #fff; font-family: inherit; font-size: 13px;
+    }
+    .auth-btn {
+      width: 100%; padding: 8px; background: #006622; color: #fff; border: 1px solid #00aa33; cursor: pointer; font-family: inherit; font-weight: bold; margin-top: 10px;
+    }
+    .auth-btn:hover { background: #008833; }
+    .auth-error { color: #ff4444; font-size: 12px; margin-top: 8px; text-align: center; }
+
+    /* HEADER & NAV */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #333;
+      padding-bottom: 8px;
+      margin-bottom: 10px;
+      font-size: 13px;
+    }
+    .top-title { color: #ffff00; font-weight: bold; font-size: 15px; }
+    .user-tag { color: #00ff66; font-weight: bold; }
+    .nav-tabs {
+      display: flex;
+      gap: 6px;
+      border-bottom: 1px solid #444;
+      padding-bottom: 6px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .nav-tab-btn {
+      background: #181818;
+      border: 1px solid #444;
+      color: #aaa;
+      padding: 5px 12px;
+      font-family: inherit;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .nav-tab-btn:hover { background: #252525; color: #fff; }
+    .nav-tab-btn.active {
+      background: #333366;
+      border-color: #6666cc;
+      color: #ffffff;
+      font-weight: bold;
+    }
+
+    /* PRESET SELECTION BAR */
+    .preset-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #0d1117;
+      border: 1px solid #283040;
+      padding: 8px 12px;
+      margin-bottom: 12px;
+      font-size: 12px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .preset-bar select, .preset-bar input {
+      background: #000;
+      border: 1px solid #444;
+      color: #00ffaa;
+      font-family: inherit;
+      padding: 4px 8px;
+      font-size: 12px;
+    }
+    .btn-action {
+      background: #202020;
+      border: 1px solid #555;
+      color: #fff;
+      padding: 4px 10px;
+      font-family: inherit;
+      font-size: 11px;
+      cursor: pointer;
+    }
+    .btn-action:hover { background: #303030; }
+
+    /* GAME ARENA: 3x3 LAYOUT */
+    .bw-hud {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-size: 13px;
+      color: #88ccff;
+      border: 1px solid #222;
+      padding: 6px 12px;
+      background: #0a0a0a;
+    }
+    .bw-grid-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      margin: 15px 0;
+    }
+    .bw-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      grid-template-rows: repeat(3, 100px);
+      gap: 6px;
+      background: #111;
+      border: 3px solid #444;
+      padding: 6px;
+    }
+    .bw-cell {
+      background: #000;
+      border: 1px solid #282828;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+    .bw-cell.active-pos { background: #0000aa !important; }
+
+    /* RELATIONAL REASONING WORD BANNER */
+    .relational-stimulus-box {
+      margin-top: 10px;
+      background: #0c121d;
+      border: 2px solid #2563eb;
+      padding: 8px 16px;
+      width: 320px;
+      text-align: center;
+      border-radius: 4px;
+    }
+    .relational-pair {
+      font-size: 16px;
+      font-weight: bold;
+      color: #60a5fa;
+      letter-spacing: 1px;
+    }
+    .relational-subtext {
+      font-size: 10px;
+      color: #93c5fd;
+      margin-top: 2px;
+    }
+
+    /* CONTROLLER STATUS BADGE */
+    .controller-badge {
+      display: inline-block;
+      padding: 2px 6px;
+      border: 1px solid #444;
+      font-size: 11px;
+      margin-left: 8px;
+    }
+    .controller-badge.connected { border-color: #00ff66; color: #00ff66; }
+    .controller-badge.disconnected { border-color: #666; color: #777; }
+
+    /* BUTTON ROW */
+    .bw-button-row {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 15px;
+      flex-wrap: wrap;
+    }
+    .bw-match-btn {
+      background: #151515;
+      border: 2px solid #555;
+      color: #ffffff;
+      padding: 8px 14px;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: bold;
+      cursor: pointer;
+      min-width: 140px;
+      text-align: center;
+    }
+    .bw-match-btn:active, .bw-match-btn.pressed {
+      background: #008800 !important;
+      border-color: #00ff00 !important;
+      color: #fff !important;
+    }
+    .btn-keyhint { display: block; font-size: 10px; color: #888; font-weight: normal; margin-top: 2px; }
+
+    /* CONFIG CARDS */
+    .config-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+      font-size: 12px;
+    }
+    .config-card {
+      border: 1px solid #333;
+      background: #0a0a0a;
+      padding: 10px;
+    }
+    .config-card h4 {
+      color: #00ffaa;
+      font-size: 12px;
+      border-bottom: 1px solid #222;
+      padding-bottom: 4px;
+      margin-bottom: 8px;
+    }
+    .config-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    .config-row input[type="text"], .config-row input[type="number"], .config-row select {
+      background: #000;
+      border: 1px solid #444;
+      color: #fff;
+      padding: 2px 5px;
+      font-family: inherit;
+      font-size: 11px;
+    }
+    .config-row input[type="range"] { width: 110px; }
+
+    /* REBINDING TABLE */
+    .rebind-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      margin-top: 8px;
+    }
+    .rebind-table th, .rebind-table td {
+      border: 1px solid #333;
+      padding: 5px 8px;
+      text-align: left;
+    }
+    .rebind-table th { background: #141414; color: #fff; }
+    .btn-rebind {
+      background: #222;
+      border: 1px solid #666;
+      color: #ffff00;
+      padding: 2px 8px;
+      font-family: inherit;
+      font-size: 11px;
+      cursor: pointer;
+    }
+    .btn-rebind.recording { background: #aa0000; color: #fff; border-color: #ff0000; }
+
+    /* SVG BRAIN MAP */
+    .brain-region-path {
+      cursor: pointer;
+      transition: all 0.25s;
+    }
+    .brain-region-path:hover {
+      stroke: #ffffff !important;
+      stroke-width: 2.5 !important;
+    }
+    .brain-region-path.active-selected {
+      stroke: #ffff00 !important;
+      stroke-width: 3.5 !important;
+    }
+
+    /* HEATMAP LEGEND */
+    .heatmap-legend {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+      font-size: 11px;
+    }
+    .heatmap-bar {
+      flex: 1;
+      height: 12px;
+      background: linear-gradient(to right, #0044ff, #00ff88, #ffee00, #ff0000);
+      border: 1px solid #555;
+    }
+
+    /* SCORESHEET TABLE */
+    .ledger-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+      margin-top: 10px;
+    }
+    .ledger-table th, .ledger-table td {
+      border: 1px solid #282828;
+      padding: 5px 7px;
+      text-align: left;
+    }
+    .ledger-table th { background: #111; color: #ffff77; }
+    .ledger-table tr:hover { background: #161616; }
+
+    /* GOAL & PROFILE PANELS */
+    .goal-panel {
+      border: 1px solid #333;
+      background: #0b0e14;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    .goal-step-badge {
+      display: inline-block;
+      background: #004422;
+      border: 1px solid #00aa44;
+      color: #00ff88;
+      padding: 2px 8px;
+      font-size: 11px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+    .curriculum-card {
+      border: 1px solid #223344;
+      background: #080d14;
+      padding: 12px;
+      margin-top: 10px;
+      line-height: 1.5;
+      font-size: 12px;
+    }
+    .curriculum-card h5 {
+      color: #38bdf8;
+      font-size: 12px;
+      margin-bottom: 6px;
+      border-bottom: 1px dashed #223344;
+      padding-bottom: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- AUTHENTICATION OVERLAY MODAL -->
+  <div id="auth-overlay">
+    <div class="auth-box">
+      <div style="display:flex; flex-direction:column; align-items:center; gap:8px; margin-bottom:14px;">
+        <svg width="48" height="48" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 0 8px rgba(0, 255, 170, 0.5));">
+          <circle cx="50" cy="50" r="44" stroke="#334455" stroke-width="2" stroke-dasharray="4 3"/>
+          <path d="M 22 75 L 78 75 L 70 82 L 30 82 Z" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
+          <circle cx="50" cy="74" r="5" fill="#0f172a" stroke="#00ffaa" stroke-width="2"/>
+          <path d="M 24 72 C 14 52 18 28 36 16 C 40 22 36 30 35 38" fill="none" stroke="#94a3b8" stroke-width="3" stroke-linecap="round"/>
+          <polygon points="20,58 13,54 22,50" fill="#cbd5e1"/>
+          <polygon points="23,44 16,39 26,37" fill="#cbd5e1"/>
+          <polygon points="28,30 22,24 32,24" fill="#cbd5e1"/>
+          <path d="M 76 72 C 86 52 82 28 64 16 C 60 22 64 30 65 38" fill="none" stroke="#94a3b8" stroke-width="3" stroke-linecap="round"/>
+          <polygon points="80,58 87,54 78,50" fill="#cbd5e1"/>
+          <polygon points="77,44 84,39 74,37" fill="#cbd5e1"/>
+          <polygon points="72,30 78,24 68,24" fill="#cbd5e1"/>
+          <path d="M 47 30 C 40 28 36 34 38 40 C 35 44 36 50 40 53 C 38 57 41 63 47 64 Z" fill="#0f172a" stroke="#00ffaa" stroke-width="2"/>
+          <path d="M 53 30 C 60 28 64 34 62 40 C 65 44 64 50 60 53 C 62 57 59 63 53 64 Z" fill="#0f172a" stroke="#00ffaa" stroke-width="2"/>
+          <circle cx="44" cy="42" r="1.5" fill="#38bdf8"/>
+          <circle cx="56" cy="42" r="1.5" fill="#38bdf8"/>
+          <circle cx="45" cy="54" r="1.5" fill="#38bdf8"/>
+          <circle cx="55" cy="54" r="1.5" fill="#38bdf8"/>
+          <path d="M 44 42 L 50 48 L 56 42 M 50 48 L 45 54 M 50 48 L 55 54" stroke="#38bdf8" stroke-width="1.2" stroke-linecap="round"/>
+          <path d="M 46 22 C 46 19 54 19 54 22 L 54 26 L 46 26 Z" stroke="#e2e8f0" stroke-width="1.5" fill="none"/>
+        </svg>
+        <div class="auth-title" style="margin-bottom:0;">STEEL TRAP MULTI-USER SYSTEM</div>
+      </div>
+      <div class="auth-tabs">
+        <div id="tab-login" class="auth-tab active" onclick="setAuthTab('login')">LOGIN</div>
+        <div id="tab-reg" class="auth-tab" onclick="setAuthTab('reg')">CREATE NEW USER</div>
+      </div>
+      <div class="auth-input-group">
+        <label>User Profile Name:</label>
+        <input type="text" id="auth-user" placeholder="e.g. Patrick, Nikki, Dan">
+      </div>
+      <div class="auth-input-group">
+        <label>Password:</label>
+        <input type="password" id="auth-pass" placeholder="••••••••">
+      </div>
+      <button class="auth-btn" id="auth-submit-btn" onclick="handleAuthSubmit()">ENTER SYSTEM</button>
+      <div id="auth-err" class="auth-error"></div>
+    </div>
+  </div>
+
+  <!-- MAIN APP SUITE -->
+  <div class="app-wrapper" id="main-app" style="display: none;">
+
+    <!-- TOP BAR -->
+    <div class="top-bar">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div style="display:flex; align-items:center; gap:10px;">
+        <svg width="38" height="38" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 0 6px rgba(0, 255, 170, 0.4)); flex-shrink: 0;">
+          <!-- Outer Steel Trap Ring / Base -->
+          <circle cx="50" cy="50" r="44" stroke="#334455" stroke-width="2" stroke-dasharray="4 3"/>
+          <path d="M 22 75 L 78 75 L 70 82 L 30 82 Z" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
+          <!-- Central Mechanical Pivot Spring -->
+          <circle cx="50" cy="74" r="5" fill="#0f172a" stroke="#00ffaa" stroke-width="2"/>
+          
+          <!-- Steel Trap Jaws (Toothed Arcs clamping around the brain) -->
+          <!-- Left Jaw Arc with Serrated Teeth -->
+          <path d="M 24 72 C 14 52 18 28 36 16 C 40 22 36 30 35 38" fill="none" stroke="#94a3b8" stroke-width="3" stroke-linecap="round"/>
+          <polygon points="20,58 13,54 22,50" fill="#cbd5e1"/>
+          <polygon points="23,44 16,39 26,37" fill="#cbd5e1"/>
+          <polygon points="28,30 22,24 32,24" fill="#cbd5e1"/>
+          
+          <!-- Right Jaw Arc with Serrated Teeth -->
+          <path d="M 76 72 C 86 52 82 28 64 16 C 60 22 64 30 65 38" fill="none" stroke="#94a3b8" stroke-width="3" stroke-linecap="round"/>
+          <polygon points="80,58 87,54 78,50" fill="#cbd5e1"/>
+          <polygon points="77,44 84,39 74,37" fill="#cbd5e1"/>
+          <polygon points="72,30 78,24 68,24" fill="#cbd5e1"/>
+
+          <!-- Clamped Brain Core (Neural Circuit / Retention Core inside the Steel Trap) -->
+          <!-- Left Hemisphere -->
+          <path d="M 47 30 C 40 28 36 34 38 40 C 35 44 36 50 40 53 C 38 57 41 63 47 64 Z" fill="#0f172a" stroke="#00ffaa" stroke-width="2"/>
+          <!-- Right Hemisphere -->
+          <path d="M 53 30 C 60 28 64 34 62 40 C 65 44 64 50 60 53 C 62 57 59 63 53 64 Z" fill="#0f172a" stroke="#00ffaa" stroke-width="2"/>
+          
+          <!-- Neural Synaptic Core Sparks / Inner Memory Lock -->
+          <circle cx="44" cy="42" r="1.5" fill="#38bdf8"/>
+          <circle cx="56" cy="42" r="1.5" fill="#38bdf8"/>
+          <circle cx="45" cy="54" r="1.5" fill="#38bdf8"/>
+          <circle cx="55" cy="54" r="1.5" fill="#38bdf8"/>
+          <path d="M 44 42 L 50 48 L 56 42 M 50 48 L 45 54 M 50 48 L 55 54" stroke="#38bdf8" stroke-width="1.2" stroke-linecap="round"/>
+          
+          <!-- Locking Padlock / Retention Bolt Symbol at Crown -->
+          <path d="M 46 22 C 46 19 54 19 54 22 L 54 26 L 46 26 Z" stroke="#e2e8f0" stroke-width="1.5" fill="none"/>
+        </svg>
+        <div>
+          <span class="top-title" style="letter-spacing:1px; display:block; line-height:1.1;">STEEL TRAP</span>
+          <span style="font-size:9px; color:#00ffaa; letter-spacing:1.5px; font-weight:bold; display:block;">COGNITIVE RETENTION SUITE</span>
+        </div>
+      </div>
+        <span class="controller-badge disconnected" id="controller-status">GAMEPAD: NONE</span>
+      </div>
+      <div>
+        <span>Active User: <span class="user-tag" id="current-user-tag">---</span></span>
+        <span style="margin: 0 8px;">|</span>
+        <a href="javascript:void(0)" onclick="logoutUser()" style="color:#ff6666;">Logout / Switch</a>
+      </div>
+    </div>
+
+    <!-- PRESET SELECTION & QUICK SWITCH BAR -->
+    <div class="preset-bar">
+      <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+        <span style="color:#ffff00; font-weight:bold;">⚡ MY SAVED MODES:</span>
+        <select id="sel-user-presets" onchange="applySelectedPreset()">
+          <option value="default">Default: 2-Back Dual (87.5% Lures, 24 Trials)</option>
+        </select>
+        <button class="btn-action" onclick="deleteCurrentPreset()" style="color:#ff6666;">Delete Mode</button>
+      </div>
+
+      <div style="display:flex; align-items:center; gap:6px;">
+        <input type="text" id="inp-save-preset-name" placeholder="Name new mode (e.g. Relational-Analogies 5m)">
+        <button class="btn-action" style="background:#005522; color:#fff;" onclick="saveCurrentAsPreset()">SAVE CURRENT MODE</button>
+      </div>
+    </div>
+
+    <!-- NAVIGATION TABS -->
+    <div class="nav-tabs">
+      <button class="nav-tab-btn active" id="tabbtn-profile" onclick="switchNav('profile')" style="color:#00ff88; border-color:#00aa44;">[1] Living Brain Profile</button>
+      <button class="nav-tab-btn" id="tabbtn-goals" onclick="switchNav('goals')" style="color:#00ffcc; border-color:#008877;">[2] Multi-Goal Manager & Exercises</button>
+      <button class="nav-tab-btn" id="tabbtn-arena" onclick="switchNav('arena')">[3] Play Arena</button>
+      <button class="nav-tab-btn" id="tabbtn-challenges" onclick="switchNav('challenges')">[4] Peer Challenges (<span id="challenge-badge-count">0</span>)</button>
+      <button class="nav-tab-btn" id="tabbtn-controls" onclick="switchNav('controls')">[5] Controls & Gamepad Rebind</button>
+      <button class="nav-tab-btn" id="tabbtn-brain" onclick="switchNav('brain')">[6] Interactive Anatomy & History</button>
+      <button class="nav-tab-btn" id="tabbtn-scores" onclick="switchNav('scores')">[7] User Scoresheet & History</button>
+    </div>
+
+    <!-- SECTION 1: LIVING USER BRAIN PROFILE -->
+    <div id="sec-profile">
+      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #333; padding-bottom:8px; margin-bottom:12px;">
+        <div>
+          <h3 style="color:#00ff88; font-size:16px;">🧠 USER PROFILE: <span id="profile-user-heading">---</span>'S LIVING BRAIN</h3>
+          <p style="font-size:11px; color:#888; margin-top:2px;">
+            Your interactive cortical state. Click any brain region to inspect its real-time functionality level, composite strength percentage, and complete historical training log.
+          </p>
+        </div>
+        <div style="text-align:right;">
+          <span style="font-size:10px; color:#888; display:block;">ESTIMATED FLUID G-RATING</span>
+          <span id="profile-g-rating" style="font-size:22px; font-weight:bold; color:#ffff00;">---</span>
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns: 1.1fr 1fr; gap:16px;">
+        <!-- Interactive Vector Brain Canvas -->
+        <div style="border:1px solid #333; background:#000; padding:12px; text-align:center;">
+          <svg viewBox="0 0 500 400" style="width: 100%; max-height: 380px;" id="profile-brain-svg">
+            <path d="M 120 280 C 70 260 50 200 60 140 C 70 80 140 40 240 40 C 340 40 420 80 440 160 C 450 210 430 270 380 300 C 350 320 320 320 290 310 C 270 340 220 360 170 350 C 130 340 120 300 120 280 Z" fill="#151a24" stroke="#334466" stroke-width="2"/>
+            
+            <path id="ppath-dlpfc" class="brain-region-path" data-region="dlpfc" d="M 80 150 C 70 190 90 240 140 260 C 170 230 180 170 180 120 C 140 100 100 120 80 150 Z" fill="#2255aa" stroke="#4488ff" stroke-width="1.5"/>
+            <text x="105" y="180" fill="#ffffff" font-size="11" font-family="monospace">dlPFC</text>
+
+            <path id="ppath-rlpfc" class="brain-region-path" data-region="rlpfc" d="M 60 120 C 50 150 70 190 100 170 C 100 130 90 100 60 120 Z" fill="#6366f1" stroke="#a5b4fc" stroke-width="1.5"/>
+            <text x="65" y="145" fill="#ffffff" font-size="9" font-family="monospace">rlPFC</text>
+
+            <path id="ppath-acc" class="brain-region-path" data-region="acc" d="M 175 140 C 180 180 210 200 240 190 C 240 160 220 130 190 130 Z" fill="#aa6600" stroke="#ffaa00" stroke-width="1.5"/>
+            <text x="195" y="165" fill="#ffffff" font-size="10" font-family="monospace">ACC</text>
+
+            <path id="ppath-hippocampus" class="brain-region-path" data-region="hippocampus" d="M 210 240 C 220 210 260 210 280 230 C 290 260 250 280 220 270 Z" fill="#008855" stroke="#00ff99" stroke-width="1.5"/>
+            <text x="225" y="248" fill="#ffffff" font-size="10" font-family="monospace">HIPPO</text>
+
+            <path id="ppath-parietal" class="brain-region-path" data-region="parietal" d="M 250 70 C 310 70 360 100 370 150 C 320 160 270 140 250 110 Z" fill="#8822aa" stroke="#cc44ff" stroke-width="1.5"/>
+            <text x="290" y="115" fill="#ffffff" font-size="11" font-family="monospace">PARIETAL</text>
+
+            <path id="ppath-auditory" class="brain-region-path" data-region="auditory" d="M 200 200 C 240 190 280 200 290 230 C 260 250 210 240 200 200 Z" fill="#006699" stroke="#33aaff" stroke-width="1.5"/>
+            <text x="220" y="218" fill="#ffffff" font-size="10" font-family="monospace">AUDITORY</text>
+
+            <path id="ppath-occipital" class="brain-region-path" data-region="occipital" d="M 380 170 C 430 180 440 240 400 280 C 370 250 360 200 380 170 Z" fill="#aa2222" stroke="#ff5555" stroke-width="1.5"/>
+            <text x="385" y="230" fill="#ffffff" font-size="10" font-family="monospace">VISUAL</text>
+
+            <path id="ppath-cerebellum" class="brain-region-path" data-region="cerebellum" d="M 310 300 C 360 300 380 340 340 370 C 300 380 280 340 310 300 Z" fill="#334444" stroke="#668888" stroke-width="1.5"/>
+            <text x="310" y="340" fill="#ffffff" font-size="10" font-family="monospace">CEREBELLUM</text>
+          </svg>
+
+          <div class="heatmap-legend">
+            <span>Resting (0%)</span>
+            <div class="heatmap-bar"></div>
+            <span>Peak Metabolic Strength (100%)</span>
+          </div>
+          <div style="font-size:10px; color:#777; margin-top:6px;">Click any highlighted sector above to inspect functional data.</div>
+        </div>
+
+        <!-- Regional Inspector Pane -->
+        <div style="border:1px solid #333; background:#0a0e14; padding:14px; font-size:12px; line-height:1.5;">
+          <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #283040; padding-bottom:6px; margin-bottom:8px;">
+            <strong id="inspector-region-title" style="color:#ffff00; font-size:14px;">SELECT A REGION</strong>
+            <span id="inspector-region-score" style="font-size:16px; font-weight:bold; color:#00ffaa;">--%</span>
+          </div>
+
+          <div id="inspector-status-text" style="color:#bbb; margin-bottom:12px; font-size:11px;">
+            Click on any brain area on the profile canvas to the left to inspect its current functional activation, cognitive role, and training history.
+          </div>
+
+          <h5 style="color:#38bdf8; font-size:11px; margin-bottom:6px; border-bottom:1px dashed #223344; padding-bottom:3px;">
+            HISTORICAL TRAINING SESSIONS LINKED TO THIS AREA:
+          </h5>
+          <div id="inspector-history-list" style="max-height:160px; overflow-y:auto; font-size:11px; color:#aaa; space-y:4px;">
+            <div style="color:#666;">No regional history selected.</div>
+          </div>
+
+          <div style="margin-top:14px; border-top:1px solid #283040; padding-top:8px;">
+            <button class="auth-btn" style="background:#005522; font-size:11px; padding:6px 12px; display:inline-block;" onclick="launchTargetedArenaFromInspector()">
+              TRAIN THIS AREA IN ARENA NOW
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active Goal Badges -->
+      <div style="margin-top:16px; border:1px solid #333; background:#080b10; padding:12px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <h4 style="color:#ffff77; font-size:12px;">MY ACTIVE GOALS & PROGRESSION:</h4>
+          <a href="javascript:void(0)" onclick="switchNav('goals')" style="font-size:11px; color:#00ffaa;">+ Add / Manage Goals</a>
+        </div>
+        <div id="profile-active-goals-summary" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:10px; font-size:11px;"></div>
+      </div>
+    </div>
+
+    <!-- SECTION 2: MULTI-GOAL MANAGER & SPECIALIZED EXERCISES -->
+    <div id="sec-goals" style="display:none;">
+      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #333; padding-bottom:8px; margin-bottom:12px;">
+        <div>
+          <h3 style="color:#00ffcc; font-size:15px;">🎯 MULTI-GOAL TRACKER & SPECIALIZED REAL-WORLD EXERCISES</h3>
+          <p style="font-size:11px; color:#888; margin-top:2px;">
+            Set up goals for Reading, Mathematics, Carpentry, Relational Reasoning, Spatial Navigation, or Dialogue Retention.
+          </p>
+        </div>
+      </div>
+
+      <div class="goal-panel">
+        <span class="goal-step-badge">CREATE A NEW COGNITIVE GOAL</span>
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:10px; margin-top:8px; font-size:12px;">
+          <div>
+            <label style="color:#ffaa00; display:block; margin-bottom:3px;">Goal Name / Label:</label>
+            <input type="text" id="goal-custom-title" placeholder="e.g. Master Word Analogies & Deduction" style="width:100%; background:#000; border:1px solid #555; color:#fff; padding:4px;">
+          </div>
+          <div>
+            <label style="color:#ffaa00; display:block; margin-bottom:3px;">Domain Category:</label>
+            <select id="goal-domain-select" onchange="updateSubgoalDropdown()" style="width:100%; background:#000; border:1px solid #555; color:#fff; padding:4px;">
+              <option value="relational">Relational Reasoning & Word Analogies</option>
+              <option value="reading">Reading & Scene/Dialogue Retention</option>
+              <option value="math">Mathematics & Mental Calculation</option>
+              <option value="carpentry">Carpentry & Structural Geometry</option>
+              <option value="spatial">Spatial Navigation & 3D Modeling</option>
+              <option value="verbal">Verbal Problem Solving & Sales</option>
+              <option value="memory">Rote Memorization & Buffer Span</option>
+              <option value="creativity">Creativity & Opportunity Discovery</option>
+            </select>
+          </div>
+          <div>
+            <label style="color:#ffaa00; display:block; margin-bottom:3px;">Specific Granular Focus:</label>
+            <select id="goal-subfocus-select" onchange="previewGoalCurriculum()" style="width:100%; background:#000; border:1px solid #555; color:#fff; padding:4px;"></select>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:14px; margin-top:12px; font-size:12px;">
+          <div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:2px;">
+              <span style="color:#33aaff;">Current Baseline:</span>
+              <span id="goal-curr-val" style="color:#33aaff; font-weight:bold;">40% (Below Average)</span>
+            </div>
+            <input type="range" id="goal-curr-slider" min="10" max="95" step="5" value="40" style="width:100%;" oninput="updateGoalSliderLabels()">
+          </div>
+
+          <div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:2px;">
+              <span style="color:#ff5555;">Target Tier:</span>
+              <span id="goal-targ-val" style="color:#ff5555; font-weight:bold;">85% (Superior Tier)</span>
+            </div>
+            <input type="range" id="goal-targ-slider" min="20" max="99" step="5" value="85" style="width:100%;" oninput="updateGoalSliderLabels()">
+          </div>
+        </div>
+
+        <div class="curriculum-card" id="goal-curriculum-preview"></div>
+
+        <div style="margin-top:12px; text-align:right;">
+          <button class="auth-btn" style="width:auto; padding:6px 18px; display:inline-block;" onclick="addNewGoalToProfile()">
+            + SAVE GOAL TO MY PROFILE
+          </button>
+        </div>
+      </div>
+
+      <h4 style="color:#ffff77; font-size:13px; margin-bottom:8px;">MY CURRENT GOAL ROSTER & PROGRESSION:</h4>
+      <div id="user-goals-container" style="space-y:12px;"></div>
+    </div>
+
+    <!-- SECTION 3: PLAY ARENA (CLASSIC BRAIN WORKSHOP) -->
+    <div id="sec-arena" style="display:none;">
+      <div class="bw-hud">
+        <div>Mode: <span id="hud-mode-display" style="color:#fff;">Dual 2-Back</span></div>
+        <div>Trial: <span id="hud-trial" style="color:#ffff00;">0</span> / <span id="hud-total">24</span></div>
+        <div>Time Remaining: <span id="hud-timer" style="color:#00ffaa;">--:--</span></div>
+        <div>Lure Rate: <span id="hud-lure" style="color:#ffaa00;">87.5%</span></div>
+        <div>Status: <span id="hud-status" style="color:#00ff66;">READY (Press Space)</span></div>
+      </div>
+
+      <div id="active-challenge-banner" style="display:none; background:#1c2514; border:1px solid #00ff66; padding:8px 12px; margin-bottom:10px; font-size:12px; color:#aaffaa;">
+        ⚔️ <strong>ACTIVE SESSION:</strong> <span id="chall-sender-display" style="color:#fff; font-weight:bold;">Custom Protocol</span>
+      </div>
+
+      <div class="bw-grid-container">
+        <div class="bw-grid" id="bw-grid">
+          <div class="bw-cell" data-idx="0"></div>
+          <div class="bw-cell" data-idx="1"></div>
+          <div class="bw-cell" data-idx="2"></div>
+          <div class="bw-cell" data-idx="3"></div>
+          <div class="bw-cell" data-idx="4"></div>
+          <div class="bw-cell" data-idx="5"></div>
+          <div class="bw-cell" data-idx="6"></div>
+          <div class="bw-cell" data-idx="7"></div>
+          <div class="bw-cell" data-idx="8"></div>
+        </div>
+
+        <!-- Relational Reasoning Word-Pair Presentation Box -->
+        <div id="relational-word-box" class="relational-stimulus-box" style="display:none;">
+          <div class="relational-pair" id="relational-word-display">WORD : RELATION</div>
+          <div class="relational-subtext" id="relational-type-hint">Semantic Analogy / Relational Rule</div>
+        </div>
+      </div>
+
+      <div class="bw-button-row">
+        <button class="bw-match-btn" id="btn-input-pos">POSITION MATCH<span class="btn-keyhint" id="hint-key-pos">[ Key: A | Pad: X ]</span></button>
+        <button class="bw-match-btn" id="btn-input-audio">AUDIO MATCH<span class="btn-keyhint" id="hint-key-audio">[ Key: L | Pad: B ]</span></button>
+        <button class="bw-match-btn" id="btn-input-rel" style="border-color:#2563eb; color:#60a5fa;">RELATION MATCH<span class="btn-keyhint" id="hint-key-rel">[ Key: W | Pad: LB ]</span></button>
+        <button class="bw-match-btn" id="btn-input-img">IMAGE MATCH<span class="btn-keyhint" id="hint-key-img">[ Key: S | Pad: Y ]</span></button>
+        <button class="bw-match-btn" id="btn-input-col">COLOR MATCH<span class="btn-keyhint" id="hint-key-col">[ Key: D | Pad: A ]</span></button>
+        <button class="bw-match-btn" id="btn-input-rot">3D ROTATION MATCH<span class="btn-keyhint" id="hint-key-rot">[ Key: R | Pad: RB ]</span></button>
+      </div>
+
+      <div style="text-align:center; margin-top: 15px;">
+        <button class="auth-btn" id="btn-start-game" style="width: 240px; display:inline-block;" onclick="toggleGame()">
+          START SESSION [Space]
+        </button>
+      </div>
+
+      <div class="config-grid">
+        <div class="config-card">
+          <h4>N-BACK, TIMING & DURATION</h4>
+          <div class="config-row"><span>N-Back Level:</span><input type="number" id="cfg-n-level" min="1" max="9" value="2" style="width:45px;"></div>
+          <div class="config-row"><span>Interval (0.5 - 15.0s):</span><input type="number" id="cfg-interval" min="0.5" max="15.0" step="0.1" value="2.5" style="width:55px;" onchange="recalculateTrialsFromMinutes()"></div>
+          <div class="config-row"><span>Flash Duration:</span><input type="number" id="cfg-flash" min="0.1" max="5.0" step="0.1" value="0.8" style="width:55px;"></div>
+          <div class="config-row"><span>Lure Rate (0-100%):</span><input type="number" id="cfg-lures" min="0" max="100" step="0.5" value="87.5" style="width:55px;"></div>
+          <div class="config-row" style="border-top:1px dashed #333; padding-top:4px; margin-top:4px;">
+            <span>Play Mode:</span>
+            <select id="cfg-duration-mode" onchange="toggleDurationMode()" style="width:110px;">
+              <option value="trials">Fixed Trials</option>
+              <option value="timed">Timed Minutes</option>
+            </select>
+          </div>
+          <div class="config-row" id="row-cfg-trials"><span>Total Trials:</span><input type="number" id="cfg-trials" min="10" max="500" value="24" style="width:55px;"></div>
+          <div class="config-row" id="row-cfg-minutes" style="display:none;"><span>Duration (Minutes):</span><input type="number" id="cfg-minutes" min="0.5" max="60" step="0.5" value="5.0" style="width:55px;" onchange="recalculateTrialsFromMinutes()"></div>
+        </div>
+
+        <div class="config-card">
+          <h4>ACTIVE MODALITIES</h4>
+          <div class="config-row"><span>Spatial Position:</span><input type="checkbox" id="cfg-mod-pos" checked></div>
+          <div class="config-row"><span>Auditory Phonemes:</span><input type="checkbox" id="cfg-mod-audio" checked></div>
+          <div class="config-row" style="background:#0c1626; padding:2px 4px; border:1px solid #1e3a8a;">
+            <span style="color:#60a5fa; font-weight:bold;">Relational Word Reasoning:</span>
+            <input type="checkbox" id="cfg-mod-rel" onchange="toggleRelationalBoxVisibility()">
+          </div>
+          <div class="config-row"><span>Visual Image:</span><input type="checkbox" id="cfg-mod-img"></div>
+          <div class="config-row"><span>Color N-Back:</span><input type="checkbox" id="cfg-mod-col"></div>
+          <div class="config-row"><span>3D Mental Rotation:</span><input type="checkbox" id="cfg-mod-rot"></div>
+        </div>
+
+        <div class="config-card">
+          <h4>DAILY USER INTAKE LOG</h4>
+          <div class="config-row"><span>Sleep (0-10):</span><input type="number" id="cfg-log-sleep" min="0" max="10" step="0.5" value="8" style="width:45px;"></div>
+          <div class="config-row"><span>Energy (0-10):</span><input type="number" id="cfg-log-energy" min="0" max="10" step="0.5" value="7" style="width:45px;"></div>
+          <div class="config-row"><span>Hyperbaric Chamber:</span><input type="checkbox" id="cfg-log-chamber"></div>
+          <div class="config-row"><span>Chamber Hours:</span><input type="number" id="cfg-log-hours" min="0" max="12" step="0.25" value="1.0" style="width:50px;"></div>
+          <div class="config-row"><span>Diet / Notes:</span><input type="text" id="cfg-log-diet" placeholder="Beef, yolks, gelatin" style="width:120px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 4: PEER CHALLENGES -->
+    <div id="sec-challenges" style="display:none;">
+      <h3 style="color:#ffff00; font-size:14px; margin-bottom:8px;">⚔️ PEER COGNITIVE CHALLENGES</h3>
+      <div style="border:1px solid #333; background:#0d1117; padding:12px; margin-bottom:16px;">
+        <h4 style="color:#00ffaa; font-size:13px; margin-bottom:8px;">SEND CHALLENGE TO ANOTHER USER</h4>
+        <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; font-size:12px;">
+          <div><span>Recipient:</span> <select id="sel-challenge-recipient" style="background:#000; border:1px solid #555; color:#fff; padding:3px 6px;"></select></div>
+          <div><span>Preset:</span> <select id="sel-challenge-preset-choice" style="background:#000; border:1px solid #555; color:#fff; padding:3px 6px;"><option value="current">Current Configuration</option></select></div>
+          <button class="btn-action" style="background:#006622; color:#fff;" onclick="sendChallengeToUser()">DISPATCH</button>
+        </div>
+      </div>
+      <h4 style="color:#ffaa00; font-size:12px; margin-bottom:8px;">INCOMING CHALLENGES:</h4>
+      <div id="incoming-challenges-list"></div>
+      <h4 style="color:#00ffaa; font-size:12px; margin-top:16px; margin-bottom:8px;">OUTGOING CHALLENGES & RETURNED FEEDBACK:</h4>
+      <div id="outgoing-challenges-list"></div>
+    </div>
+
+    <!-- SECTION 5: CONTROLS & CONTROLLER REBINDING -->
+    <div id="sec-controls" style="display:none;">
+      <h3 style="color:#00ff66; margin-bottom:8px; font-size:14px;">KEYBOARD & CONTROLLER REBINDING</h3>
+      <table class="rebind-table">
+        <thead><tr><th>Action</th><th>Key</th><th>Gamepad</th><th>Configure</th></tr></thead>
+        <tbody id="rebind-tbody"></tbody>
+      </table>
+      <div style="margin-top:15px; border:1px solid #333; padding:10px; background:#000;">
+        <span style="color:#ffff00; font-weight:bold;">Live Controller Input:</span>
+        <div id="gamepad-debug" style="margin-top:6px; font-size:11px; color:#aaa;">No controller detected. Press any button to awaken.</div>
+      </div>
+    </div>
+
+    <!-- SECTION 6: INTERACTIVE ANATOMY & HISTORY -->
+    <div id="sec-brain" style="display:none;">
+      <h3 style="color:#00ffaa; margin-bottom:6px; font-size:14px;">INTERACTIVE BRAIN ANATOMY & HISTORY</h3>
+      <div style="border:1px solid #333; background:#0a0a0a; padding:14px; font-size:12px; line-height:1.5;" id="anatomy-history-card">
+        Click any sector on the <strong>Living Brain Profile</strong> tab to read historical breakthroughs, cytoarchitectonics, and computational models for that specific area.
+      </div>
+    </div>
+
+    <!-- SECTION 7: USER SCORESHEET & SPREADSHEET LEDGER -->
+    <div id="sec-scores" style="display:none;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+        <h3 style="color:#00ff66; font-size:14px;">SCORESHEET LEDGER</h3>
+        <div>
+          <button class="nav-tab-btn" onclick="exportUserCSV()">Export User CSV</button>
+          <button class="nav-tab-btn" onclick="clearUserScores()" style="color:#ff6666;">Clear Records</button>
+        </div>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="ledger-table">
+          <thead>
+            <tr>
+              <th>Date / Time</th><th>Mode / N</th><th>Interval</th><th>Duration</th><th>Lure %</th><th>Total Acc</th><th>g-Rating</th>
+              <th>Position (+/-)</th><th>Audio (+/-)</th><th>Relation (+/-)</th><th>Image (+/-)</th><th>Color (+/-)</th><th>Rotation (+/-)</th><th>Sleep</th><th>Chamber</th><th>Diet / Notes</th>
+            </tr>
+          </thead>
+          <tbody id="scores-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    /* =====================================================================
+       1. AUTHENTICATION & MULTI-USER SYSTEM
+       ===================================================================== */
+    let activeUser = null;
+    let authMode = 'login';
+
+    async function hashPass(str) {
+      const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    function getUsersDB() {
+      return JSON.parse(localStorage.getItem('steeltrap_multiuser_db') || '{}');
+    }
+
+    function setAuthTab(mode) {
+      authMode = mode;
+      document.getElementById('tab-login').className = mode === 'login' ? 'auth-tab active' : 'auth-tab';
+      document.getElementById('tab-reg').className = mode === 'reg' ? 'auth-tab active' : 'auth-tab';
+      document.getElementById('auth-submit-btn').innerText = mode === 'login' ? 'ENTER SYSTEM' : 'CREATE PROFILE';
+      document.getElementById('auth-err').innerText = '';
+    }
+
+    async function handleAuthSubmit() {
+      const u = document.getElementById('auth-user').value.trim().toLowerCase();
+      const p = document.getElementById('auth-pass').value;
+      const err = document.getElementById('auth-err');
+      err.innerText = '';
+
+      if (!u || !p) {
+        err.innerText = 'Username and password required.';
+        return;
+      }
+
+      const db = getUsersDB();
+      const h = await hashPass(p);
+
+      if (authMode === 'reg') {
+        if (db[u]) {
+          err.innerText = 'Username already exists.';
+          return;
+        }
+        db[u] = { passHash: h, created: new Date().toISOString() };
+        localStorage.setItem('steeltrap_multiuser_db', JSON.stringify(db));
+        loginUser(u);
+      } else {
+        if (!db[u] || db[u].passHash !== h) {
+          err.innerText = 'Invalid username or password.';
+          return;
+        }
+        loginUser(u);
+      }
+    }
+
+    function loginUser(u) {
+      activeUser = u;
+      document.getElementById('auth-overlay').style.display = 'none';
+      document.getElementById('main-app').style.display = 'block';
+      document.getElementById('current-user-tag').innerText = u.toUpperCase();
+      document.getElementById('profile-user-heading').innerText = u.toUpperCase();
+      loadUserKeybinds();
+      refreshUserPresetsDropdown();
+      renderScoresheet();
+      refreshLivingBrainProfile();
+      refreshChallengesList();
+      populateRecipientDropdown();
+      updateSubgoalDropdown();
+      renderUserGoalsList();
+    }
+
+    function logoutUser() {
+      activeUser = null;
+      document.getElementById('auth-pass').value = '';
+      document.getElementById('main-app').style.display = 'none';
+      document.getElementById('auth-overlay').style.display = 'flex';
+    }
+
+    /* =====================================================================
+       2. LIVING BRAIN USER PROFILE & REGIONAL INSPECTOR
+       ===================================================================== */
+    let selectedProfileRegion = 'dlpfc';
+
+    function getHeatmapColor(pct) {
+      pct = Math.max(0, Math.min(100, pct));
+      if (pct < 33) {
+        const r = 0;
+        const g = Math.round((pct / 33) * 255);
+        const b = Math.round(255 - (pct / 33) * 155);
+        return `rgb(${r},${g},${b})`;
+      } else if (pct < 66) {
+        const r = Math.round(((pct - 33) / 33) * 255);
+        const g = 255;
+        const b = 0;
+        return `rgb(${r},${g},${b})`;
+      } else {
+        const r = 255;
+        const g = Math.round(255 - ((pct - 66) / 34) * 255);
+        const b = 0;
+        return `rgb(${r},${g},${b})`;
+      }
+    }
+
+    function refreshLivingBrainProfile() {
+      if (!activeUser) return;
+      const history = JSON.parse(localStorage.getItem(`steeltrap_records_${activeUser}`) || '[]');
+      
+      if (history.length > 0) {
+        const recent = history.slice(-5);
+        const avgG = Math.round(recent.reduce((a, b) => a + (b.gRating || 100), 0) / recent.length);
+        document.getElementById('profile-g-rating').innerText = avgG;
+      } else {
+        document.getElementById('profile-g-rating').innerText = "100 (Baseline)";
+      }
+
+      const regionalStats = calculateUserRegionalActivation(history);
+
+      Object.keys(regionalStats).forEach(reg => {
+        const p = document.getElementById(`ppath-${reg}`);
+        if (p) {
+          const col = getHeatmapColor(regionalStats[reg]);
+          p.style.fill = col;
+          p.style.transition = "fill 0.4s ease";
+        }
+      });
+
+      inspectProfileRegion(selectedProfileRegion);
+      renderProfileGoalsSummary();
+    }
+
+    function calculateUserRegionalActivation(history) {
+      if (!history || history.length === 0) {
+        return { dlpfc: 45, rlpfc: 40, acc: 40, hippocampus: 45, parietal: 40, auditory: 40, occipital: 45, cerebellum: 50 };
+      }
+
+      const recent = history.slice(-6);
+      let posSum = 0, audSum = 0, relSum = 0, imgSum = 0, colSum = 0, rotSum = 0, totalAccSum = 0, lureSum = 0, nSum = 0;
+
+      recent.forEach(r => {
+        totalAccSum += parseFloat(r.acc) || 0;
+        lureSum += parseFloat(r.lures) || 0;
+        nSum += r.nLevel || 2;
+        if (r.modStats.pos) posSum += parseFloat(r.modStats.pos.acc) || 0;
+        if (r.modStats.audio) audSum += parseFloat(r.modStats.audio.acc) || 0;
+        if (r.modStats.rel) relSum += parseFloat(r.modStats.rel.acc) || 0;
+        if (r.modStats.img) imgSum += parseFloat(r.modStats.img.acc) || 0;
+        if (r.modStats.col) colSum += parseFloat(r.modStats.col.acc) || 0;
+        if (r.modStats.rot) rotSum += parseFloat(r.modStats.rot.acc) || 0;
+      });
+
+      const count = recent.length;
+      const meanAcc = totalAccSum / count;
+      const meanLures = lureSum / count;
+      const meanN = nSum / count;
+      const meanPos = posSum / count || 50;
+      const meanAud = audSum / count || 50;
+      const meanRel = relSum / count || 45;
+      const meanImg = imgSum / count || 50;
+      const meanCol = colSum / count || 50;
+      const meanRot = rotSum / count || 40;
+
+      return {
+        dlpfc: Math.round(Math.min(98, (meanAcc * 0.6) + (meanN * 9))),
+        rlpfc: Math.round(Math.min(98, (meanRel * 0.7) + (meanN * 8))),
+        acc: Math.round(Math.min(98, (meanAcc * 0.5) + (meanLures * 0.45))),
+        hippocampus: Math.round(Math.min(98, ((meanPos + meanImg + meanRel) / 3) * 0.75 + (meanLures * 0.2))),
+        parietal: Math.round(Math.min(98, (meanRot * 0.6) + (meanPos * 0.35))),
+        auditory: Math.round(Math.min(98, meanAud * 0.9 + 5)),
+        occipital: Math.round(Math.min(98, Math.max(meanImg, meanCol) * 0.9 + 5)),
+        cerebellum: Math.round(Math.min(95, 60 + (meanN * 4)))
+      };
+    }
+
+    document.querySelectorAll('#profile-brain-svg .brain-region-path').forEach(p => {
+      p.addEventListener('click', (e) => {
+        const reg = e.currentTarget.getAttribute('data-region');
+        inspectProfileRegion(reg);
+      });
+    });
+
+    function inspectProfileRegion(reg) {
+      selectedProfileRegion = reg;
+      document.querySelectorAll('#profile-brain-svg .brain-region-path').forEach(p => {
+        p.classList.toggle('active-selected', p.getAttribute('data-region') === reg);
+      });
+
+      const history = JSON.parse(localStorage.getItem(`steeltrap_records_${activeUser}`) || '[]');
+      const activations = calculateUserRegionalActivation(history);
+      const score = activations[reg] || 50;
+      const col = getHeatmapColor(score);
+
+      const meta = REGION_METADATA[reg] || { title: reg.toUpperCase(), role: "Cortical processing hub." };
+      document.getElementById('inspector-region-title').innerText = meta.title;
+      document.getElementById('inspector-region-score').innerText = `${score}% Functional Strength`;
+      document.getElementById('inspector-region-score').style.color = col;
+
+      document.getElementById('inspector-status-text').innerHTML = `
+        <strong>Primary Function:</strong> ${meta.role}<br>
+        <strong>Current State:</strong> Operating at <span style="color:${col}; font-weight:bold;">${score}% metabolic efficiency</span>. ${meta.prescriptionHint}
+      `;
+
+      const histDiv = document.getElementById('inspector-history-list');
+      histDiv.innerHTML = '';
+
+      const relevantRuns = history.filter(r => isRunRelevantToRegion(r, reg)).slice(-6).reverse();
+      if (relevantRuns.length === 0) {
+        histDiv.innerHTML = '<div style="color:#666;">No recorded runs yet targeting this specific region.</div>';
+      } else {
+        relevantRuns.forEach(r => {
+          const item = document.createElement('div');
+          item.style.borderBottom = "1px solid #1c2533";
+          item.style.padding = "3px 0";
+          item.innerHTML = `
+            <span style="color:#ffff00;">${r.date} ${r.time}</span> - 
+            <strong style="color:#fff;">${r.nLevel}-Back (${r.duration || '24t'})</strong>: 
+            Accuracy <span style="color:#00ffaa;">${r.acc}</span> | Lures ${r.lures}
+          `;
+          histDiv.appendChild(item);
+        });
+      }
+    }
+
+    function isRunRelevantToRegion(r, reg) {
+      if (reg === 'dlpfc' || reg === 'acc') return true;
+      if (reg === 'rlpfc' && r.modStats.rel) return true;
+      if (reg === 'hippocampus' && (r.modStats.pos || r.modStats.img || r.modStats.rel)) return true;
+      if (reg === 'parietal' && (r.modStats.rot || r.modStats.pos)) return true;
+      if (reg === 'auditory' && r.modStats.audio) return true;
+      if (reg === 'occipital' && (r.modStats.img || r.modStats.col)) return true;
+      return false;
+    }
+
+    const REGION_METADATA = {
+      dlpfc: {
+        title: "Dorsolateral Prefrontal Cortex (dlPFC)",
+        role: "Supreme executive central executive buffer. Directs multi-modal coordinate updating, thread switching, and active maintenance against decay.",
+        prescriptionHint: "Trained heavily by increasing N-back levels (N=3, N=4) and shortening interval speeds."
+      },
+      rlpfc: {
+        title: "Rostrolateral Prefrontal Cortex (rlPFC / BA 10)",
+        role: "Apex hub for relational integration, analogical mapping (A:B :: C:D), second-order rule induction, and abstract reasoning.",
+        prescriptionHint: "Trained exclusively by the Relational Word Reasoning N-Back modality."
+      },
+      acc: {
+        title: "Anterior Cingulate Cortex (ACC)",
+        role: "Real-time cognitive conflict monitor and familiarity gatekeeper. Detects discrepancies between lure interference foils and true targets.",
+        prescriptionHint: "Trained exclusively by high lure interference rates (87.5% foils)."
+      },
+      hippocampus: {
+        title: "Hippocampus & Parahippocampal Cortex",
+        role: "Arbitrary relational binding engine and episodic pattern separator. Encodes spatial context, book scene settings, and novel conceptual associations.",
+        prescriptionHint: "Trained by Visual Image + Spatial Position + Relational streams under high lure interference."
+      },
+      parietal: {
+        title: "Superior Parietal Lobule (SPL)",
+        role: "Internal analog coordinate transformation engine. Executes 3D mental rotation, spatial paper folding, mental arithmetic, and carpentry angle simulation.",
+        prescriptionHint: "Trained directly by the 3D Mental Rotation modality and multi-step math drills."
+      },
+      auditory: {
+        title: "Auditory Cortex & Wernicke's Area",
+        role: "Acoustic phoneme decoding and subvocal rehearsal loop. Retains spoken dialogue, multi-party conversations, and speech sequences.",
+        prescriptionHint: "Trained by Auditory Letter phoneme streaming."
+      },
+      occipital: {
+        title: "Visual Extrastriate Cortex (V1, V4, Ventral)",
+        role: "High-contrast edge extraction, color constancy, and fine geometric detail discrimination.",
+        prescriptionHint: "Trained by Color N-Back and disparate abstract image recognition."
+      },
+      cerebellum: {
+        title: "Cerebellum (Cognitive & Motor Sequencing)",
+        role: "Microsecond button-press motor timing, sensory consequence prediction, and cognitive pacing.",
+        prescriptionHint: "Trained by rapid-interval pacing (1.2s - 1.5s intervals) and rhythm stability."
+      }
+    };
+
+    function launchTargetedArenaFromInspector() {
+      const reg = selectedProfileRegion;
+      switchNav('arena');
+      if (reg === 'rlpfc') {
+        document.getElementById('cfg-mod-rel').checked = true;
+        document.getElementById('cfg-mod-pos').checked = true;
+      } else if (reg === 'parietal') {
+        document.getElementById('cfg-mod-rot').checked = true;
+        document.getElementById('cfg-mod-pos').checked = true;
+      } else if (reg === 'auditory') {
+        document.getElementById('cfg-mod-audio').checked = true;
+      } else if (reg === 'occipital') {
+        document.getElementById('cfg-mod-img').checked = true;
+        document.getElementById('cfg-mod-col').checked = true;
+      } else {
+        document.getElementById('cfg-mod-pos').checked = true;
+        document.getElementById('cfg-mod-audio').checked = true;
+      }
+      toggleRelationalBoxVisibility();
+      alert(`Arena configured to target ${REGION_METADATA[reg].title}. Press [Space] to begin!`);
+    }
+
+    /* =====================================================================
+       3. MULTI-GOAL MANAGER & REAL-WORLD EXERCISES
+       ===================================================================== */
+    const DOMAIN_EXERCISES_DB = {
+      relational: {
+        label: "Relational Reasoning & Word Analogies",
+        subgoals: {
+          analogies: {
+            title: "Proportional Word Analogies (A : B :: C : D)",
+            primaryRegions: ['rlpfc', 'dlpfc', 'hippocampus'],
+            books: [
+              "• 'Surfaces and Essences: Analogy as the Fuel and Fire of Thinking' by Douglas Hofstadter & Emmanuel Sander",
+              "• 'The Structure of Scientific Revolutions' by Thomas S. Kuhn (Paradigmatic structural shifts)",
+              "• 'Metaphors We Live By' by George Lakoff & Mark Johnson (Conceptual structural mapping)"
+            ],
+            exercises: [
+              "1. Analogy Triad Drill: Take any two words (e.g. 'Key : Lock') and generate 3 novel structural matches in under 30 seconds (e.g. 'Password : Account', 'Enzyme : Substrate', 'Warrant : Arrest').",
+              "2. Relation Matching N-Back: Train the Relational Reasoning N-back mode daily (15 mins @ N=2 or N=3) to stress rlPFC relational integration.",
+              "3. Contrastive Relational Parsing: Distinguish between Functional, Categorical, Antonym, and Degree relationships."
+            ],
+            nbackConfig: { pos: true, audio: false, rel: true, img: false, col: false, rot: false, n: 2, interval: 2.4, lures: 87.5, mins: 15 }
+          },
+          transitive: {
+            title: "Transitive Inference & Relational Hierarchies",
+            primaryRegions: ['rlpfc', 'hippocampus', 'parietal'],
+            books: [
+              "• 'Thinking, Fast and Slow' by Daniel Kahneman (Overcoming superficial associative heuristics)",
+              "• 'Gödel, Escher, Bach: An Eternal Golden Braid' by Douglas Hofstadter (Hierarchies and recursive rules)",
+              "• 'The Art of Deception' by Nicholas Capaldi (Detecting informal logical fallacies)"
+            ],
+            exercises: [
+              "1. Unseen Deductions: Given premises (A > B, B > C, C > D), rapidly answer transitive comparisons (A vs D) blindfolded.",
+              "2. Relational Word N-Back with High Interference (87.5% lures) to force hippocampal CA3 relational separation.",
+              "3. Syllogistic Speed Checks: Test categorical logic puzzles against strict time limits."
+            ],
+            nbackConfig: { pos: false, audio: true, rel: true, img: false, col: false, rot: false, n: 2, interval: 2.2, lures: 87.5, mins: 14 }
+          }
+        }
+      },
+      reading: {
+        label: "Reading & Narrative Retention",
+        subgoals: {
+          scene: {
+            title: "Remembering a Visual Scene / Descriptive Setting",
+            primaryRegions: ['hippocampus', 'occipital', 'parietal', 'dlpfc'],
+            books: [
+              "• 'The Lord of the Rings' by J.R.R. Tolkien (Dense topography, landscape continuity, panoramic scene binding)",
+              "• 'The Road' by Cormac McCarthy (Sparse spatial sensory tracking, visceral environmental memory)",
+              "• 'Dune' by Frank Herbert (Arrakis ecological systems, architectural and spatial layout visualization)"
+            ],
+            exercises: [
+              "1. The 60-Second Setting Recall: After reading any scene description, close your eyes and mentally walk through the room or terrain from left to right.",
+              "2. Color & Spatial Landmark Tagging: Identify at least 3 distinct spatial objects in the text and place them into an egocentric mental 3D grid.",
+              "3. Dual Image + Position N-Back (15 mins/day @ 87.5% lures) to condition hippocampal scene-binding networks."
+            ],
+            nbackConfig: { pos: true, audio: false, rel: false, img: true, col: false, rot: false, n: 2, interval: 2.2, lures: 87.5, mins: 15 }
+          },
+          dialogue: {
+            title: "Remembering Dialogue & Verbal Exchanges",
+            primaryRegions: ['auditory', 'dlpfc', 'hippocampus', 'acc'],
+            books: [
+              "• 'Glengarry Glen Ross' by David Mamet (Staccato multi-party verbal cadences, fast conversational interruptions)",
+              "• 'No Country for Old Men' by Cormac McCarthy (Subtle inflection, dialect retention, unsaid tension)",
+              "• Plato's 'Republic' / Socratic Dialogues (Premise-tracking across extended verbal back-and-forths)"
+            ],
+            exercises: [
+              "1. Subvocal Shadowing: Read character dialogue out loud with distinct cadence, then immediately reconstruct who said what 3 pages later.",
+              "2. Conversational Buffer Challenge: In daily meetings, mentally summarize the last 2 statements made by a speaker before formulating your reply.",
+              "3. Dual Auditory + Position N-Back (12 mins/day @ 87.5% lures) to lock in phonological store retention."
+            ],
+            nbackConfig: { pos: true, audio: true, rel: false, img: false, col: false, rot: false, n: 2, interval: 2.0, lures: 87.5, mins: 12 }
+          }
+        }
+      },
+      math: {
+        label: "Mathematics & Mental Calculation",
+        subgoals: {
+          arithmetic: {
+            title: "Multi-Step Mental Arithmetic & Working Buffers",
+            primaryRegions: ['parietal', 'dlpfc', 'acc'],
+            books: [
+              "• 'Secrets of Mental Math' by Arthur Benjamin (Left-to-right lightning calculation techniques)",
+              "• 'How to Solve It' by George Pólya (Heuristic decomposition and mathematical problem structuring)",
+              "• 'The Man Who Counted' by Malba Tahan (Recreational arithmetic and contextual algebraic deduction)"
+            ],
+            exercises: [
+              "1. Running Head Calculations: Tally grocery store carts or invoice totals purely in your head without paper.",
+              "2. Dual N-Back Auditory + 3D Position (15 mins/day) to expand the parietal coordinate buffer.",
+              "3. Rapid Factorization: Take any random 3-digit license plate and break it down into prime factors within 10 seconds."
+            ],
+            nbackConfig: { pos: true, audio: true, rel: false, img: false, col: false, rot: false, n: 2, interval: 1.8, lures: 75.0, mins: 15 }
+          }
+        }
+      },
+      carpentry: {
+        label: "Carpentry & Structural Geometry",
+        subgoals: {
+          joinery: {
+            title: "3D Joinery, Framing & Dimensional Visualization",
+            primaryRegions: ['parietal', 'occipital', 'dlpfc'],
+            books: [
+              "• 'The Complete Manual of Woodworking' by Albert Jackson & David Day (Joint geometries, exploded 3D isometric perspectives)",
+              "• 'Japanese Woodworking Tools: Their Tradition, Spirit and Use' by Toshio Odate (Complex interlocking joinery)",
+              "• 'Graphic Guide to Frame Construction' by Rob Thallon (Visualizing structural load vectors and framing sequences)"
+            ],
+            exercises: [
+              "1. Mental Mortise & Tenon Rotation: Picture an asymmetric mortise and rotate it 90 degrees in your mind to verify timber grain alignment.",
+              "2. Orthographic to Isometric Sketching: Look at a 2D floorplan or blueprint cut and sketch its 3D volumetric shape without looking at a model.",
+              "3. 3D Mental Rotation Modality N-Back (14 mins/day @ 87.5% lures) to accelerate spatial transformation speed."
+            ],
+            nbackConfig: { pos: false, audio: false, rel: false, img: false, col: false, rot: true, n: 2, interval: 2.4, lures: 87.5, mins: 14 }
+          }
+        }
+      },
+      spatial: {
+        label: "Spatial Navigation & 3D Modeling",
+        subgoals: {
+          nav_mental: {
+            title: "Allocentric Mental Mapping & Environmental Orientation",
+            primaryRegions: ['hippocampus', 'parietal', 'occipital'],
+            books: [
+              "• 'Wayfinding: The Science and Mystery of How Humans Navigate the World' by M.R. O'Connor",
+              "• 'You Are Here: Why We Can Find Our Way to the Moon, but Get Lost in the Mall' by Colin Ellard",
+              "• 'Cosmicomics' by Italo Calvino"
+            ],
+            exercises: [
+              "1. Compass Vector Anchoring: Periodically close your eyes and point directly toward magnetic North without looking.",
+              "2. Mental Route Traversal: Mentally walk the entire road path from your house to Table Rock Lake marina, picturing every fork.",
+              "3. Spatial Position + Color Allocentric N-Back (16 mins/day)."
+            ],
+            nbackConfig: { pos: true, audio: false, rel: false, img: false, col: true, rot: false, n: 2, interval: 2.2, lures: 87.5, mins: 16 }
+          }
+        }
+      },
+      verbal: {
+        label: "Verbal Problem Solving & Sales",
+        subgoals: {
+          objections: {
+            title: "High-Friction Objection Handling & Verbal Decoupling",
+            primaryRegions: ['acc', 'dlpfc', 'auditory'],
+            books: [
+              "• 'Never Split the Difference' by Chris Voss (Tactical empathy, calibrated questioning)",
+              "• 'Pitch Anything' by Oren Klaff (Frame control, cognitive neuro-economics)",
+              "• 'Crucial Conversations' by Patterson et al. (De-escalating fight-or-flight defensiveness)"
+            ],
+            exercises: [
+              "1. The 3-Second Mirroring Pause: When hit with an aggressive objection, count 3 full seconds before speaking.",
+              "2. Cold Re-Framing: Take common client objections and write 3 orthogonal clarifying questions.",
+              "3. High-Interference Dual N-Back (87.5% lures) to insulate the prefrontal cortex against autonomic stress."
+            ],
+            nbackConfig: { pos: true, audio: true, rel: false, img: false, col: false, rot: false, n: 3, interval: 2.0, lures: 87.5, mins: 15 }
+          }
+        }
+      },
+      memory: {
+        label: "Rote Memorization & Buffer Span",
+        subgoals: {
+          quad: {
+            title: "Multi-Modal Working Memory Buffer Expansion",
+            primaryRegions: ['dlpfc', 'hippocampus', 'acc', 'parietal', 'auditory', 'occipital'],
+            books: [
+              "• 'Moonwalking with Einstein' by Joshua Foer",
+              "• 'The Memory Book' by Harry Lorayne & Jerry Lucas",
+              "• 'Remember: The Science of Memory and the Art of Forgetting' by Lisa Genova"
+            ],
+            exercises: [
+              "1. Memory Palace Generation: Build a 10-station mental route through your home.",
+              "2. Quad N-Back Training (Position + Audio + Image + Color) for 15 mins daily.",
+              "3. Backward Digit Recall: Repeat read digits in reverse order."
+            ],
+            nbackConfig: { pos: true, audio: true, rel: false, img: true, col: true, rot: false, n: 2, interval: 2.8, lures: 87.5, mins: 15 }
+          }
+        }
+      },
+      creativity: {
+        label: "Creativity & Opportunity Discovery",
+        subgoals: {
+          analogies: {
+            title: "Cross-Domain Analogy & Commercial Opportunity Recognition",
+            primaryRegions: ['hippocampus', 'dlpfc', 'parietal'],
+            books: [
+              "• 'Surfaces and Essences: Analogy as the Fuel and Fire of Thinking' by Hofstadter & Sander",
+              "• 'Where Good Ideas Come From: The Natural History of Innovation' by Steven Johnson",
+              "• 'Zero to One' by Peter Thiel"
+            ],
+            exercises: [
+              "1. The Forced Analogy Drill: Pick 2 unrelated items and list 5 structural principles they share.",
+              "2. Visual Image + Auditory Dual N-Back (15 mins/day) to promote cross-sensory association.",
+              "3. Contrarian Inversion: Formulate a viable business model based on the exact opposite of an industry norm."
+            ],
+            nbackConfig: { pos: false, audio: true, rel: false, img: true, col: false, rot: false, n: 2, interval: 2.4, lures: 87.5, mins: 15 }
+          }
+        }
+      }
+    };
+
+    function updateSubgoalDropdown() {
+      const dKey = document.getElementById('goal-domain-select').value;
+      const subSel = document.getElementById('goal-subfocus-select');
+      subSel.innerHTML = '';
+      const domain = DOMAIN_EXERCISES_DB[dKey];
+      if (!domain) return;
+
+      Object.keys(domain.subgoals).forEach(k => {
+        const opt = document.createElement('option');
+        opt.value = k;
+        opt.innerText = domain.subgoals[k].title;
+        subSel.appendChild(opt);
+      });
+      previewGoalCurriculum();
+    }
+
+    function updateGoalSliderLabels() {
+      const c = document.getElementById('goal-curr-slider').value;
+      const t = document.getElementById('goal-targ-slider').value;
+      document.getElementById('goal-curr-val').innerText = `${c}% (${c<50?'Below Average':'Normal'})`;
+      document.getElementById('goal-targ-val').innerText = `${t}% (${t>80?'Superior Tier':'Advanced'})`;
+      previewGoalCurriculum();
+    }
+
+    function previewGoalCurriculum() {
+      const dKey = document.getElementById('goal-domain-select').value;
+      const subKey = document.getElementById('goal-subfocus-select').value;
+      const domain = DOMAIN_EXERCISES_DB[dKey];
+      if (!domain || !domain.subgoals[subKey]) return;
+
+      const g = domain.subgoals[subKey];
+      const previewDiv = document.getElementById('goal-curriculum-preview');
+      previewDiv.innerHTML = `
+        <h5 style="color:#00ffaa;">RECOMMENDED LITERATURE & READINGS:</h5>
+        <div style="color:#ddd; margin-bottom:10px;">${g.books.join('<br>')}</div>
+        <h5 style="color:#ffff77;">SPECIALIZED REAL-WORLD EXERCISES:</h5>
+        <div style="color:#ddd; margin-bottom:10px;">${g.exercises.join('<br>')}</div>
+        <h5 style="color:#38bdf8;">PRESCRIBED N-BACK PROTOCOL:</h5>
+        <div style="color:#bbb;">
+          Mode: <strong>${g.title}</strong> | Level: <strong>N=${g.nbackConfig.n}</strong> | Duration: <strong>${g.nbackConfig.mins} mins</strong> | Speed: <strong>${g.nbackConfig.interval}s</strong> | Lures: <strong>${g.nbackConfig.lures}%</strong>
+        </div>
+      `;
+    }
+
+    function getUserGoals() {
+      if (!activeUser) return [];
+      return JSON.parse(localStorage.getItem(`steeltrap_goals_${activeUser}`) || '[]');
+    }
+
+    function saveUserGoals(goals) {
+      if (!activeUser) return;
+      localStorage.setItem(`steeltrap_goals_${activeUser}`, JSON.stringify(goals));
+    }
+
+    function addNewGoalToProfile() {
+      const dKey = document.getElementById('goal-domain-select').value;
+      const subKey = document.getElementById('goal-subfocus-select').value;
+      const domain = DOMAIN_EXERCISES_DB[dKey];
+      if (!domain || !domain.subgoals[subKey]) return;
+
+      const g = domain.subgoals[subKey];
+      const customTitle = document.getElementById('goal-custom-title').value.trim() || g.title;
+      const curr = document.getElementById('goal-curr-slider').value;
+      const targ = document.getElementById('goal-targ-slider').value;
+
+      const newGoal = {
+        id: 'goal_' + Date.now(),
+        title: customTitle,
+        domainKey: dKey,
+        subKey: subKey,
+        baseline: parseInt(curr),
+        target: parseInt(targ),
+        createdDate: new Date().toLocaleDateString(),
+        nbackConfig: g.nbackConfig,
+        books: g.books,
+        exercises: g.exercises,
+        primaryRegions: g.primaryRegions
+      };
+
+      const goals = getUserGoals();
+      goals.push(newGoal);
+      saveUserGoals(goals);
+      renderUserGoalsList();
+      renderProfileGoalsSummary();
+      alert(`Goal "${customTitle}" added to your profile!`);
+    }
+
+    function renderUserGoalsList() {
+      const container = document.getElementById('user-goals-container');
+      container.innerHTML = '';
+      const goals = getUserGoals();
+
+      if (goals.length === 0) {
+        container.innerHTML = '<div style="color:#666; font-size:11px;">No active goals saved. Create one above to tailor your brain exercises.</div>';
+        return;
+      }
+
+      const history = JSON.parse(localStorage.getItem(`steeltrap_records_${activeUser}`) || '[]');
+      const activations = calculateUserRegionalActivation(history);
+
+      goals.forEach((g, idx) => {
+        let regSum = 0;
+        g.primaryRegions.forEach(r => regSum += (activations[r] || 50));
+        const currentProgress = Math.round(regSum / g.primaryRegions.length);
+
+        const card = document.createElement('div');
+        card.style.border = "1px solid #334455";
+        card.style.background = "#090d14";
+        card.style.padding = "14px";
+        card.style.marginBottom = "10px";
+        card.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #1f2a38; padding-bottom:6px; margin-bottom:8px;">
+            <strong style="color:#00ffaa; font-size:13px;">[Goal ${idx+1}] ${g.title}</strong>
+            <button class="btn-action" style="color:#ff6666; padding:2px 6px;" onclick="deleteUserGoal('${g.id}')">Remove Goal</button>
+          </div>
+
+          <div style="display:flex; justify-content:space-between; font-size:11px; margin-bottom:4px;">
+            <span>Current Cortical Strength: <strong style="color:${getHeatmapColor(currentProgress)};">${currentProgress}%</strong></span>
+            <span>Target Mastery: <strong style="color:#00ff88;">${g.target}%</strong></span>
+          </div>
+          <div style="width:100%; height:8px; background:#111; border:1px solid #333; margin-bottom:10px;">
+            <div style="width:${Math.min(100, currentProgress)}%; height:100%; background:${getHeatmapColor(currentProgress)};"></div>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; font-size:11px; color:#bbb;">
+            <div>
+              <strong style="color:#38bdf8;">RECOMMENDED LITERATURE:</strong><br>
+              ${g.books.join('<br>')}
+            </div>
+            <div>
+              <strong style="color:#ffff77;">SPECIALIZED DRILLS:</strong><br>
+              ${g.exercises.join('<br>')}
+            </div>
+          </div>
+
+          <div style="margin-top:10px; border-top:1px dashed #223344; padding-top:6px; display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size:11px; color:#aaa;">Prescribed Mode: N=${g.nbackConfig.n} | ${g.nbackConfig.mins} mins @ ${g.nbackConfig.interval}s interval</span>
+            <button class="btn-action" style="background:#005522; color:#fff;" onclick="launchGoalIntoArena('${g.id}')">
+              ▶ LAUNCH THIS GOAL'S N-BACK RUN
+            </button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function renderProfileGoalsSummary() {
+      const container = document.getElementById('profile-active-goals-summary');
+      container.innerHTML = '';
+      const goals = getUserGoals();
+
+      if (goals.length === 0) {
+        container.innerHTML = '<div style="color:#666;">No active goals yet. Click "+ Add / Manage Goals" above.</div>';
+        return;
+      }
+
+      const history = JSON.parse(localStorage.getItem(`steeltrap_records_${activeUser}`) || '[]');
+      const activations = calculateUserRegionalActivation(history);
+
+      goals.forEach(g => {
+        let regSum = 0;
+        g.primaryRegions.forEach(r => regSum += (activations[r] || 50));
+        const currentProgress = Math.round(regSum / g.primaryRegions.length);
+
+        const badge = document.createElement('div');
+        badge.style.border = "1px solid #283040";
+        badge.style.background = "#05070a";
+        badge.style.padding = "8px";
+        badge.innerHTML = `
+          <div style="color:#00ffaa; font-weight:bold; margin-bottom:2px;">${g.title}</div>
+          <div style="display:flex; justify-content:space-between; color:#aaa; font-size:10px; margin-bottom:2px;">
+            <span>Current: <strong style="color:${getHeatmapColor(currentProgress)};">${currentProgress}%</strong></span>
+            <span>Target: ${g.target}%</span>
+          </div>
+          <div style="width:100%; height:4px; background:#111;">
+            <div style="width:${currentProgress}%; height:100%; background:${getHeatmapColor(currentProgress)};"></div>
+          </div>
+        `;
+        container.appendChild(badge);
+      });
+    }
+
+    function deleteUserGoal(id) {
+      if (confirm("Delete this goal?")) {
+        const goals = getUserGoals().filter(x => x.id !== id);
+        saveUserGoals(goals);
+        renderUserGoalsList();
+        renderProfileGoalsSummary();
+      }
+    }
+
+    function launchGoalIntoArena(id) {
+      const goals = getUserGoals();
+      const g = goals.find(x => x.id === id);
+      if (!g) return;
+
+      const p = g.nbackConfig;
+      document.getElementById('cfg-n-level').value = p.n;
+      document.getElementById('cfg-interval').value = p.interval;
+      document.getElementById('cfg-lures').value = p.lures;
+      document.getElementById('cfg-duration-mode').value = 'timed';
+      document.getElementById('cfg-minutes').value = p.mins;
+      document.getElementById('cfg-mod-pos').checked = p.pos;
+      document.getElementById('cfg-mod-audio').checked = p.audio;
+      document.getElementById('cfg-mod-rel').checked = !!p.rel;
+      document.getElementById('cfg-mod-img').checked = p.img;
+      document.getElementById('cfg-mod-col').checked = p.col;
+      document.getElementById('cfg-mod-rot').checked = p.rot;
+
+      toggleDurationMode();
+      recalculateTrialsFromMinutes();
+      toggleRelationalBoxVisibility();
+
+      switchNav('arena');
+      const banner = document.getElementById('active-challenge-banner');
+      banner.style.display = 'block';
+      document.getElementById('chall-sender-display').innerText = `Goal: ${g.title} (${p.mins}m @ N=${p.n})`;
+      alert(`Loaded N-back setup for goal "${g.title}"!
+Duration: ${p.mins} mins | Level: N=${p.n}
+Press [Space] to begin your session.`);
+    }
+
+    /* =====================================================================
+       4. RELATIONAL REASONING KNOWLEDGE BASE & WORD STIMULI
+       ===================================================================== */
+    // Relational categories: 
+    // 0: Function / Purpose (Key:Lock, Pen:Paper, Scalpel:Surgery, Needle:Thread)
+    // 1: Antonym / Contrast (Hot:Cold, Expand:Contract, Rise:Fall, Advance:Retreat)
+    // 2: Part to Whole (Wheel:Car, Branch:Tree, Chapter:Book, Petal:Flower)
+    // 3: Degree / Intensity (Breeze:Gale, Whisper:Shout, Drizzle:Downpour, Warm:Scalding)
+    // 4: Worker to Tool (Carpenter:Hammer, Surgeon:Scalpel, Painter:Brush, Author:Keyboard)
+
+    const RELATIONAL_CATEGORIES = [
+      {
+        type: "FUNCTION / PURPOSE",
+        pairs: [
+          ["KEY", "LOCK"], ["PEN", "PAPER"], ["SCALPEL", "SURGERY"], ["NEEDLE", "THREAD"],
+          ["RUDDER", "SHIP"], ["LENS", "CAMERA"], ["BRAKE", "WHEEL"], ["SHIELD", "ARMOR"]
+        ]
+      },
+      {
+        type: "ANTONYM / OPPOSITION",
+        pairs: [
+          ["HOT", "COLD"], ["EXPAND", "CONTRACT"], ["RISE", "FALL"], ["ADVANCE", "RETREAT"],
+          ["CREATE", "DESTROY"], ["COMPRESS", "STRETCH"], ["ACCELERATE", "BRAKE"], ["CONVEX", "CONCAVE"]
+        ]
+      },
+      {
+        type: "PART TO WHOLE",
+        pairs: [
+          ["WHEEL", "CAR"], ["BRANCH", "TREE"], ["CHAPTER", "BOOK"], ["PETAL", "FLOWER"],
+          ["PROPELLER", "PLANE"], ["PISTON", "ENGINE"], ["SPUR", "GEAR"], ["KEYBOARD", "COMPUTER"]
+        ]
+      },
+      {
+        type: "DEGREE / INTENSITY",
+        pairs: [
+          ["BREEZE", "GALE"], ["WHISPER", "SHOUT"], ["DRIZZLE", "DOWNPOUR"], ["WARM", "SCALDING"],
+          ["TAP", "HAMMER"], ["GLANCE", "STARE"], ["NIBBLE", "DEVOUR"], ["RIPPLE", "SURGE"]
+        ]
+      },
+      {
+        type: "WORKER TO TOOL",
+        pairs: [
+          ["CARPENTER", "HAMMER"], ["SURGEON", "SCALPEL"], ["PAINTER", "BRUSH"], ["SCULPTOR", "CHISEL"],
+          ["BLACKSMITH", "ANVIL"], ["ASTRONOMER", "TELESCOPE"], ["WELDER", "TORCH"], ["AUTHOR", "KEYBOARD"]
+        ]
+      }
+    ];
+
+    function toggleRelationalBoxVisibility() {
+      const active = document.getElementById('cfg-mod-rel').checked;
+      document.getElementById('relational-word-box').style.display = active ? 'block' : 'none';
+    }
+
+    /* =====================================================================
+       5. PRESETS & SAVED MODES
+       ===================================================================== */
+    function getUserPresets() {
+      if (!activeUser) return {};
+      return JSON.parse(localStorage.getItem(`steeltrap_presets_${activeUser}`) || '{}');
+    }
+
+    function saveUserPresets(presets) {
+      if (!activeUser) return;
+      localStorage.setItem(`steeltrap_presets_${activeUser}`, JSON.stringify(presets));
+    }
+
+    function refreshUserPresetsDropdown() {
+      const presets = getUserPresets();
+      const sel = document.getElementById('sel-user-presets');
+      const challSel = document.getElementById('sel-challenge-preset-choice');
+      sel.innerHTML = '<option value="default">Default: 2-Back Dual (87.5% Lures, 24 Trials)</option>';
+      challSel.innerHTML = '<option value="current">Current Configuration</option>';
+
+      Object.keys(presets).forEach(name => {
+        const opt = document.createElement('option');
+        opt.value = name; opt.innerText = name; sel.appendChild(opt);
+        const opt2 = document.createElement('option');
+        opt2.value = name; opt2.innerText = `Preset: ${name}`; challSel.appendChild(opt2);
+      });
+    }
+
+    function saveCurrentAsPreset() {
+      const name = document.getElementById('inp-save-preset-name').value.trim();
+      if (!name) { alert("Enter a name for your custom mode."); return; }
+      const presets = getUserPresets();
+      presets[name] = getFormSettingsObject();
+      saveUserPresets(presets);
+      refreshUserPresetsDropdown();
+      document.getElementById('sel-user-presets').value = name;
+      document.getElementById('inp-save-preset-name').value = '';
+      alert(`Mode "${name}" saved!`);
+    }
+
+    function deleteCurrentPreset() {
+      const sel = document.getElementById('sel-user-presets');
+      const name = sel.value;
+      if (name === 'default') { alert("Cannot delete default."); return; }
+      if (confirm(`Delete mode "${name}"?`)) {
+        const presets = getUserPresets();
+        delete presets[name];
+        saveUserPresets(presets);
+        refreshUserPresetsDropdown();
+        sel.value = 'default';
+        applySelectedPreset();
+      }
+    }
+
+    function getFormSettingsObject() {
+      return {
+        nLevel: parseInt(document.getElementById('cfg-n-level').value) || 2,
+        interval: parseFloat(document.getElementById('cfg-interval').value) || 2.5,
+        flash: parseFloat(document.getElementById('cfg-flash').value) || 0.8,
+        lures: parseFloat(document.getElementById('cfg-lures').value) || 87.5,
+        durationMode: document.getElementById('cfg-duration-mode').value,
+        trials: parseInt(document.getElementById('cfg-trials').value) || 24,
+        minutes: parseFloat(document.getElementById('cfg-minutes').value) || 5.0,
+        modPos: document.getElementById('cfg-mod-pos').checked,
+        modAudio: document.getElementById('cfg-mod-audio').checked,
+        modRel: document.getElementById('cfg-mod-rel').checked,
+        modImg: document.getElementById('cfg-mod-img').checked,
+        modCol: document.getElementById('cfg-mod-col').checked,
+        modRot: document.getElementById('cfg-mod-rot').checked
+      };
+    }
+
+    function applySettingsObject(s) {
+      document.getElementById('cfg-n-level').value = s.nLevel;
+      document.getElementById('cfg-interval').value = s.interval;
+      document.getElementById('cfg-flash').value = s.flash;
+      document.getElementById('cfg-lures').value = s.lures;
+      document.getElementById('cfg-duration-mode').value = s.durationMode;
+      document.getElementById('cfg-trials').value = s.trials;
+      document.getElementById('cfg-minutes').value = s.minutes;
+      document.getElementById('cfg-mod-pos').checked = s.modPos;
+      document.getElementById('cfg-mod-audio').checked = s.modAudio;
+      document.getElementById('cfg-mod-rel').checked = !!s.modRel;
+      document.getElementById('cfg-mod-img').checked = s.modImg;
+      document.getElementById('cfg-mod-col').checked = s.modCol;
+      document.getElementById('cfg-mod-rot').checked = s.modRot;
+      toggleDurationMode();
+      toggleRelationalBoxVisibility();
+    }
+
+    function applySelectedPreset() {
+      const name = document.getElementById('sel-user-presets').value;
+      if (name === 'default') {
+        applySettingsObject({
+          nLevel: 2, interval: 2.5, flash: 0.8, lures: 87.5,
+          durationMode: 'trials', trials: 24, minutes: 5.0,
+          modPos: true, modAudio: true, modRel: false, modImg: false, modCol: false, modRot: false
+        });
+      } else {
+        const presets = getUserPresets();
+        if (presets[name]) applySettingsObject(presets[name]);
+      }
+    }
+
+    function toggleDurationMode() {
+      const mode = document.getElementById('cfg-duration-mode').value;
+      document.getElementById('row-cfg-trials').style.display = mode === 'trials' ? 'flex' : 'none';
+      document.getElementById('row-cfg-minutes').style.display = mode === 'timed' ? 'flex' : 'none';
+      if (mode === 'timed') recalculateTrialsFromMinutes();
+    }
+
+    function recalculateTrialsFromMinutes() {
+      const mode = document.getElementById('cfg-duration-mode').value;
+      if (mode !== 'timed') return;
+      const mins = parseFloat(document.getElementById('cfg-minutes').value) || 5.0;
+      const interval = parseFloat(document.getElementById('cfg-interval').value) || 2.5;
+      const calculatedTrials = Math.max(10, Math.round((mins * 60) / interval));
+      document.getElementById('cfg-trials').value = calculatedTrials;
+    }
+
+    /* =====================================================================
+       6. PEER CHALLENGES SYSTEM
+       ===================================================================== */
+    function getAllChallenges() {
+      return JSON.parse(localStorage.getItem('steeltrap_peer_challenges') || '[]');
+    }
+
+    function saveAllChallenges(challs) {
+      localStorage.setItem('steeltrap_peer_challenges', JSON.stringify(challs));
+    }
+
+    function populateRecipientDropdown() {
+      const db = getUsersDB();
+      const sel = document.getElementById('sel-challenge-recipient');
+      sel.innerHTML = '';
+      Object.keys(db).forEach(u => {
+        if (u !== activeUser) {
+          const opt = document.createElement('option');
+          opt.value = u; opt.innerText = u.toUpperCase(); sel.appendChild(opt);
+        }
+      });
+      if (sel.options.length === 0) sel.innerHTML = '<option value="">No other registered users</option>';
+    }
+
+    function sendChallengeToUser() {
+      const recipient = document.getElementById('sel-challenge-recipient').value;
+      if (!recipient) { alert("Create or register another user first!"); return; }
+      const choice = document.getElementById('sel-challenge-preset-choice').value;
+      let settings = (choice === 'current') ? getFormSettingsObject() : getUserPresets()[choice];
+      const modeName = (choice === 'current') ? `Challenge from ${activeUser.toUpperCase()}` : choice;
+
+      const chall = {
+        id: 'chall_' + Date.now(),
+        sender: activeUser, recipient: recipient, modeName: modeName, settings: settings,
+        status: 'pending', sentDate: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString(),
+        completedDate: null, results: null
+      };
+
+      const challs = getAllChallenges();
+      challs.push(chall);
+      saveAllChallenges(challs);
+      refreshChallengesList();
+      alert(`Challenge sent to ${recipient.toUpperCase()}!`);
+    }
+
+    let activeChallengeContext = null;
+
+    function refreshChallengesList() {
+      if (!activeUser) return;
+      const challs = getAllChallenges();
+      const incomingDiv = document.getElementById('incoming-challenges-list');
+      const outgoingDiv = document.getElementById('outgoing-challenges-list');
+      const badge = document.getElementById('challenge-badge-count');
+
+      const incoming = challs.filter(c => c.recipient === activeUser);
+      const outgoing = challs.filter(c => c.sender === activeUser);
+
+      const pendingCount = incoming.filter(c => c.status === 'pending').length;
+      badge.innerText = pendingCount;
+      badge.style.color = pendingCount > 0 ? '#ff4444' : '#00ff66';
+
+      incomingDiv.innerHTML = '';
+      if (incoming.length === 0) incomingDiv.innerHTML = '<div style="color:#666; font-size:11px;">No incoming challenges.</div>';
+      else {
+        incoming.forEach(c => {
+          const card = document.createElement('div');
+          card.className = `challenge-card ${c.status}`;
+          card.innerHTML = `
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <strong style="color:#ffff00; font-size:12px;">FROM: ${c.sender.toUpperCase()} - "${c.modeName}"</strong>
+              <span style="font-size:10px; color:${c.status==='pending'?'#ffaa00':'#00ff66'};">${c.status.toUpperCase()}</span>
+            </div>
+            <div style="font-size:11px; color:#aaa; margin:4px 0;">
+              N=${c.settings.nLevel} | Interval: ${c.settings.interval}s | Lures: ${c.settings.lures}% | Trials: ${c.settings.trials}
+            </div>
+            ${c.status === 'pending' ? `<button class="btn-action" style="background:#006622; color:#fff;" onclick="acceptAndPlayChallenge('${c.id}')">ACCEPT & PLAY</button>` : `<div style="color:#00ffaa; font-size:11px;">Completed! Score: ${c.results.acc} | g-Rating: ${c.results.gRating}</div>`}
+          `;
+          incomingDiv.appendChild(card);
+        });
+      }
+
+      outgoingDiv.innerHTML = '';
+      if (outgoing.length === 0) outgoingDiv.innerHTML = '<div style="color:#666; font-size:11px;">No outgoing challenges.</div>';
+      else {
+        outgoing.forEach(c => {
+          const card = document.createElement('div');
+          card.className = `challenge-card ${c.status}`;
+          card.innerHTML = `
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <strong style="color:#00aaff; font-size:12px;">SENT TO: ${c.recipient.toUpperCase()} - "${c.modeName}"</strong>
+              <span style="font-size:10px; color:${c.status==='pending'?'#ffaa00':'#00ff66'};">${c.status.toUpperCase()}</span>
+            </div>
+            ${c.status === 'completed' ? `<div style="background:#001a00; border:1px solid #00aa33; padding:6px; margin-top:4px; font-size:11px;"><span style="color:#00ff66; font-weight:bold;">RETURNED FEEDBACK:</span> Accuracy: ${c.results.acc} | g-Rating: ${c.results.gRating}</div>` : `<div style="font-size:11px; color:#ffaa00; margin-top:3px;">Awaiting response...</div>`}
+          `;
+          outgoingDiv.appendChild(card);
+        });
+      }
+    }
+
+    function acceptAndPlayChallenge(challId) {
+      const c = getAllChallenges().find(x => x.id === challId);
+      if (!c) return;
+      activeChallengeContext = c;
+      applySettingsObject(c.settings);
+      switchNav('arena');
+      document.getElementById('active-challenge-banner').style.display = 'block';
+      document.getElementById('chall-sender-display').innerText = `Challenge from ${c.sender.toUpperCase()}`;
+    }
+
+    /* =====================================================================
+       7. REBINDABLE KEYBOARD & GAMEPAD ENGINE
+       ===================================================================== */
+    const DEFAULT_BINDS = {
+      pos:   { label: "Position Match",   key: "a", keyName: "A", padBtn: 2, padName: "X / Square" },
+      audio: { label: "Audio Match",      key: "l", keyName: "L", padBtn: 1, padName: "B / Circle" },
+      rel:   { label: "Relation Match",   key: "w", keyName: "W", padBtn: 4, padName: "LB / L1" },
+      img:   { label: "Image Match",      key: "s", keyName: "S", padBtn: 3, padName: "Y / Triangle" },
+      col:   { label: "Color Match",      key: "d", keyName: "D", padBtn: 0, padName: "A / Cross" },
+      rot:   { label: "Rotation Match",   key: "r", keyName: "R", padBtn: 5, padName: "RB / R1" }
+    };
+    let userBinds = JSON.parse(JSON.stringify(DEFAULT_BINDS));
+    let listeningAction = null;
+
+    function loadUserKeybinds() {
+      if (!activeUser) return;
+      const saved = localStorage.getItem(`steeltrap_binds_${activeUser}`);
+      userBinds = saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(DEFAULT_BINDS));
+      updateKeyHints();
+      renderRebindTable();
+    }
+
+    function saveUserKeybinds() {
+      if (!activeUser) return;
+      localStorage.setItem(`steeltrap_binds_${activeUser}`, JSON.stringify(userBinds));
+      updateKeyHints();
+      renderRebindTable();
+    }
+
+    function updateKeyHints() {
+      document.getElementById('hint-key-pos').innerText = `[ Key: ${userBinds.pos.keyName} | Pad: ${userBinds.pos.padName} ]`;
+      document.getElementById('hint-key-audio').innerText = `[ Key: ${userBinds.audio.keyName} | Pad: ${userBinds.audio.padName} ]`;
+      document.getElementById('hint-key-rel').innerText = `[ Key: ${userBinds.rel.keyName} | Pad: ${userBinds.rel.padName} ]`;
+      document.getElementById('hint-key-img').innerText = `[ Key: ${userBinds.img.keyName} | Pad: ${userBinds.img.padName} ]`;
+      document.getElementById('hint-key-col').innerText = `[ Key: ${userBinds.col.keyName} | Pad: ${userBinds.col.padName} ]`;
+      document.getElementById('hint-key-rot').innerText = `[ Key: ${userBinds.rot.keyName} | Pad: ${userBinds.rot.padName} ]`;
+    }
+
+    function renderRebindTable() {
+      const tbody = document.getElementById('rebind-tbody');
+      tbody.innerHTML = '';
+      Object.keys(userBinds).forEach(act => {
+        const b = userBinds[act];
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${b.label}</strong></td>
+          <td style="color:#00ffaa;">Key: ${b.keyName}</td>
+          <td style="color:#ffaa00;">Gamepad: ${b.padName}</td>
+          <td><button class="btn-rebind" id="btn-rebind-${act}" onclick="startRebind('${act}')">Rebind</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function startRebind(act) {
+      listeningAction = act;
+      renderRebindTable();
+      const btn = document.getElementById(`btn-rebind-${act}`);
+      if (btn) { btn.classList.add('recording'); btn.innerText = "PRESS KEY OR PAD..."; }
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'Space' && !listeningAction && activeUser && isArenaVisible()) {
+        e.preventDefault(); toggleGame(); return;
+      }
+      if (listeningAction) {
+        e.preventDefault();
+        userBinds[listeningAction].key = e.key.toLowerCase();
+        userBinds[listeningAction].keyName = e.key.toUpperCase();
+        listeningAction = null; saveUserKeybinds(); return;
+      }
+      if (!isRunning) return;
+      const k = e.key.toLowerCase();
+      Object.keys(userBinds).forEach(act => {
+        if (userBinds[act].key === k) registerPlayerInput(act);
+      });
+    });
+
+    function isArenaVisible() {
+      return document.getElementById('sec-arena').style.display !== 'none';
+    }
+
+    let prevPadButtons = [];
+    window.addEventListener("gamepadconnected", (e) => {
+      const b = document.getElementById('controller-status');
+      b.className = "controller-badge connected";
+      b.innerText = `GAMEPAD: ${e.gamepad.id.substring(0, 16)}...`;
+    });
+    window.addEventListener("gamepaddisconnected", () => {
+      const b = document.getElementById('controller-status');
+      b.className = "controller-badge disconnected";
+      b.innerText = "GAMEPAD: NONE";
+    });
+
+    function pollGamepad() {
+      const gps = navigator.getGamepads ? navigator.getGamepads() : [];
+      if (gps && gps[0]) {
+        const gp = gps[0];
+        const dbg = document.getElementById('gamepad-debug');
+        if (dbg) {
+          const pressedIdxs = gp.buttons.map((b, i) => b.pressed ? i : null).filter(x => x !== null);
+          dbg.innerText = `Detected [${gp.id}]. Pressed: ${pressedIdxs.join(', ') || 'None'}`;
+        }
+        gp.buttons.forEach((btn, idx) => {
+          const was = prevPadButtons[idx];
+          if (btn.pressed && !was) {
+            if (listeningAction) {
+              userBinds[listeningAction].padBtn = idx;
+              userBinds[listeningAction].padName = `Button ${idx}`;
+              listeningAction = null; saveUserKeybinds();
+            } else if (isRunning) {
+              Object.keys(userBinds).forEach(act => {
+                if (userBinds[act].padBtn === idx) registerPlayerInput(act);
+              });
+            }
+          }
+          prevPadButtons[idx] = btn.pressed;
+        });
+      }
+      requestAnimationFrame(pollGamepad);
+    }
+    requestAnimationFrame(pollGamepad);
+
+    /* =====================================================================
+       8. NAVIGATION TABS
+       ===================================================================== */
+    function switchNav(id) {
+      ['profile', 'goals', 'arena', 'challenges', 'controls', 'brain', 'scores'].forEach(s => {
+        document.getElementById(`sec-${s}`).style.display = (s === id) ? 'block' : 'none';
+        document.getElementById(`tabbtn-${s}`).className = (s === id) ? 'nav-tab-btn active' : 'nav-tab-btn';
+      });
+      if (id === 'profile') refreshLivingBrainProfile();
+      if (id === 'goals') renderUserGoalsList();
+      if (id === 'scores') renderScoresheet();
+      if (id === 'challenges') refreshChallengesList();
+    }
+
+    /* =====================================================================
+       9. BRAIN WORKSHOP CORE ENGINE WITH RELATIONAL WORD REASONING
+       ===================================================================== */
+    const AUDIO_LETTERS = ['C', 'H', 'K', 'L', 'Q', 'R', 'S', 'T'];
+    const IMAGE_SVGS = [
+      `<svg viewBox="0 0 100 100" style="width:60px;height:60px;"><polygon points="50,10 90,90 10,90" fill="#00ffcc"/></svg>`,
+      `<svg viewBox="0 0 100 100" style="width:60px;height:60px;"><circle cx="50" cy="50" r="40" fill="#ff0066"/></svg>`,
+      `<svg viewBox="0 0 100 100" style="width:60px;height:60px;"><rect x="15" y="15" width="70" height="70" fill="#ffcc00"/></svg>`,
+      `<svg viewBox="0 0 100 100" style="width:60px;height:60px;"><polygon points="50,5 64,36 98,36 70,57 81,91 50,70 19,91 30,57 2,36 36,36" fill="#aa00ff"/></svg>`
+    ];
+    const COLORS = ['#0000aa', '#aa0000', '#00aa00', '#aaaa00', '#aa00aa', '#00aaaa'];
+    const ROTATION_SHAPES = [
+      `<svg viewBox="0 0 100 100" style="width:60px;height:60px;"><polygon points="20,80 20,20 50,20 50,50 80,50 80,80" fill="#ffaa00"/></svg>`,
+      `<svg viewBox="0 0 100 100" style="width:60px;height:60px;"><polygon points="30,85 30,15 70,15 70,40 50,40 50,85" fill="#00aaff"/></svg>`
+    ];
+
+    let isRunning = false;
+    let nLevel = 2;
+    let trialInterval = 2.5;
+    let flashDuration = 0.8;
+    let totalTrials = 24;
+    let lureRate = 87.5;
+    let currentTrial = -1;
+    let sequence = [];
+    let timerId = null;
+    let flashTimerId = null;
+    let countdownIntervalId = null;
+    let sessionRemainingSeconds = 0;
+    let sessionStartTime = null;
+
+    let userInputs = { pos: false, audio: false, rel: false, img: false, col: false, rot: false };
+    let sessionLogs = [];
+
+    document.getElementById('btn-input-pos').addEventListener('click', () => registerPlayerInput('pos'));
+    document.getElementById('btn-input-audio').addEventListener('click', () => registerPlayerInput('audio'));
+    document.getElementById('btn-input-rel').addEventListener('click', () => registerPlayerInput('rel'));
+    document.getElementById('btn-input-img').addEventListener('click', () => registerPlayerInput('img'));
+    document.getElementById('btn-input-col').addEventListener('click', () => registerPlayerInput('col'));
+    document.getElementById('btn-input-rot').addEventListener('click', () => registerPlayerInput('rot'));
+
+    function registerPlayerInput(act) {
+      if (!isRunning || currentTrial < nLevel) return;
+      userInputs[act] = true;
+      const btn = document.getElementById(`btn-input-${act}`);
+      if (btn) {
+        btn.classList.add('pressed');
+        setTimeout(() => btn.classList.remove('pressed'), 200);
+      }
+    }
+
+    function toggleGame() {
+      if (isRunning) abortGame();
+      else startGame();
+    }
+
+    function startGame() {
+      nLevel = parseInt(document.getElementById('cfg-n-level').value) || 2;
+      trialInterval = parseFloat(document.getElementById('cfg-interval').value) || 2.5;
+      flashDuration = parseFloat(document.getElementById('cfg-flash').value) || 0.8;
+      lureRate = parseFloat(document.getElementById('cfg-lures').value) || 87.5;
+
+      const durationMode = document.getElementById('cfg-duration-mode').value;
+      if (durationMode === 'timed') recalculateTrialsFromMinutes();
+      totalTrials = parseInt(document.getElementById('cfg-trials').value) || 24;
+
+      const mods = ['pos', 'audio', 'rel', 'img', 'col', 'rot'].filter(m => document.getElementById(`cfg-mod-${m}`).checked);
+      if (mods.length === 0) { alert("Select at least one active modality."); return; }
+
+      isRunning = true;
+      currentTrial = -1;
+      sessionLogs = [];
+      sessionStartTime = new Date();
+      sequence = generateBWSequence(mods);
+
+      toggleRelationalBoxVisibility();
+
+      sessionRemainingSeconds = Math.round(totalTrials * trialInterval);
+      updateTimerDisplay();
+      if (countdownIntervalId) clearInterval(countdownIntervalId);
+      countdownIntervalId = setInterval(() => {
+        sessionRemainingSeconds--;
+        updateTimerDisplay();
+        if (sessionRemainingSeconds <= 0) clearInterval(countdownIntervalId);
+      }, 1000);
+
+      document.getElementById('btn-start-game').innerText = "ABORT SESSION [Space]";
+      document.getElementById('btn-start-game').style.background = "#880000";
+      document.getElementById('hud-status').innerText = "RUNNING";
+      document.getElementById('hud-status').style.color = "#ffff00";
+      document.getElementById('hud-total').innerText = totalTrials;
+
+      nextTrial();
+    }
+
+    function updateTimerDisplay() {
+      const m = Math.floor(Math.max(0, sessionRemainingSeconds) / 60);
+      const s = Math.max(0, sessionRemainingSeconds) % 60;
+      document.getElementById('hud-timer').innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
+    }
+
+    function abortGame() {
+      clearTimeout(timerId);
+      clearTimeout(flashTimerId);
+      clearInterval(countdownIntervalId);
+      clearCellDisplays();
+      isRunning = false;
+      document.getElementById('btn-start-game').innerText = "START SESSION [Space]";
+      document.getElementById('btn-start-game').style.background = "#006622";
+      document.getElementById('hud-status').innerText = "ABORTED";
+      document.getElementById('hud-status').style.color = "#ff4444";
+      document.getElementById('active-challenge-banner').style.display = 'none';
+      document.getElementById('relational-word-box').style.display = 'none';
+      activeChallengeContext = null;
+    }
+
+    function generateBWSequence(activeMods) {
+      const seq = [];
+      const targetCount = Math.floor(totalTrials * 0.30);
+
+      for (let i = 0; i < totalTrials; i++) {
+        // Pick random relational category and word pair
+        const catIdx = Math.floor(Math.random() * RELATIONAL_CATEGORIES.length);
+        const cat = RELATIONAL_CATEGORIES[catIdx];
+        const pair = cat.pairs[Math.floor(Math.random() * cat.pairs.length)];
+
+        seq.push({
+          pos: Math.floor(Math.random() * 9),
+          audio: Math.floor(Math.random() * AUDIO_LETTERS.length),
+          relCategory: catIdx,
+          relPair: pair,
+          img: Math.floor(Math.random() * IMAGE_SVGS.length),
+          col: COLORS[Math.floor(Math.random() * COLORS.length)],
+          rotShape: Math.floor(Math.random() * ROTATION_SHAPES.length),
+          rotAngle: [0, 90, 180, 270][Math.floor(Math.random() * 4)],
+          isTarget: {},
+          isLure: {}
+        });
+      }
+
+      activeMods.forEach(mod => {
+        let placed = 0;
+        let attempts = 0;
+        while (placed < targetCount && attempts < 250) {
+          attempts++;
+          const idx = nLevel + Math.floor(Math.random() * (totalTrials - nLevel));
+          if (!seq[idx].isTarget[mod]) {
+            if (mod === 'rot') {
+              seq[idx].rotShape = seq[idx - nLevel].rotShape;
+              seq[idx].rotAngle = [0, 90, 180, 270][Math.floor(Math.random() * 4)];
+            } else if (mod === 'rel') {
+              // Same underlying relational rule/category, but distinct exemplar word pair to test pure analogy!
+              const targetCat = seq[idx - nLevel].relCategory;
+              seq[idx].relCategory = targetCat;
+              const catObj = RELATIONAL_CATEGORIES[targetCat];
+              seq[idx].relPair = catObj.pairs[Math.floor(Math.random() * catObj.pairs.length)];
+            } else {
+              seq[idx][mod] = seq[idx - nLevel][mod];
+            }
+            seq[idx].isTarget[mod] = true;
+            placed++;
+          }
+        }
+
+        const prob = lureRate / 100;
+        for (let i = nLevel + 1; i < totalTrials; i++) {
+          if (!seq[i].isTarget[mod] && Math.random() < prob) {
+            const offset = (Math.random() > 0.5 && i >= nLevel + 1) ? (nLevel - 1) : (nLevel + 1);
+            if (i - offset >= 0 && i - offset < totalTrials) {
+              if (mod === 'rot') {
+                seq[i].rotShape = seq[i - offset].rotShape;
+                if (seq[i].rotShape !== seq[i - nLevel].rotShape) seq[i].isLure[mod] = true;
+              } else if (mod === 'rel') {
+                seq[i].relCategory = seq[i - offset].relCategory;
+                if (seq[i].relCategory !== seq[i - nLevel].relCategory) seq[i].isLure[mod] = true;
+              } else {
+                seq[i][mod] = seq[i - offset][mod];
+                if (seq[i][mod] !== seq[i - nLevel][mod]) seq[i].isLure[mod] = true;
+              }
+            }
+          }
+        }
+      });
+      return seq;
+    }
+
+    function nextTrial() {
+      if (currentTrial >= 0) evaluateTrial(currentTrial);
+      currentTrial++;
+      document.getElementById('hud-trial').innerText = currentTrial + 1;
+
+      if (currentTrial >= totalTrials) {
+        finishGame(); return;
+      }
+
+      userInputs = { pos: false, audio: false, rel: false, img: false, col: false, rot: false };
+      clearCellDisplays();
+      renderTrialStimuli(sequence[currentTrial]);
+
+      flashTimerId = setTimeout(clearCellDisplays, flashDuration * 1000);
+      timerId = setTimeout(nextTrial, trialInterval * 1000);
+    }
+
+    function renderTrialStimuli(item) {
+      const usePos = document.getElementById('cfg-mod-pos').checked;
+      const useAudio = document.getElementById('cfg-mod-audio').checked;
+      const useRel = document.getElementById('cfg-mod-rel').checked;
+      const useImg = document.getElementById('cfg-mod-img').checked;
+      const useCol = document.getElementById('cfg-mod-col').checked;
+      const useRot = document.getElementById('cfg-mod-rot').checked;
+
+      const cellIdx = usePos ? item.pos : 4;
+      const cell = document.querySelector(`.bw-cell[data-idx="${cellIdx}"]`);
+
+      if (useCol) cell.style.backgroundColor = item.col;
+      else cell.classList.add('active-pos');
+
+      if (useRot) cell.innerHTML = `<div style="transform:rotate(${item.rotAngle}deg);">${ROTATION_SHAPES[item.rotShape]}</div>`;
+      else if (useImg) cell.innerHTML = IMAGE_SVGS[item.img];
+
+      if (useRel) {
+        const box = document.getElementById('relational-word-box');
+        box.style.display = 'block';
+        document.getElementById('relational-word-display').innerText = `${item.relPair[0]} : ${item.relPair[1]}`;
+        document.getElementById('relational-type-hint').innerText = "Identify latent relational rule (match N steps back)";
+      }
+
+      if (useAudio && 'speechSynthesis' in window) {
+        const u = new SpeechSynthesisUtterance(AUDIO_LETTERS[item.audio]);
+        u.rate = 1.3; window.speechSynthesis.speak(u);
+      }
+    }
+
+    function clearCellDisplays() {
+      document.querySelectorAll('.bw-cell').forEach(c => {
+        c.innerHTML = ''; c.style.backgroundColor = ''; c.classList.remove('active-pos');
+      });
+      const useRel = document.getElementById('cfg-mod-rel').checked;
+      if (useRel) {
+        document.getElementById('relational-word-display').innerText = "--- : ---";
+      }
+    }
+
+    function evaluateTrial(idx) {
+      if (idx < nLevel) return;
+      const curr = sequence[idx];
+      const prev = sequence[idx - nLevel];
+
+      const mods = [
+        { key: 'pos', active: document.getElementById('cfg-mod-pos').checked, match: curr.pos === prev.pos },
+        { key: 'audio', active: document.getElementById('cfg-mod-audio').checked, match: curr.audio === prev.audio },
+        { key: 'rel', active: document.getElementById('cfg-mod-rel').checked, match: curr.relCategory === prev.relCategory },
+        { key: 'img', active: document.getElementById('cfg-mod-img').checked, match: curr.img === prev.img },
+        { key: 'col', active: document.getElementById('cfg-mod-col').checked, match: curr.col === prev.col },
+        { key: 'rot', active: document.getElementById('cfg-mod-rot').checked, match: curr.rotShape === prev.rotShape }
+      ];
+
+      mods.forEach(m => {
+        if (!m.active) return;
+        const claimed = userInputs[m.key];
+        let res = (m.match && claimed) ? 'HIT' : ((m.match && !claimed) ? 'MISS' : ((!m.match && claimed) ? 'FA' : 'CR'));
+        sessionLogs.push({ trial: idx + 1, mod: m.key, res: res });
+      });
+    }
+
+    function finishGame() {
+      isRunning = false;
+      clearTimeout(timerId); clearTimeout(flashTimerId); clearInterval(countdownIntervalId);
+      clearCellDisplays();
+
+      document.getElementById('btn-start-game').innerText = "START SESSION [Space]";
+      document.getElementById('btn-start-game').style.background = "#006622";
+      document.getElementById('hud-status').innerText = "COMPLETED";
+
+      const modStats = {};
+      let totalHits = 0, totalMisses = 0, totalFA = 0, totalCR = 0;
+
+      ['pos', 'audio', 'rel', 'img', 'col', 'rot'].forEach(m => {
+        const entries = sessionLogs.filter(l => l.mod === m);
+        if (entries.length === 0) { modStats[m] = null; return; }
+        let h = 0, mis = 0, fa = 0, cr = 0;
+        entries.forEach(e => {
+          if (e.res === 'HIT') h++; else if (e.res === 'MISS') mis++;
+          else if (e.res === 'FA') fa++; else if (e.res === 'CR') cr++;
+        });
+        totalHits += h; totalMisses += mis; totalFA += fa; totalCR += cr;
+        const sig = h + mis, noi = fa + cr;
+        modStats[m] = {
+          posRate: sig > 0 ? ((h / sig) * 100).toFixed(1) : '0.0',
+          negRate: noi > 0 ? ((fa / noi) * 100).toFixed(1) : '0.0',
+          acc: (sig + noi) > 0 ? (((h + cr) / (sig + noi)) * 100).toFixed(1) : '0.0'
+        };
+      });
+
+      const grandTotal = totalHits + totalMisses + totalFA + totalCR;
+      const overallAcc = grandTotal > 0 ? (((totalHits + totalCR) / grandTotal) * 100).toFixed(1) : '0.0';
+      const activeCount = Object.values(modStats).filter(Boolean).length;
+      let gScore = (nLevel * 22) + (activeCount * 12) + (parseFloat(overallAcc) * 0.45) + (lureRate * 0.18) - (trialInterval * 3.5);
+      gScore = Math.max(70, Math.min(160, Math.round(gScore)));
+
+      const durationStr = document.getElementById('cfg-duration-mode').value === 'timed' 
+        ? `${document.getElementById('cfg-minutes').value}m` : `${totalTrials}t`;
+
+      const record = {
+        date: new Date().toLocaleDateString(), time: new Date().toLocaleTimeString(),
+        nLevel: nLevel, interval: trialInterval.toFixed(1) + 's', duration: durationStr,
+        lures: lureRate.toFixed(1) + '%', acc: overallAcc + '%', gRating: gScore,
+        modStats: modStats, sleep: document.getElementById('cfg-log-sleep').value,
+        energy: document.getElementById('cfg-log-energy').value,
+        chamber: document.getElementById('cfg-log-chamber').checked ? `${document.getElementById('cfg-log-hours').value}h` : 'No',
+        diet: document.getElementById('cfg-log-diet').value || 'Standard'
+      };
+
+      const key = `steeltrap_records_${activeUser}`;
+      const history = JSON.parse(localStorage.getItem(key) || '[]');
+      history.push(record);
+      localStorage.setItem(key, JSON.stringify(history));
+
+      refreshLivingBrainProfile();
+
+      if (activeChallengeContext) {
+        const challs = getAllChallenges();
+        const found = challs.find(x => x.id === activeChallengeContext.id);
+        if (found) {
+          found.status = 'completed';
+          found.completedDate = new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString();
+          found.results = {
+            acc: overallAcc + '%', gRating: gScore,
+            posAcc: modStats.pos ? modStats.pos.acc + '%' : 'Off',
+            audioAcc: modStats.audio ? modStats.audio.acc + '%' : 'Off',
+            relAcc: modStats.rel ? modStats.rel.acc + '%' : 'Off',
+            imgAcc: modStats.img ? modStats.img.acc + '%' : 'Off',
+            colAcc: modStats.col ? modStats.col.acc + '%' : 'Off',
+            rotAcc: modStats.rot ? modStats.rot.acc + '%' : 'Off'
+          };
+          saveAllChallenges(challs);
+        }
+        alert(`⚔️ CHALLENGE COMPLETED!
+Feedback returned to ${activeChallengeContext.sender.toUpperCase()}!
+Accuracy: ${overallAcc}%
+g-Rating: ${gScore}`);
+        document.getElementById('active-challenge-banner').style.display = 'none';
+        activeChallengeContext = null;
+        refreshChallengesList();
+      } else {
+        alert(`Session Finished!
+Accuracy: ${overallAcc}%
+g-Rating: ${gScore}
+Living Brain Profile updated!`);
+      }
+    }
+
+    /* =====================================================================
+       10. SCORESHEET TABLE & CSV EXPORT
+       ===================================================================== */
+    function renderScoresheet() {
+      if (!activeUser) return;
+      const history = JSON.parse(localStorage.getItem(`steeltrap_records_${activeUser}`) || '[]');
+      const tbody = document.getElementById('scores-tbody');
+      tbody.innerHTML = '';
+      if (history.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="16" style="text-align:center; color:#666; padding:12px;">No sessions logged yet for this user profile.</td></tr>';
+        return;
+      }
+
+      function fmt(m) {
+        if (!m) return '<span style="color:#444;">--</span>';
+        return `<span style="color:#00ffaa;">${m.acc}</span> <span style="color:#777; font-size:10px;">(+${m.posRate}/-${m.negRate})</span>`;
+      }
+
+      history.slice().reverse().forEach(r => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${r.date} ${r.time}</td>
+          <td style="color:#ffff00; font-weight:bold;">${r.nLevel}-Back</td>
+          <td>${r.interval}</td>
+          <td style="color:#00aaff;">${r.duration || '--'}</td>
+          <td style="color:#ffaa00;">${r.lures}</td>
+          <td style="color:#00ff66; font-weight:bold;">${r.acc}</td>
+          <td style="color:#fff; font-weight:bold;">${r.gRating}</td>
+          <td>${fmt(r.modStats.pos)}</td>
+          <td>${fmt(r.modStats.audio)}</td>
+          <td>${fmt(r.modStats.rel)}</td>
+          <td>${fmt(r.modStats.img)}</td>
+          <td>${fmt(r.modStats.col)}</td>
+          <td>${fmt(r.modStats.rot)}</td>
+          <td>${r.sleep}/10</td>
+          <td style="color:#00aaff;">${r.chamber}</td>
+          <td style="color:#aaa;">${r.diet}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function clearUserScores() {
+      if (!activeUser) return;
+      if (confirm(`Clear all saved sessions for user ${activeUser}?`)) {
+        localStorage.removeItem(`steeltrap_records_${activeUser}`);
+        renderScoresheet();
+        refreshLivingBrainProfile();
+      }
+    }
+
+    function exportUserCSV() {
+      if (!activeUser) return;
+      const history = JSON.parse(localStorage.getItem(`steeltrap_records_${activeUser}`) || '[]');
+      if (history.length === 0) { alert("No records to export."); return; }
+
+      const headers = ["User", "Date", "Time", "N-Level", "Interval", "Duration", "Lure %", "Accuracy", "g-Rating", "Position Acc", "Audio Acc", "Relation Acc", "Image Acc", "Color Acc", "Rotation Acc", "Sleep", "Chamber", "Diet"];
+      const rows = history.map(r => [
+        `"${activeUser}"`, `"${r.date}"`, `"${r.time}"`, `"${r.nLevel}"`, `"${r.interval}"`, `"${r.duration || 'N/A'}"`, `"${r.lures}"`, `"${r.acc}"`, `"${r.gRating}"`,
+        `"${r.modStats.pos ? r.modStats.pos.acc : 'N/A'}"`,
+        `"${r.modStats.audio ? r.modStats.audio.acc : 'N/A'}"`,
+        `"${r.modStats.rel ? r.modStats.rel.acc : 'N/A'}"`,
+        `"${r.modStats.img ? r.modStats.img.acc : 'N/A'}"`,
+        `"${r.modStats.col ? r.modStats.col.acc : 'N/A'}"`,
+        `"${r.modStats.rot ? r.modStats.rot.acc : 'N/A'}"`,
+        `"${r.sleep}"`, `"${r.chamber}"`, `"${r.diet}"`
+      ]);
+
+      const csvContent = "data:text/csv;charset=utf-8," + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement('a');
+      link.setAttribute('href', encodedUri);
+      link.setAttribute('download', `steel_trap_${activeUser}_records.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  </script>
+</body>
+</html>

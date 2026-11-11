@@ -384,6 +384,46 @@
     body.focus-zoom-active .relational-stimulus-box { width: 470px !important; padding: 12px 20px !important; }
     body.focus-zoom-active .relational-pair { font-size: 22px !important; }
     body.focus-zoom-active .bw-match-btn { min-width: 180px !important; padding: 14px 20px !important; font-size: 14px !important; }
+
+    /* ===== ITERATION 2: BRAIN COMPONENT (shared anatomy + profile) ===== */
+    .brain3-wrap { position: relative; user-select: none; -webkit-user-select: none; }
+    .brain3-svgbox { cursor: grab; touch-action: none; }
+    .brain3-svgbox:active { cursor: grabbing; }
+    .brain3-region { cursor: pointer; stroke: #0b0f16; stroke-width: 1.2; transition: fill .35s ease, opacity .45s ease; }
+    .brain3-region:hover { stroke: #ffffff; stroke-width: 2; }
+    .brain3-selected { stroke: #ffffff !important; stroke-width: 2.6 !important; }
+    .brain3-surface-g { transition: opacity .5s ease, transform .5s ease; }
+    .brain3-deep-g { opacity: 0; pointer-events: none; transition: opacity .5s ease; }
+    .brain3-deep-g.brain3-deep-native { opacity: 1 !important; pointer-events: auto !important; }
+    .peeled .brain3-surface-g { opacity: .13; transform: translate(-7px, -5px); pointer-events: none; }
+    .peeled .brain3-deep-g { opacity: 1; pointer-events: auto; }
+    @keyframes brain3pulse { 0%,100% { stroke: #ff4dff; stroke-width: 2px; } 50% { stroke: #ffffff; stroke-width: 3.6px; } }
+    .brain3-untrained { animation: brain3pulse 1.1s ease-in-out infinite; stroke-dasharray: 6 3; }
+    .brain3-grouphl { stroke: #ffd700 !important; stroke-width: 2.8 !important; }
+    .brain3-label { fill: #d7e6ff; font-size: 10px; font-family: monospace; pointer-events: none; text-anchor: middle; paint-order: stroke; stroke: rgba(0,0,0,.65); stroke-width: 2.5; }
+    .brain3-callout { min-height: 36px; background: #0a101c; border: 1px solid #22334d; padding: 6px 10px; font-size: 11px; color: #cfe3ff; margin-bottom: 8px; text-align: left; line-height: 1.6; }
+    .brain3-beneath-btn { background: #13233c; color: #7dd3fc; border: 1px solid #2563eb; padding: 1px 7px; margin: 2px 3px 0 0; cursor: pointer; font-size: 11px; font-family: inherit; }
+    .brain3-beneath-btn:hover { background: #1d3a5f; color: #fff; }
+    .brain3-ctl-btn { background: #101623; color: #9fc3ff; border: 1px solid #2b3c5c; padding: 3px 10px; cursor: pointer; font-size: 12px; font-family: inherit; }
+    .brain3-ctl-btn:hover { background: #1a2740; color: #fff; }
+    .brain3-ctl-btn.on { background: #3b2f05; color: #ffd700; border-color: #a3800a; }
+    .brain3-chip { background: #0d1522; color: #8fb8dd; border: 1px solid #274058; padding: 2px 9px; cursor: pointer; font-size: 11px; font-family: inherit; border-radius: 10px; }
+    .brain3-chip.on { background: #3b2f05; color: #ffd700; border-color: #a3800a; }
+    .profile-filter-btn.on { background: #005522 !important; color: #aaffcc !important; border-color: #00aa44 !important; }
+
+    /* ===== ITERATION 2: FOCUS STAGE 2 (grid-only true fullscreen) ===== */
+    body.focus-grid-only .bw-button-row,
+    body.focus-grid-only .bw-hud,
+    body.focus-grid-only #arena-live-metrics-bar,
+    body.focus-grid-only #btn-start-game,
+    body.focus-grid-only #btn-end-early,
+    body.focus-grid-only #sec-arena > div:first-child { display: none !important; }
+    body.focus-grid-only .bw-grid {
+      grid-template-columns: repeat(3, min(29vmin, 250px)) !important;
+      grid-template-rows: repeat(3, min(29vmin, 250px)) !important;
+      gap: 10px !important; border-width: 4px !important;
+    }
+    #srot-display { margin-top: 10px; text-align: center; }
   </style>
 </head>
 <body>
@@ -554,33 +594,18 @@
       <div style="display:grid; grid-template-columns: 1.1fr 1fr; gap:16px;">
         <!-- Interactive Vector Brain Canvas -->
         <div style="border:1px solid #333; background:#000; padding:12px; text-align:center;">
-          <svg viewBox="0 0 500 400" style="width: 100%; max-height: 380px;" id="profile-brain-svg">
-            <path d="M 120 280 C 70 260 50 200 60 140 C 70 80 140 40 240 40 C 340 40 420 80 440 160 C 450 210 430 270 380 300 C 350 320 320 320 290 310 C 270 340 220 360 170 350 C 130 340 120 300 120 280 Z" fill="#151a24" stroke="#334466" stroke-width="2"/>
-            
-            <path id="ppath-dlpfc" class="brain-region-path" data-region="dlpfc" d="M 80 150 C 70 190 90 240 140 260 C 170 230 180 170 180 120 C 140 100 100 120 80 150 Z" fill="#2255aa" stroke="#4488ff" stroke-width="1.5"/>
-            <text x="105" y="180" fill="#ffffff" font-size="11" font-family="monospace">dlPFC</text>
-
-            <path id="ppath-rlpfc" class="brain-region-path" data-region="rlpfc" d="M 60 120 C 50 150 70 190 100 170 C 100 130 90 100 60 120 Z" fill="#6366f1" stroke="#a5b4fc" stroke-width="1.5"/>
-            <text x="65" y="145" fill="#ffffff" font-size="9" font-family="monospace">rlPFC</text>
-
-            <path id="ppath-acc" class="brain-region-path" data-region="acc" d="M 175 140 C 180 180 210 200 240 190 C 240 160 220 130 190 130 Z" fill="#aa6600" stroke="#ffaa00" stroke-width="1.5"/>
-            <text x="195" y="165" fill="#ffffff" font-size="10" font-family="monospace">ACC</text>
-
-            <path id="ppath-hippocampus" class="brain-region-path" data-region="hippocampus" d="M 210 240 C 220 210 260 210 280 230 C 290 260 250 280 220 270 Z" fill="#008855" stroke="#00ff99" stroke-width="1.5"/>
-            <text x="225" y="248" fill="#ffffff" font-size="10" font-family="monospace">HIPPO</text>
-
-            <path id="ppath-parietal" class="brain-region-path" data-region="parietal" d="M 250 70 C 310 70 360 100 370 150 C 320 160 270 140 250 110 Z" fill="#8822aa" stroke="#cc44ff" stroke-width="1.5"/>
-            <text x="290" y="115" fill="#ffffff" font-size="11" font-family="monospace">PARIETAL</text>
-
-            <path id="ppath-auditory" class="brain-region-path" data-region="auditory" d="M 200 200 C 240 190 280 200 290 230 C 260 250 210 240 200 200 Z" fill="#006699" stroke="#33aaff" stroke-width="1.5"/>
-            <text x="220" y="218" fill="#ffffff" font-size="10" font-family="monospace">AUDITORY</text>
-
-            <path id="ppath-occipital" class="brain-region-path" data-region="occipital" d="M 380 170 C 430 180 440 240 400 280 C 370 250 360 200 380 170 Z" fill="#aa2222" stroke="#ff5555" stroke-width="1.5"/>
-            <text x="385" y="230" fill="#ffffff" font-size="10" font-family="monospace">VISUAL</text>
-
-            <path id="ppath-cerebellum" class="brain-region-path" data-region="cerebellum" d="M 310 300 C 360 300 380 340 340 370 C 300 380 280 340 310 300 Z" fill="#334444" stroke="#668888" stroke-width="1.5"/>
-            <text x="310" y="340" fill="#ffffff" font-size="10" font-family="monospace">CEREBELLUM</text>
-          </svg>
+          <div id="profile-brain-mount"></div>
+          <div style="display:flex; gap:6px; flex-wrap:wrap; justify-content:center; margin-top:10px;" id="profile-filter-row">
+            <button class="btn-action profile-filter-btn on" data-pfilter="general" onclick="setProfileFilter('general')">GENERAL</button>
+            <button class="btn-action profile-filter-btn" data-pfilter="audio" onclick="setProfileFilter('audio')">AUDIO</button>
+            <button class="btn-action profile-filter-btn" data-pfilter="visual" onclick="setProfileFilter('visual')">VISUAL</button>
+            <button class="btn-action profile-filter-btn" data-pfilter="position" onclick="setProfileFilter('position')">POSITION &amp; SPATIAL</button>
+            <button class="btn-action profile-filter-btn" data-pfilter="imagecolor" onclick="setProfileFilter('imagecolor')">IMAGE &amp; COLOR</button>
+            <button class="btn-action profile-filter-btn" data-pfilter="relational" onclick="setProfileFilter('relational')">RELATIONAL</button>
+            <button class="btn-action profile-filter-btn" data-pfilter="rotation" onclick="setProfileFilter('rotation')">ROTATION</button>
+            <button class="btn-action" id="btn-show-untrained" onclick="toggleShowUntrained()" style="border-color:#a21caf; color:#f0abfc;">◐ SHOW UNTRAINED AREAS</button>
+          </div>
+          <div id="profile-untrained-list" style="display:none; margin-top:8px; font-size:11px; color:#f0abfc; line-height:1.6; text-align:left;"></div>
 
           <div class="heatmap-legend">
             <span>Low Emphasis (0%)</span>
@@ -712,7 +737,8 @@
         </div>
         <div style="display:flex; align-items:center; gap:8px;">
           <button class="btn-action" id="btn-toggle-zoom" onclick="toggleFocusZoomMode()" style="background:#1e293b; border:1px solid #38bdf8; color:#38bdf8; font-weight:bold; padding:4px 12px;">🔍 ZOOM / FOCUS ARENA [F]</button>
-          <button class="btn-action" id="btn-exit-zoom" onclick="toggleFocusZoomMode()" style="display:none; background:#7f1d1d; border:1px solid #ef4444; color:#fff; font-weight:bold; padding:4px 12px;">✕ EXIT ZOOM [Esc]</button>
+          <button class="btn-action" id="btn-exit-zoom" onclick="exitFocusZoom()" style="display:none; background:#7f1d1d; border:1px solid #ef4444; color:#fff; font-weight:bold; padding:4px 12px;">✕ EXIT ZOOM [Esc]</button>
+          <button class="btn-action" id="btn-toggle-hud" onclick="toggleHudBar()" style="background:#1e293b; border:1px solid #64748b; color:#cbd5e1; font-weight:bold; padding:4px 12px;">📊 LIVE STATS: ON [H]</button>
         </div>
       </div>
 
@@ -763,6 +789,10 @@
         <div id="distractor-display" style="display:none; margin-top:8px; border:1px dashed #ff5577; color:#ff88aa; padding:6px 18px; font-size:20px; background:#160a10;">
           ⚠ DISTRACTOR <span id="distractor-symbol" style="margin-left:8px;"></span>
         </div>
+        <div id="srot-display" style="display:none;">
+          <canvas id="srot-canvas" width="180" height="180" style="background:#05070c; border:2px solid #7c3aed;"></canvas>
+          <div style="font-size:10px; color:#a78bfa; letter-spacing:1px;">SPATIAL ROTATION — 3D BLOCK OBJECT</div>
+        </div>
       </div>
 
       <div class="bw-button-row">
@@ -773,6 +803,7 @@
         <button class="bw-match-btn" id="btn-input-img">IMAGE MATCH<span class="btn-keyhint" id="hint-key-img">[ Key: S | Pad: Y ]</span></button>
         <button class="bw-match-btn" id="btn-input-col">COLOR MATCH<span class="btn-keyhint" id="hint-key-col">[ Key: D | Pad: A ]</span></button>
         <button class="bw-match-btn" id="btn-input-rot">3D ROTATION MATCH<span class="btn-keyhint" id="hint-key-rot">[ Key: R | Pad: RB ]</span></button>
+        <button class="bw-match-btn" id="btn-input-srot" style="border-color:#7c3aed; color:#c4b5fd;">SPATIAL 3D ROTATION<span class="btn-keyhint" id="hint-key-srot">[ Key: T | Pad: RT ]</span></button>
       </div>
 
       <div style="text-align:center; margin-top: 15px;">
@@ -787,10 +818,15 @@
       <div class="config-grid">
         <div class="config-card">
           <h4>N-BACK, TIMING & DURATION</h4>
-          <div class="config-row"><span>N-Back Level:</span><input type="number" id="cfg-n-level" min="1" max="9" value="2" style="width:45px;"></div>
-          <div class="config-row"><span>Interval (0.5 - 15.0s):</span><input type="number" id="cfg-interval" min="0.5" max="15.0" step="0.1" value="2.5" style="width:55px;" onchange="recalculateTrialsFromMinutes()"></div>
+          <div class="config-row"><span>N-Back Level:</span><input type="number" id="cfg-n-level" min="1" max="20" value="2" style="width:45px;"></div>
+          <div class="config-row"><span>Interval / Speed (0.3 - 30.0s, type any value):</span><input type="number" id="cfg-interval" min="0.3" max="30" step="0.05" value="2.5" style="width:55px;" onchange="recalculateTrialsFromMinutes()"></div>
           <div class="config-row"><span>Flash Duration:</span><input type="number" id="cfg-flash" min="0.1" max="5.0" step="0.1" value="0.8" style="width:55px;"></div>
           <div class="config-row"><span>Lure Rate (0-100%):</span><input type="number" id="cfg-lures" min="0" max="100" step="0.5" value="87.5" style="width:55px;"></div>
+          <div class="config-row" style="background:#160f26; padding:2px 4px; border:1px solid #4c1d95;">
+            <span style="color:#c4b5fd; font-weight:bold;">Reverse N-Back:</span>
+            <input type="checkbox" id="cfg-reverse">
+          </div>
+          <div class="config-row" style="border:none;"><span style="color:#666; font-size:10px;">Reverse: a trial counts as a match when the current stimulus matches the one <strong>N trials AHEAD</strong> in the sequence (the sequence is pre-generated, so you are matching forward). Applies to every modality.</span></div>
           <div class="config-row" style="border-top:1px dashed #333; padding-top:4px; margin-top:4px;">
             <span>Play Mode:</span>
             <select id="cfg-duration-mode" onchange="toggleDurationMode()" style="width:110px;">
@@ -799,7 +835,7 @@
             </select>
           </div>
           <div class="config-row" id="row-cfg-trials"><span>Total Trials:</span><input type="number" id="cfg-trials" min="10" max="500" value="24" style="width:55px;"></div>
-          <div class="config-row" id="row-cfg-minutes" style="display:none;"><span>Duration (Minutes):</span><input type="number" id="cfg-minutes" min="0" max="240" step="0.25" value="5.0" style="width:55px;" onchange="syncDurationControls('num'); recalculateTrialsFromMinutes();"></div>
+          <div class="config-row" id="row-cfg-minutes" style="display:none;"><span>Duration (Minutes):</span><input type="number" id="cfg-minutes" min="0" max="1440" step="0.25" value="5.0" style="width:55px;" onchange="syncDurationControls('num'); recalculateTrialsFromMinutes();"></div>
           <div class="config-row" id="row-cfg-duration-text" style="display:none;"><span>Type as min or M.SS:</span><input type="text" id="cfg-duration-text" placeholder="e.g. 20 or 59.30" style="width:80px;" onchange="syncDurationControls('text'); recalculateTrialsFromMinutes();"></div>
           <div class="config-row" id="row-cfg-duration-slider" style="display:none;"><span>Duration Slider (0-120m):</span><input type="range" id="cfg-duration-slider" min="0" max="120" step="1" value="5" style="width:110px;" oninput="syncDurationControls('slider'); recalculateTrialsFromMinutes();"></div>
           <div class="config-row" style="border:none;"><span style="color:#666; font-size:10px;">M.SS format: 59.30 = 59 min 30 sec. Text entry allows over 120 minutes.</span></div>
@@ -820,6 +856,10 @@
           <div class="config-row"><span>Visual Image:</span><input type="checkbox" id="cfg-mod-img"></div>
           <div class="config-row"><span>Color N-Back:</span><input type="checkbox" id="cfg-mod-col"></div>
           <div class="config-row"><span>3D Mental Rotation:</span><input type="checkbox" id="cfg-mod-rot"></div>
+          <div class="config-row" style="background:#150f26; padding:2px 4px; border:1px solid #4c1d95;">
+            <span style="color:#c4b5fd; font-weight:bold;">Spatial 3D Rotation (Shepard–Metzler):</span>
+            <input type="checkbox" id="cfg-mod-srot">
+          </div>
         </div>
 
         <div class="config-card">
@@ -887,6 +927,10 @@
         <thead><tr><th>Action</th><th>Key</th><th>Gamepad</th><th>Configure</th></tr></thead>
         <tbody id="rebind-tbody"></tbody>
       </table>
+      <div style="margin:12px 0; display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+        <button class="btn-action" onclick="resetKeybinds()" style="border-color:#aa3333; color:#ff9999; font-weight:bold;">RESET ALL KEY BINDINGS TO DEFAULTS</button>
+        <span style="font-size:11px; color:#888; line-height:1.6;">Every pressable action is rebindable: click <strong>Rebind</strong>, then press any key (bindings use KeyboardEvent.code — F-keys, arrows, Space, punctuation, anything the browser reports). If the key is already used, you will be offered a <strong>swap</strong> or cancel. Bindings save per user. Keys never fire while you are typing in a field. <strong>Esc</strong> always exits focus zoom and cancels a capture in progress.</span>
+      </div>
       <div style="margin-top:15px; border:1px solid #333; padding:10px; background:#000;">
         <span style="color:#ffff00; font-weight:bold;">Live Controller Input:</span>
         <div id="gamepad-debug" style="margin-top:6px; font-size:11px; color:#aaa;">No controller detected. Press any button to awaken.</div>
@@ -896,8 +940,56 @@
     <!-- SECTION 6: INTERACTIVE ANATOMY & HISTORY -->
     <div id="sec-brain" style="display:none;">
       <h3 style="color:#00ffaa; margin-bottom:6px; font-size:14px;">INTERACTIVE BRAIN ANATOMY & HISTORY</h3>
-      <div style="border:1px solid #333; background:#0a0a0a; padding:14px; font-size:12px; line-height:1.5;" id="anatomy-history-card">
-        Click any sector on the <strong>Living Brain Profile</strong> tab to read historical breakthroughs, cytoarchitectonics, and computational models for that specific area.
+      <div style="font-size:11px; color:#888; margin-bottom:10px;">A schematic anatomical illustration (not a medical image). <strong style="color:#bbb;">Drag sideways</strong> on the brain to rotate between views (left lateral · superior · right lateral · medial), <strong style="color:#bbb;">scroll or use +/−</strong> to zoom, and <strong style="color:#bbb;">click any area</strong> for its description, history, and training relevance. Deep structures (hippocampus, thalamus, insula…) sit beneath the cortex — hover any surface area to see what is underneath it, or use <strong style="color:#bbb;">Peel back cortex</strong>. The medial view shows the deep/medial structures where they anatomically live.</div>
+      <div style="display:grid; grid-template-columns: 1.15fr 1fr; gap:16px;">
+        <div style="border:1px solid #333; background:#000; padding:12px; text-align:center;">
+          <div id="anatomy-hidden-readout" style="display:none; text-align:left; background:#170f26; border:1px solid #7c3aed; padding:8px 10px; margin-bottom:8px; font-size:11px; color:#e9d5ff; line-height:1.8;"></div>
+          <div id="anatomy-brain-mount"></div>
+          <div class="heatmap-legend">
+            <span>Low Emphasis (0%)</span>
+            <div class="heatmap-bar"></div>
+            <span>Peak Training Emphasis (100%, estimate)</span>
+          </div>
+          <div style="font-size:10px; color:#777; margin-top:6px;">Estimated training emphasis — schematic, not measured brain activity.</div>
+        </div>
+        <div>
+          <div style="border:1px solid #1e3a8a; background:#0a0f18; padding:12px; margin-bottom:12px; font-size:12px;">
+            <h4 style="color:#60a5fa; font-size:12px; margin-bottom:8px;">EXERCISE SETTINGS → ESTIMATED ACTIVATION PREVIEW</h4>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:3px 14px;">
+              <label><input type="checkbox" id="ana-mod-pos" onchange="updateAnatomyBrain()"> Spatial Position</label>
+              <label><input type="checkbox" id="ana-mod-audio" onchange="updateAnatomyBrain()"> Auditory Phonemes</label>
+              <label><input type="checkbox" id="ana-mod-audio2" onchange="updateAnatomyBrain()"> Audio 2 — Tones</label>
+              <label><input type="checkbox" id="ana-mod-rel" onchange="updateAnatomyBrain()"> Relational Words</label>
+              <label><input type="checkbox" id="ana-mod-img" onchange="updateAnatomyBrain()"> Visual Image</label>
+              <label><input type="checkbox" id="ana-mod-col" onchange="updateAnatomyBrain()"> Color</label>
+              <label><input type="checkbox" id="ana-mod-rot" onchange="updateAnatomyBrain()"> In-Plane Rotation</label>
+              <label><input type="checkbox" id="ana-mod-srot" onchange="updateAnatomyBrain()"> Spatial 3D Rotation</label>
+            </div>
+            <div style="display:flex; gap:14px; flex-wrap:wrap; margin-top:10px; align-items:center;">
+              <span>N: <input type="number" id="ana-n" min="1" max="20" value="2" style="width:48px;" onchange="updateAnatomyBrain()"></span>
+              <span>Interference: <input type="number" id="ana-lures" min="0" max="100" step="0.5" value="87.5" style="width:58px;" onchange="updateAnatomyBrain()">%</span>
+              <span>Interval: <input type="number" id="ana-interval" min="0.3" max="30" step="0.1" value="2.5" style="width:52px;" onchange="updateAnatomyBrain()">s</span>
+              <label><input type="checkbox" id="ana-reverse" onchange="updateAnatomyBrain()"> Reverse N-Back</label>
+            </div>
+            <div style="font-size:10px; color:#7d8aa0; margin-top:8px; line-height:1.5;">Set the exercise here and the brain lights up with the areas that kind of training emphasizes, colored by estimated strength. Estimates scale modestly with N and interference. This is a schematic estimate — not measured brain activity.</div>
+          </div>
+          <div style="border:1px solid #333; background:#0a0e14; padding:14px; font-size:12px; line-height:1.6;" id="anatomy-info-panel">
+            <strong id="anatomy-info-title" style="color:#ffff00; font-size:14px;">SELECT A REGION</strong>
+            <div id="anatomy-info-desc" style="color:#bbb; margin-top:8px;">Click any brain area — on the surface, underneath it via the callout, or peeled — to read what it does.</div>
+            <div id="anatomy-info-history" style="color:#9fc3ff; margin-top:8px;"></div>
+            <div id="anatomy-info-training" style="color:#a7f3c9; margin-top:8px;"></div>
+          </div>
+          <details style="margin-top:12px; border:1px solid #334155; background:#0a0f18; padding:12px; text-align:left;">
+            <summary style="cursor:pointer; color:#7dd3fc; font-size:12px; font-weight:bold;">BUILDING BLOCKS: MYELIN, AXONS &amp; WHAT THEY'RE MADE OF</summary>
+            <div style="font-size:11px; color:#bbb; line-height:1.7; margin-top:8px;">
+              <p><strong style="color:#fff;">Myelin</strong> is the insulating sheath that wraps axons and lets signals travel fast and cleanly. It is mostly <strong>lipid (roughly 70–80% by dry weight)</strong>: cholesterol, phospholipids, and galactocerebrosides, with the rest protein — mainly <strong>myelin basic protein (MBP)</strong> and <strong>proteolipid protein (PLP)</strong>. In the brain it is made by oligodendrocytes, and it is remodeled throughout life — myelination is one of the slower, more structural forms of plasticity.</p>
+              <p><strong style="color:#fff;">Axons and neurons</strong> are built from the same raw materials as other cells, specialized: a <strong>phospholipid bilayer membrane</strong> studded with ion channels and receptors (cholesterol-rich, with DHA-heavy phospholipids in signaling membranes), a <strong>cytoskeleton</strong> of microtubules and neurofilaments that also serves as the transport rail for materials, and dense <strong>mitochondria</strong> — signaling is energetically expensive.</p>
+              <p><strong style="color:#fff;">What the body needs to build and maintain them:</strong> dietary <strong>cholesterol and fats</strong> (the brain makes much of its own cholesterol, but the lipid supply chain matters), <strong>vitamin B12</strong> and <strong>folate</strong> (B12 deficiency directly damages myelin — a classic, reversible-if-caught cause of neurological symptoms), <strong>iron</strong> (oligodendrocytes are iron-hungry), <strong>iodine and thyroid hormone</strong> (required for myelination, especially in development), <strong>omega-3 DHA</strong> (a major structural fatty acid of neuronal membranes), <strong>choline</strong> (for phosphatidylcholine membranes), adequate protein and energy, and <strong>sleep</strong>, during which maintenance and metabolite clearance run.</p>
+              <p><strong style="color:#fff;">Synapses and neurotransmitters, briefly:</strong> synaptic vesicles are phospholipid spheres; release machinery is protein. The transmitters themselves are built from dietary precursors — <strong>acetylcholine from choline</strong>, <strong>dopamine/norepinephrine from tyrosine</strong> (iron and B6 as cofactors), <strong>serotonin from tryptophan</strong>, and <strong>GABA/glutamate</strong> cycling through glucose metabolism. Adequacy of the basics — protein, choline, B-vitamins, iron — is what the evidence supports; no food has been shown to selectively supercharge a single transmitter in a healthy person.</p>
+              <p style="color:#778;">General education, honestly framed: these are established composition facts and deficiency consequences. They do not mean eating more of any single nutrient measurably grows myelin in a healthy adult — deficiency avoidance is the proven part.</p>
+            </div>
+          </details>
+        </div>
       </div>
     </div>
 
@@ -990,6 +1082,12 @@
 
         <div style="background:#160b0b; border:1px solid #7f1d1d; padding:10px; font-size:11px; color:#fca5a5; line-height:1.6;">
           <strong>⚠ SAFETY NOTES:</strong> Raw egg yolks carry a salmonella risk — pasteurized or lightly cooked yolks are the safer choice. The sodium amounts discussed here are high: if you have high blood pressure, kidney, or heart conditions, do <strong>not</strong> follow high-sodium targets without medical advice. When in doubt, check with your clinician.
+        </div>
+
+        <div style="margin-top:14px;">
+          <h4 style="color:#fbbf24; font-size:12px; margin-bottom:4px;">PER-AREA BREAKDOWN (expand only what you want)</h4>
+          <div style="font-size:11px; color:#888; margin-bottom:8px;">For each brain area your latest training emphasizes: what that area especially uses, and the foods/amounts that contribute. Guidance within your carnivore/electrolyte framework — not prescriptions.</div>
+          <div id="nutr-area-breakdown"></div>
         </div>
       </div>
     </div>
@@ -1252,17 +1350,10 @@
         document.getElementById('profile-g-rating').innerText = "100 (Baseline)";
       }
 
-      const regionalStats = calculateUserRegionalActivation(history);
-
-      Object.keys(regionalStats).forEach(reg => {
-        const p = document.getElementById(`ppath-${reg}`);
-        if (p) {
-          const col = getHeatmapColor(regionalStats[reg]);
-          p.style.fill = col;
-          p.style.transition = "fill 0.4s ease";
-        }
-      });
-
+      profileEmphasisCache = computeProfileEmphasis(profileFilterMode, history);
+      ensureBrainMounted('profile');
+      brainPaint('profile');
+      renderUntrainedList();
       inspectProfileRegion(selectedProfileRegion);
       renderProfileGoalsSummary();
     }
@@ -1318,30 +1409,35 @@
     });
 
     function inspectProfileRegion(reg) {
+      reg = BRAIN_REGION_ALIAS[reg] || reg;
+      if (!BRAIN_REGIONS[reg]) reg = 'dlpfc';
       selectedProfileRegion = reg;
-      document.querySelectorAll('#profile-brain-svg .brain-region-path').forEach(p => {
-        p.classList.toggle('active-selected', p.getAttribute('data-region') === reg);
+      document.querySelectorAll('#profile-brain-mount [data-region]').forEach(p => {
+        p.classList.toggle('brain3-selected', p.getAttribute('data-region') === reg);
       });
 
       const history = JSON.parse(localStorage.getItem(`steeltrap_records_${activeUser}`) || '[]');
-      const activations = calculateUserRegionalActivation(history);
-      const score = activations[reg] || 50;
+      if (!profileEmphasisCache) profileEmphasisCache = computeProfileEmphasis(profileFilterMode, history);
+      const frac = profileEmphasisCache[reg] || 0;
+      const score = Math.round(frac * 100);
       const col = getHeatmapColor(score);
 
-      const meta = REGION_METADATA[reg] || { title: reg.toUpperCase(), role: "Cortical processing hub." };
-      document.getElementById('inspector-region-title').innerText = meta.title;
+      const meta = BRAIN_REGIONS[reg];
+      document.getElementById('inspector-region-title').innerText = meta.name;
       document.getElementById('inspector-region-score').innerText = `${score}% Training Emphasis (est.)`;
       document.getElementById('inspector-region-score').style.color = col;
 
       document.getElementById('inspector-status-text').innerHTML = `
-        <strong>Primary Function:</strong> ${meta.role}<br>
-        <strong>Current State:</strong> Training emphasis estimate <span style="color:${col}; font-weight:bold;">${score}%</span> — derived from your recent session performance. This is an estimate of training focus, not a measurement of your brain. ${meta.trainingHint}
+        <strong>Description:</strong> ${meta.desc}<br>
+        <strong>History:</strong> ${meta.history}<br>
+        <strong>Training relevance:</strong> ${meta.training}<br>
+        <strong>Your emphasis (est.):</strong> <span style="color:${col}; font-weight:bold;">${score}%</span> — accumulated from your saved sessions under the current profile filter. An estimate of training focus, not a measurement of your brain.<br>${regionSupportsHTML(reg)}
       `;
 
       const histDiv = document.getElementById('inspector-history-list');
       histDiv.innerHTML = '';
 
-      const relevantRuns = history.filter(r => isRunRelevantToRegion(r, reg)).slice(-6).reverse();
+      const relevantRuns = history.filter(r => brainRegionRelevant(r, reg)).slice(-6).reverse();
       if (relevantRuns.length === 0) {
         histDiv.innerHTML = '<div style="color:#666;">No recorded runs yet targeting this specific region.</div>';
       } else {
@@ -1350,8 +1446,8 @@
           item.style.borderBottom = "1px solid #1c2533";
           item.style.padding = "3px 0";
           item.innerHTML = `
-            <span style="color:#ffff00;">${r.date} ${r.time}</span> - 
-            <strong style="color:#fff;">${r.nLevel}-Back (${r.duration || '24t'})</strong>: 
+            <span style="color:#ffff00;">${r.date} ${r.time}</span> -
+            <strong style="color:#fff;">${r.nLevel}-Back (${r.duration || '24t'})</strong>:
             Accuracy <span style="color:#00ffaa;">${r.acc}</span> | Lures ${r.lures}
           `;
           histDiv.appendChild(item);
@@ -1413,25 +1509,17 @@
     };
 
     function launchTargetedArenaFromInspector() {
-      const reg = selectedProfileRegion;
+      const reg = BRAIN_REGION_ALIAS[selectedProfileRegion] || selectedProfileRegion;
       switchNav('arena');
-      if (reg === 'rlpfc') {
-        document.getElementById('cfg-mod-rel').checked = true;
-        document.getElementById('cfg-mod-pos').checked = true;
-      } else if (reg === 'parietal') {
-        document.getElementById('cfg-mod-rot').checked = true;
-        document.getElementById('cfg-mod-pos').checked = true;
-      } else if (reg === 'auditory') {
-        document.getElementById('cfg-mod-audio').checked = true;
-      } else if (reg === 'occipital') {
-        document.getElementById('cfg-mod-img').checked = true;
-        document.getElementById('cfg-mod-col').checked = true;
-      } else {
-        document.getElementById('cfg-mod-pos').checked = true;
-        document.getElementById('cfg-mod-audio').checked = true;
-      }
+      const scored = Object.keys(MOD_REGION_WEIGHTS)
+        .map(m => ({ m, w: MOD_REGION_WEIGHTS[m][reg] || 0 }))
+        .filter(x => x.w > 0).sort((a, b) => b.w - a.w).slice(0, 2);
+      const cb = { pos: 'cfg-mod-pos', audio: 'cfg-mod-audio', aud2: 'cfg-mod-audio2', rel: 'cfg-mod-rel', img: 'cfg-mod-img', col: 'cfg-mod-col', rot: 'cfg-mod-rot', srot: 'cfg-mod-srot' };
+      Object.keys(cb).forEach(m => { document.getElementById(cb[m]).checked = scored.some(x => x.m === m); });
+      if (!scored.length) document.getElementById('cfg-mod-pos').checked = true;
       toggleRelationalBoxVisibility();
-      alert(`Arena configured to target ${REGION_METADATA[reg].title}. Press [Space] to begin!`);
+      updateActiveModeHUD();
+      alert(`Arena configured to target ${(BRAIN_REGIONS[reg] || {}).name || reg}. Press [Space] to begin!`);
     }
 
     /* =====================================================================
@@ -2009,7 +2097,9 @@ Press [Space] to begin your session.`);
         modRel: document.getElementById('cfg-mod-rel').checked,
         modImg: document.getElementById('cfg-mod-img').checked,
         modCol: document.getElementById('cfg-mod-col').checked,
-        modRot: document.getElementById('cfg-mod-rot').checked
+        modRot: document.getElementById('cfg-mod-rot').checked,
+        modSrot: document.getElementById('cfg-mod-srot').checked,
+        reverse: document.getElementById('cfg-reverse').checked
       };
     }
 
@@ -2032,6 +2122,8 @@ Press [Space] to begin your session.`);
       document.getElementById('cfg-mod-img').checked = s.modImg;
       document.getElementById('cfg-mod-col').checked = s.modCol;
       document.getElementById('cfg-mod-rot').checked = s.modRot;
+      document.getElementById('cfg-mod-srot').checked = !!s.modSrot;
+      document.getElementById('cfg-reverse').checked = !!s.reverse;
       toggleDurationMode();
       syncDurationControls('num');
       updateActiveModeHUD();
@@ -2044,7 +2136,7 @@ Press [Space] to begin your session.`);
         applySettingsObject({
           nLevel: 2, interval: 2.5, flash: 0.8, lures: 87.5,
           durationMode: 'trials', trials: 24, minutes: 5.0,
-          modPos: true, modAudio: true, modAudio2: false, modRel: false, modImg: false, modCol: false, modRot: false
+          modPos: true, modAudio: true, modAudio2: false, modRel: false, modImg: false, modCol: false, modRot: false, modSrot: false, reverse: false
         });
       } else {
         const presets = getUserPresets();
@@ -2183,14 +2275,42 @@ Press [Space] to begin your session.`);
        7. REBINDABLE KEYBOARD & GAMEPAD ENGINE
        ===================================================================== */
     const DEFAULT_BINDS = {
-      pos:   { label: "Position Match",   key: "a", keyName: "A", padBtn: 2, padName: "X / Square" },
-      audio: { label: "Audio Match",      key: "l", keyName: "L", padBtn: 1, padName: "B / Circle" },
-      rel:   { label: "Relation Match",   key: "w", keyName: "W", padBtn: 4, padName: "LB / L1" },
-      img:   { label: "Image Match",      key: "s", keyName: "S", padBtn: 3, padName: "Y / Triangle" },
-      col:   { label: "Color Match",      key: "d", keyName: "D", padBtn: 0, padName: "A / Cross" },
-      rot:   { label: "Rotation Match",   key: "r", keyName: "R", padBtn: 5, padName: "RB / R1" },
-      aud2:  { label: "Audio 2 (Tones)",  key: "k", keyName: "K", padBtn: 6, padName: "LT / L2" }
+      pos:   { label: "Position Match",   key: "a", keyName: "A", code: "KeyA", padBtn: 2, padName: "X / Square" },
+      audio: { label: "Audio Match",      key: "l", keyName: "L", code: "KeyL", padBtn: 1, padName: "B / Circle" },
+      rel:   { label: "Relation Match",   key: "w", keyName: "W", code: "KeyW", padBtn: 4, padName: "LB / L1" },
+      img:   { label: "Image Match",      key: "s", keyName: "S", code: "KeyS", padBtn: 3, padName: "Y / Triangle" },
+      col:   { label: "Color Match",      key: "d", keyName: "D", code: "KeyD", padBtn: 0, padName: "A / Cross" },
+      rot:   { label: "Rotation Match",   key: "r", keyName: "R", code: "KeyR", padBtn: 5, padName: "RB / R1" },
+      aud2:  { label: "Audio 2 (Tones)",  key: "k", keyName: "K", code: "KeyK", padBtn: 6, padName: "LT / L2" },
+      srot:  { label: "Spatial 3D Rotation", key: "t", keyName: "T", code: "KeyT", padBtn: 7, padName: "RT / R2" },
+      start:    { label: "Start / Pause Session", key: " ", keyName: "SPACE", code: "Space", padBtn: null, padName: "—" },
+      endSave:  { label: "End & Save Session", key: "e", keyName: "E", code: "KeyE", padBtn: null, padName: "—" },
+      focus:    { label: "Focus Cycle (Normal > Focus > Grid-Only)", key: "f", keyName: "F", code: "KeyF", padBtn: null, padName: "—" },
+      hud:      { label: "Toggle Live Stats HUD", key: "h", keyName: "H", code: "KeyH", padBtn: null, padName: "—" },
+      nPlus:    { label: "Live N +", key: "=", keyName: "+", code: "Equal", padBtn: null, padName: "—" },
+      nMinus:   { label: "Live N -", key: "-", keyName: "-", code: "Minus", padBtn: null, padName: "—" },
+      lurePlus: { label: "Live Lure Rate +", key: "]", keyName: "]", code: "BracketRight", padBtn: null, padName: "—" },
+      lureMinus:{ label: "Live Lure Rate -", key: "[", keyName: "[", code: "BracketLeft", padBtn: null, padName: "—" },
+      brainLeft:  { label: "Brain: Rotate View Left", key: "arrowleft", keyName: "ArrowLeft", code: "ArrowLeft", padBtn: null, padName: "—" },
+      brainRight: { label: "Brain: Rotate View Right", key: "arrowright", keyName: "ArrowRight", code: "ArrowRight", padBtn: null, padName: "—" },
+      zoomIn:     { label: "Brain: Zoom In", key: "arrowup", keyName: "ArrowUp", code: "ArrowUp", padBtn: null, padName: "—" },
+      zoomOut:    { label: "Brain: Zoom Out", key: "arrowdown", keyName: "ArrowDown", code: "ArrowDown", padBtn: null, padName: "—" },
+      peel:       { label: "Brain: Peel Back Cortex", key: "p", keyName: "P", code: "KeyP", padBtn: null, padName: "—" }
     };
+    const MODALITY_ACTS = ['pos', 'audio', 'aud2', 'rel', 'img', 'col', 'rot', 'srot'];
+    // Match a binding against a keyboard event. New bindings store KeyboardEvent.code
+    // (any key: F-keys, arrows, Space...). Legacy bindings without a code fall back
+    // to the e.key value. Numpad +/- count as the +/- bindings.
+    function bindMatchesEvent(b, e) {
+      if (!b || !e) return false;
+      if (b.code) {
+        if (e.code === b.code) return true;
+        if (b.code === 'Equal' && e.code === 'NumpadAdd') return true;
+        if (b.code === 'Minus' && e.code === 'NumpadSubtract') return true;
+        return false;
+      }
+      return !!(b.key && e.key && e.key.toLowerCase() === b.key);
+    }
     let userBinds = JSON.parse(JSON.stringify(DEFAULT_BINDS));
     let listeningAction = null;
 
@@ -2204,6 +2324,11 @@ Press [Space] to begin your session.`);
       }
       updateKeyHints();
       renderRebindTable();
+    }
+
+    function resetKeybinds() {
+      userBinds = JSON.parse(JSON.stringify(DEFAULT_BINDS));
+      saveUserKeybinds();
     }
 
     function saveUserKeybinds() {
@@ -2222,6 +2347,8 @@ Press [Space] to begin your session.`);
       document.getElementById('hint-key-rot').innerText = `[ Key: ${userBinds.rot.keyName} | Pad: ${userBinds.rot.padName} ]`;
       const hAud2 = document.getElementById('hint-key-aud2');
       if (hAud2 && userBinds.aud2) hAud2.innerText = `[ Key: ${userBinds.aud2.keyName} | Pad: ${userBinds.aud2.padName} ]`;
+      const hSrot = document.getElementById('hint-key-srot');
+      if (hSrot && userBinds.srot) hSrot.innerText = `[ Key: ${userBinds.srot.keyName} | Pad: ${userBinds.srot.padName} ]`;
     }
 
     function renderRebindTable() {
@@ -2248,29 +2375,59 @@ Press [Space] to begin your session.`);
     }
 
     window.addEventListener('keydown', (e) => {
-      if (e.code === 'Space' && !listeningAction && activeUser && isArenaVisible()) {
-        e.preventDefault(); toggleGame(); return;
-      }
-      // Focus-zoom / live-adjust keys, integrated into this single handler.
-      // Typing guard: never hijack keys while the user is typing in a field.
-      const kdTag = (e.target && e.target.tagName) || '';
-      const kdTyping = kdTag === 'INPUT' || kdTag === 'TEXTAREA' || kdTag === 'SELECT' || (e.target && e.target.isContentEditable);
-      if (!kdTyping && !listeningAction && activeUser) {
-        if (isArenaVisible() && (e.key === '+' || e.key === '=')) { adjustNLevel(1); return; }
-        if (isArenaVisible() && (e.key === '-' || e.key === '_')) { adjustNLevel(-1); return; }
-        if (isArenaVisible() && !isRunning && (e.key === 'f' || e.key === 'F' || e.key === 'z' || e.key === 'Z')) { toggleFocusZoomMode(); return; }
-        if (e.key === 'Escape' && typeof isFocusZoom !== 'undefined' && isFocusZoom) { toggleFocusZoomMode(); return; }
-      }
+      // Rebind capture: works even over inputs, uses KeyboardEvent.code so ANY key
+      // can be assigned. Esc cancels. Conflicts offer swap-or-cancel.
       if (listeningAction) {
         e.preventDefault();
-        userBinds[listeningAction].key = e.key.toLowerCase();
-        userBinds[listeningAction].keyName = e.key.toUpperCase();
-        listeningAction = null; saveUserKeybinds(); return;
+        if (e.code === 'Escape') { listeningAction = null; renderRebindTable(); return; }
+        const act = listeningAction;
+        const conflict = Object.keys(userBinds).find(a => a !== act && bindMatchesEvent(userBinds[a], e));
+        if (conflict) {
+          const doSwap = confirm(`"${e.code}" is already bound to "${userBinds[conflict].label}".\n\nOK = SWAP the two bindings\nCancel = keep the existing binding and cancel this rebind`);
+          if (!doSwap) { listeningAction = null; renderRebindTable(); return; }
+          const old = { code: userBinds[act].code, key: userBinds[act].key, keyName: userBinds[act].keyName };
+          userBinds[conflict].code = old.code; userBinds[conflict].key = old.key; userBinds[conflict].keyName = old.keyName;
+        }
+        userBinds[act].code = e.code;
+        userBinds[act].key = (e.key || '').toLowerCase();
+        userBinds[act].keyName = e.code;
+        listeningAction = null;
+        saveUserKeybinds();
+        return;
       }
+      if (!activeUser) return;
+      // Typing guard: no binding ever fires while typing in a field.
+      const kdTag = (e.target && e.target.tagName) || '';
+      const kdTyping = kdTag === 'INPUT' || kdTag === 'TEXTAREA' || kdTag === 'SELECT' || (e.target && e.target.isContentEditable);
+      if (kdTyping) return;
+
+      if (isArenaVisible()) {
+        if (bindMatchesEvent(userBinds.start, e)) { e.preventDefault(); toggleGame(); return; }
+        if (bindMatchesEvent(userBinds.endSave, e)) { if (isRunning) endSessionEarlyAndSave(); return; }
+        if (bindMatchesEvent(userBinds.nPlus, e)) { adjustNLevel(1); return; }
+        if (bindMatchesEvent(userBinds.nMinus, e)) { adjustNLevel(-1); return; }
+        if (bindMatchesEvent(userBinds.lurePlus, e)) { adjustLureRate(2.5); return; }
+        if (bindMatchesEvent(userBinds.lureMinus, e)) { adjustLureRate(-2.5); return; }
+        if (bindMatchesEvent(userBinds.focus, e)) { cycleFocusZoom(); return; }
+        if (bindMatchesEvent(userBinds.hud, e)) { toggleHudBar(); return; }
+      }
+      if (e.key === 'Escape' && typeof isFocusZoom !== 'undefined' && isFocusZoom) { exitFocusZoom(); return; }
+
+      // Brain-component keys apply on whichever brain screen is visible.
+      const brainSec = document.getElementById('sec-brain');
+      const profSec = document.getElementById('sec-profile');
+      const brainInst = (brainSec && brainSec.style.display !== 'none') ? 'anatomy' : ((profSec && profSec.style.display !== 'none') ? 'profile' : null);
+      if (brainInst) {
+        if (bindMatchesEvent(userBinds.brainLeft, e)) { brainStepView(brainInst, -1); return; }
+        if (bindMatchesEvent(userBinds.brainRight, e)) { brainStepView(brainInst, 1); return; }
+        if (bindMatchesEvent(userBinds.zoomIn, e)) { brainZoom(brainInst, 1.25); return; }
+        if (bindMatchesEvent(userBinds.zoomOut, e)) { brainZoom(brainInst, 0.8); return; }
+        if (bindMatchesEvent(userBinds.peel, e)) { brainTogglePeel(brainInst); return; }
+      }
+
       if (!isRunning) return;
-      const k = e.key.toLowerCase();
-      Object.keys(userBinds).forEach(act => {
-        if (userBinds[act].key === k) registerPlayerInput(act);
+      MODALITY_ACTS.forEach(act => {
+        if (bindMatchesEvent(userBinds[act], e)) registerPlayerInput(act);
       });
     });
 
@@ -2328,6 +2485,7 @@ Press [Space] to begin your session.`);
         document.getElementById(`tabbtn-${s}`).className = (s === id) ? 'nav-tab-btn active' : 'nav-tab-btn';
       });
       if (id === 'profile') refreshLivingBrainProfile();
+      if (id === 'brain') initAnatomyTab();
       if (id === 'goals') renderUserGoalsList();
       if (id === 'scores') renderScoresheet();
       if (id === 'challenges') refreshChallengesList();
@@ -2535,24 +2693,31 @@ Press [Space] to begin your session.`);
       }
     }
 
-    // --- Focus Zoom + live N / lure adjustment ---
+    // --- Focus Zoom stages: 0 normal -> 1 focus (enlarged grid + buttons) ->
+    // 2 grid-only true fullscreen (buttons and all chrome hidden). F cycles, Esc exits.
+    let focusStage = 0;
     let isFocusZoom = false;
 
-    function toggleFocusZoomMode() {
-      isFocusZoom = !isFocusZoom;
-      document.body.classList.toggle('focus-zoom-active', isFocusZoom);
+    function applyFocusStage() {
+      isFocusZoom = focusStage > 0;
+      document.body.classList.toggle('focus-zoom-active', focusStage >= 1);
+      document.body.classList.toggle('focus-grid-only', focusStage >= 2);
       const btnZoom = document.getElementById('btn-toggle-zoom');
       const btnExit = document.getElementById('btn-exit-zoom');
       if (btnZoom && btnExit) {
-        btnZoom.style.display = isFocusZoom ? 'none' : 'inline-block';
-        btnExit.style.display = isFocusZoom ? 'inline-block' : 'none';
+        btnZoom.style.display = focusStage >= 2 ? 'none' : 'inline-block';
+        btnZoom.innerText = focusStage === 1 ? 'GRID-ONLY FULLSCREEN [F]' : 'ZOOM / FOCUS ARENA [F]';
+        btnExit.style.display = focusStage > 0 ? 'inline-block' : 'none';
       }
-      if (isFocusZoom) switchNav('arena');
+      if (focusStage > 0) switchNav('arena');
     }
+    function cycleFocusZoom() { focusStage = (focusStage + 1) % 3; applyFocusStage(); }
+    function exitFocusZoom() { focusStage = 0; applyFocusStage(); }
+    function toggleFocusZoomMode() { cycleFocusZoom(); }
 
     function adjustNLevel(delta) {
       let c = parseInt(document.getElementById('cfg-n-level').value) || 2;
-      c = Math.max(1, Math.min(9, c + delta));
+      c = Math.max(1, Math.min(20, c + delta));
       document.getElementById('cfg-n-level').value = c;
       if (!isRunning) nLevel = c;
       updateActiveModeHUD();
@@ -2583,9 +2748,10 @@ Press [Space] to begin your session.`);
         rel: document.getElementById('cfg-mod-rel').checked,
         img: document.getElementById('cfg-mod-img').checked,
         col: document.getElementById('cfg-mod-col').checked,
-        rot: document.getElementById('cfg-mod-rot').checked
+        rot: document.getElementById('cfg-mod-rot').checked,
+        srot: document.getElementById('cfg-mod-srot').checked
       };
-      const names = { pos: 'Position', audio: 'Audio', audio2: 'Audio2', rel: 'Relation', img: 'Image', col: 'Color', rot: 'Rotation' };
+      const names = { pos: 'Position', audio: 'Audio', audio2: 'Audio2', rel: 'Relation', img: 'Image', col: 'Color', rot: 'Rotation', srot: 'SpatialRot' };
       const activeList = Object.keys(flags).filter(k => flags[k]).map(k => names[k]);
       const prefixes = ['', 'Single', 'Dual', 'Triple', 'Quad', 'Quintuple', 'Sextuple', 'Septuple'];
       const prefix = prefixes[activeList.length] || `${activeList.length}-Fold`;
@@ -2680,9 +2846,10 @@ Press [Space] to begin your session.`);
       const modTicker = document.getElementById('live-modality-scores');
       modTicker.innerHTML = Object.keys(modCounts).map(m => {
         const d = modCounts[m];
-        const opp = d.hits + d.misses + d.fa + d.cr;
-        const acc = opp > 0 ? (((d.hits + d.cr) / opp) * 100).toFixed(0) : '0';
-        return `<span>${m.toUpperCase()}: ${acc}%</span>`;
+        const correct = d.hits + d.cr, wrong = d.misses + d.fa;
+        const opp = correct + wrong;
+        const acc = opp > 0 ? ((correct / opp) * 100).toFixed(0) : '0';
+        return `<span>${m.toUpperCase()}: \u2713${correct} \u2717${wrong} ${acc}%</span>`;
       }).join(' ');
     }
 
@@ -2712,7 +2879,7 @@ Press [Space] to begin your session.`);
       const slHi = h.filter(r => (parseFloat(r.sleep) || 0) >= 7);
       const slLo = h.filter(r => (parseFloat(r.sleep) || 0) < 7);
       if (slHi.length && slLo.length) lines.push(`<div>• Sleep ≥7 avg <strong style="color:#fff;">${fmt(avg(slHi))}</strong> (${slHi.length}) vs sleep &lt;7 avg <strong style="color:#fff;">${fmt(avg(slLo))}</strong> (${slLo.length}).</div>`);
-      const modNames = { pos: 'Position', audio: 'Audio', audio2: 'Audio 2', rel: 'Relation', img: 'Image', col: 'Color', rot: 'Rotation' };
+      const modNames = { pos: 'Position', audio: 'Audio', audio2: 'Audio 2', rel: 'Relation', img: 'Image', col: 'Color', rot: 'Rotation', srot: 'Spatial Rotation' };
       const modAvgs = [];
       Object.keys(modNames).forEach(m => {
         const vals = h.filter(r => r.modStats && r.modStats[m]).map(r => parseFloat(r.modStats[m].acc) || 0);
@@ -2744,6 +2911,7 @@ Press [Space] to begin your session.`);
         if (record.modStats.rel) targets.push('Analogical Reasoning (rlPFC)');
         if (record.modStats.img) targets.push('Ventral Object Memory (Perirhinal)');
         if (record.modStats.rot) targets.push('Mental Transformation (Parietal)');
+        if (record.modStats.srot) targets.push('3D Spatial Rotation (Parietal / Precuneus)');
       }
       if (lures >= 75) targets.push('Gating Conflict (ACC)');
       const foodItems = [];
@@ -2759,6 +2927,95 @@ Press [Space] to begin your session.`);
       return { trainingLoad, targetsText: targets.join(', ') || 'General Executive Buffer', durationMins: mins, foodItems, electrolyteText };
     }
 
+
+    /* ---- Per-area nutrition breakdown (progressive disclosure, guidance framing).
+       Amounts tier by the same training-load score as the overview:
+       tier 0 base (load <= 15), tier 1 (<= 30), tier 2 (> 30). ---- */
+    const AREA_NUTRITION = {
+      hippocampus: { needs: 'choline & DHA for new membrane, steady energy', items: [
+        { food: 'Egg yolks (pasteurized or lightly cooked)', amt: ['2–3 yolks', '3–4 yolks', '5–6 yolks'], why: 'Yolks are one of the richest choline sources. Choline feeds acetylcholine synthesis and phosphatidylcholine for the new membranes this memory system builds when it encodes.' },
+        { food: 'Fatty fish or fish roe (if you include it)', amt: ['3–4 oz', '4–6 oz', '6–8 oz'], why: 'Preformed DHA/EPA. DHA is a primary structural fat of hippocampal neuronal membranes; the body converts plant omega-3 poorly by comparison.' },
+        { food: 'Gelatin in broth/water', amt: ['1 packet', '2 packets', '2–3 packets'], why: 'A glycine source. Glycine is an inhibitory co-agonist at NMDA receptors involved in memory encoding, and many people find evening glycine supports the deep sleep this area consolidates in.' }
+      ]},
+      parahippocampal: { needs: 'choline & DHA for scene/context networks', items: [
+        { food: 'Egg yolks (pasteurized or lightly cooked)', amt: ['2 yolks', '3 yolks', '4 yolks'], why: 'Choline supports the acetylcholine tone that medial temporal scene encoding depends on.' },
+        { food: 'Fatty fish (if you include it)', amt: ['3 oz', '4 oz', '6 oz'], why: 'DHA maintains the membrane fluidity scene/context neurons need for rapid signaling.' }
+      ]},
+      dlpfc: { needs: 'steady fuel & dopamine precursors for executive control', items: [
+        { food: 'Beef (80/20 ground or fattier cuts)', amt: ['6 oz', '7–8 oz', '8–10 oz'], why: 'Provides tyrosine (the dopamine precursor the frontal control system runs on), iron for dopamine synthesis enzymes, and B12.' },
+        { food: 'Egg yolks', amt: ['2 yolks', '3 yolks', '4 yolks'], why: 'Choline for acetylcholine, which frontal attention circuits use to sustain focus against distraction.' },
+        { food: 'Salt / electrolytes to thirst & taste', amt: ['~3,500 mg sodium/day', '~4,500 mg sodium/day', '~5,500 mg sodium/day'], why: 'Low-carb diets shed sodium; frontal executive performance is among the first things to feel flat when electrolytes run low. See the safety notes about high sodium.' }
+      ]},
+      acc: { needs: 'electrolyte stability & glucose-free steady energy for conflict monitoring', items: [
+        { food: 'Salted broth', amt: ['1 cup', '1–2 cups', '2 cups'], why: 'Fast sodium + fluid. Conflict monitoring degrades quickly when you are under-fueled or under-salted, which reads as irritability and errors.' },
+        { food: 'Beef fat / tallow with meals', amt: ['2–3 oz', '3–4 oz', '4–6 oz'], why: 'Dense steady energy without glucose swings; the brain\'s fuel stability matters most in long high-interference sessions.' }
+      ]},
+      spl: { needs: 'energy & hydration for spatial computation', items: [
+        { food: 'Beef with its fat', amt: ['6 oz', '7–8 oz', '8–10 oz'], why: 'Spatial working memory is metabolically expensive; adequate total energy and B12/iron support the parietal networks doing the rotation math.' },
+        { food: 'Water + electrolytes around sessions', amt: ['~500 ml', '~750 ml', '~1 L'], why: 'Even mild dehydration measurably degrades attention and spatial performance in controlled studies.' }
+      ]},
+      precuneus: { needs: 'DHA & choline for imagery/default-mode networks', items: [
+        { food: 'Egg yolks', amt: ['2 yolks', '3 yolks', '4 yolks'], why: 'Choline and cholesterol support the membrane turnover of this highly connected hub.' },
+        { food: 'Fatty fish (if you include it)', amt: ['3 oz', '4 oz', '6 oz'], why: 'DHA is concentrated in the synaptic membranes imagery networks use.' }
+      ]},
+      auditory: { needs: 'B12 & protein for auditory pathway myelin', items: [
+        { food: 'Beef / lamb', amt: ['6 oz', '7–8 oz', '8–10 oz'], why: 'The auditory pathway is heavily myelinated for microsecond timing; B12 and iron from red meat are the classic deficiency risks for it.' },
+        { food: 'Eggs (whole)', amt: ['2 eggs', '3 eggs', '4 eggs'], why: 'Choline + B12 + protein in one package for phospholipid membrane maintenance.' }
+      ]},
+      occipital: { needs: 'DHA & antioxidants for visual membranes', items: [
+        { food: 'Fatty fish or roe (if you include it)', amt: ['3 oz', '4 oz', '6 oz'], why: 'The retina and visual cortex hold the body\'s highest DHA concentrations; intake maintains that supply.' },
+        { food: 'Egg yolks', amt: ['2 yolks', '3 yolks', '4 yolks'], why: 'Yolks carry lutein and choline; lutein accumulates in retina and visual brain areas.' }
+      ]},
+      fusiform: { needs: 'DHA & choline for ventral visual recognition', items: [
+        { food: 'Egg yolks', amt: ['2 yolks', '3 yolks', '4 yolks'], why: 'Membrane phospholipid building blocks for high-throughput visual recognition tissue.' },
+        { food: 'Fatty fish (if you include it)', amt: ['3 oz', '4 oz', '6 oz'], why: 'DHA supports the synaptic density the ventral "what" pathway depends on.' }
+      ]},
+      rlpfc: { needs: 'dopamine precursors & steady energy for relational integration', items: [
+        { food: 'Beef (protein-rich cuts)', amt: ['6 oz', '7–8 oz', '8–10 oz'], why: 'Tyrosine and iron for the catecholamine signaling frontal integration relies on; protein also stabilizes energy across long sessions.' }
+      ]},
+      thalamus: { needs: 'thiamine (B1) & sleep-supporting glycine', items: [
+        { food: 'Pork or beef', amt: ['5–6 oz', '7 oz', '8 oz'], why: 'Thiamine deficiency targets thalamic memory circuits first (Wernicke–Korsakoff); meat is a reliable B1 source.' },
+        { food: 'Gelatin in the evening', amt: ['1 packet', '2 packets', '2 packets'], why: 'Sleep spindles — the thalamus\'s consolidation rhythm — need actual deep sleep; glycine in the evening is a low-risk sleep-quality support many use.' }
+      ]},
+      basalganglia: { needs: 'iron & tyrosine for dopamine systems', items: [
+        { food: 'Red meat (beef/lamb)', amt: ['6 oz', '7–8 oz', '8–10 oz'], why: 'Heme iron is the best-absorbed form, and iron is a required cofactor for dopamine synthesis in these circuits. Adequacy, not megadosing.' }
+      ]},
+      _generic: { needs: 'the carnivore basics: protein, choline, electrolytes', items: [
+        { food: 'Beef + egg yolks + salt to taste', amt: ['base day', 'training day', 'heavy training day'], why: 'Covers protein, choline, B12, iron, and sodium — the inputs every neural system shares. Area-specific evidence beyond this is limited, so the basics carry the weight.' }
+      ]}
+    };
+
+    function renderNutritionBreakdown(record, trainingLoad) {
+      const cont = document.getElementById('nutr-area-breakdown');
+      if (!cont) return;
+      if (!record || !record.modStats) { cont.innerHTML = ''; return; }
+      const tier = trainingLoad > 30 ? 2 : (trainingLoad > 15 ? 1 : 0);
+      const regionWeight = {};
+      Object.keys(MOD_REGION_WEIGHTS).forEach(m => {
+        if (!record.modStats[m]) return;
+        const w = MOD_REGION_WEIGHTS[m];
+        Object.keys(w).forEach(r => { if (w[r] >= 0.5) regionWeight[r] = Math.max(regionWeight[r] || 0, w[r]); });
+      });
+      const regions = Object.keys(regionWeight).sort((a, b) => regionWeight[b] - regionWeight[a]);
+      if (!regions.length) { cont.innerHTML = '<div style="font-size:11px; color:#888;">No emphasized areas to break down for the latest session.</div>'; return; }
+      cont.innerHTML = regions.map(r => {
+        const entry = AREA_NUTRITION[r] || AREA_NUTRITION._generic;
+        const name = (BRAIN_REGIONS[r] || {}).name || r;
+        const items = entry.items.map(it => `
+          <div style="margin:6px 0; font-size:11px; color:#fef3c7;">
+            <strong>${it.food}</strong> — <span style="color:#38bdf8;">consider ${it.amt[tier]}</span>
+            <details class="nutr-why" style="margin-top:3px;">
+              <summary style="cursor:pointer; color:#9fc3ff; font-size:10px;">Why?</summary>
+              <div style="color:#cbd5e1; line-height:1.6; margin-top:3px;">${it.why}</div>
+            </details>
+          </div>`).join('');
+        return `<details class="nutr-area" style="border:1px solid #451a03; background:#0f0b06; padding:8px 10px; margin-bottom:8px;">
+          <summary style="cursor:pointer; color:#fde68a; font-size:12px;"><strong>${name}</strong> — especially uses: ${entry.needs}</summary>
+          <div style="margin-top:6px;">${items}</div>
+        </details>`;
+      }).join('');
+    }
+
     function updateNutritionTabDisplay() {
       if (!activeUser) return;
       const history = JSON.parse(localStorage.getItem(`steeltrap_records_${activeUser}`) || '[]');
@@ -2771,6 +3028,7 @@ Press [Space] to begin your session.`);
       document.getElementById('nutr-accumulated-volume').innerText = `${g.durationMins} min session`;
       document.getElementById('nutr-food-list').innerHTML = g.foodItems.map(item => `<li style="margin-bottom:6px;">${item}</li>`).join('');
       document.getElementById('nutr-electrolyte-directive').innerHTML = g.electrolyteText;
+      renderNutritionBreakdown(latest, g.trainingLoad);
     }
 
     /* =====================================================================
@@ -2813,8 +3071,10 @@ Press [Space] to begin your session.`);
     let sessionRemainingSeconds = 0;
     let sessionStartTime = null;
 
-    let userInputs = { pos: false, audio: false, aud2: false, rel: false, img: false, col: false, rot: false };
+    let userInputs = { pos: false, audio: false, aud2: false, rel: false, img: false, col: false, rot: false, srot: false };
     let sessionSaved = false;
+    let sessionReverse = false;
+    let sessionSettingsSnapshot = null;
     let activeGoalFolderTag = null;
     let sessionLogs = [];
 
@@ -2825,9 +3085,13 @@ Press [Space] to begin your session.`);
     document.getElementById('btn-input-col').addEventListener('click', () => registerPlayerInput('col'));
     document.getElementById('btn-input-rot').addEventListener('click', () => registerPlayerInput('rot'));
     document.getElementById('btn-input-audio2').addEventListener('click', () => registerPlayerInput('aud2'));
+    document.getElementById('btn-input-srot').addEventListener('click', () => registerPlayerInput('srot'));
 
     function registerPlayerInput(act) {
-      if (!isRunning || currentTrial < nLevel) return;
+      if (!isRunning) return;
+      // Normal: responses count once trial >= N. Reverse: responses count while the
+      // forward partner (currentTrial + N) still exists in the pre-generated sequence.
+      if (sessionReverse ? (currentTrial > totalTrials - 1 - nLevel) : (currentTrial < nLevel)) return;
       userInputs[act] = true;
       const btn = document.getElementById(`btn-input-${act}`);
       if (btn) {
@@ -2842,8 +3106,9 @@ Press [Space] to begin your session.`);
     }
 
     function startGame() {
-      nLevel = parseInt(document.getElementById('cfg-n-level').value) || 2;
-      trialInterval = parseFloat(document.getElementById('cfg-interval').value) || 2.5;
+      nLevel = Math.max(1, Math.min(20, parseInt(document.getElementById('cfg-n-level').value) || 2));
+      trialInterval = Math.max(0.3, Math.min(30, parseFloat(document.getElementById('cfg-interval').value) || 2.5));
+      sessionReverse = document.getElementById('cfg-reverse').checked;
       flashDuration = parseFloat(document.getElementById('cfg-flash').value) || 0.8;
       lureRate = parseFloat(document.getElementById('cfg-lures').value) || 87.5;
 
@@ -2851,7 +3116,7 @@ Press [Space] to begin your session.`);
       if (durationMode === 'timed') recalculateTrialsFromMinutes();
       totalTrials = parseInt(document.getElementById('cfg-trials').value) || 24;
 
-      const MOD_CHECKBOX = { pos: 'cfg-mod-pos', audio: 'cfg-mod-audio', aud2: 'cfg-mod-audio2', rel: 'cfg-mod-rel', img: 'cfg-mod-img', col: 'cfg-mod-col', rot: 'cfg-mod-rot' };
+      const MOD_CHECKBOX = { pos: 'cfg-mod-pos', audio: 'cfg-mod-audio', aud2: 'cfg-mod-audio2', rel: 'cfg-mod-rel', img: 'cfg-mod-img', col: 'cfg-mod-col', rot: 'cfg-mod-rot', srot: 'cfg-mod-srot' };
       const MOD_POOL = { audio: 'audio', aud2: 'audio2', img: 'img', col: 'col', rot: 'rot' };
       const mods = Object.keys(MOD_CHECKBOX).filter(m => document.getElementById(MOD_CHECKBOX[m]).checked);
       if (mods.length === 0) { alert("Select at least one active modality."); return; }
@@ -2864,6 +3129,7 @@ Press [Space] to begin your session.`);
         }
       }
 
+      sessionSettingsSnapshot = getFormSettingsObject();
       isRunning = true;
       currentTrial = -1;
       sessionLogs = [];
@@ -2916,9 +3182,18 @@ Press [Space] to begin your session.`);
       activeChallengeContext = null;
     }
 
+    // Sequence generation. Partner abstraction: in normal mode trial i matches trial
+    // i - N; in REVERSE mode the sequence is pre-generated, so trial i matches the
+    // stimulus N trials AHEAD (i + N). Targets copy the partner's stimulus; lures copy
+    // from a partner-neighbour (partner +/- 1). Spatial rotation (srot) stimuli are
+    // "objIdx|yaw|pitch|mirror" keys; mirrored copies are classic Shepard-Metzler foils
+    // (a mirrored object can never be rotated into the original, so never a match).
     function generateBWSequence(activeMods) {
       const seq = [];
       const targetCount = Math.floor(totalTrials * 0.30);
+      const rev = sessionReverse;
+      const partnerOf = (i) => rev ? i + nLevel : i - nLevel;
+      const inRange = (i) => i >= 0 && i < totalTrials;
 
       for (let i = 0; i < totalTrials; i++) {
         const catIdx = Math.floor(Math.random() * RELATIONAL_CATEGORIES.length);
@@ -2935,51 +3210,65 @@ Press [Space] to begin your session.`);
           col: weightedPickId('col'),
           rotShape: weightedPickId('rot'),
           rotAngle: [0, 90, 180, 270][Math.floor(Math.random() * 4)],
+          srot: smRandomKey(),
           isTarget: {},
           isLure: {}
         });
       }
 
+      const copyStim = (dst, srcStim, mod) => {
+        if (mod === 'rot') {
+          dst.rotShape = srcStim.rotShape;
+          dst.rotAngle = [0, 90, 180, 270][Math.floor(Math.random() * 4)];
+        } else if (mod === 'rel') {
+          dst.relCategory = srcStim.relCategory;
+          const catObj = RELATIONAL_CATEGORIES[srcStim.relCategory];
+          dst.relPair = catObj.pairs[Math.floor(Math.random() * catObj.pairs.length)];
+        } else if (mod === 'srot') {
+          dst.srot = srcStim.srot;
+        } else {
+          dst[mod] = srcStim[mod];
+        }
+      };
+      const sameStim = (a, b, mod) => {
+        if (mod === 'rot') return a.rotShape === b.rotShape;
+        if (mod === 'rel') return a.relCategory === b.relCategory;
+        if (mod === 'srot') return a.srot === b.srot;
+        return a[mod] === b[mod];
+      };
+
       activeMods.forEach(mod => {
         let placed = 0;
         let attempts = 0;
-        while (placed < targetCount && attempts < 250) {
+        while (placed < targetCount && attempts < 400) {
           attempts++;
-          const idx = nLevel + Math.floor(Math.random() * (totalTrials - nLevel));
-          if (!seq[idx].isTarget[mod]) {
-            if (mod === 'rot') {
-              seq[idx].rotShape = seq[idx - nLevel].rotShape;
-              seq[idx].rotAngle = [0, 90, 180, 270][Math.floor(Math.random() * 4)];
-            } else if (mod === 'rel') {
-              const targetCat = seq[idx - nLevel].relCategory;
-              seq[idx].relCategory = targetCat;
-              const catObj = RELATIONAL_CATEGORIES[targetCat];
-              seq[idx].relPair = catObj.pairs[Math.floor(Math.random() * catObj.pairs.length)];
-            } else {
-              seq[idx][mod] = seq[idx - nLevel][mod];
-            }
-            seq[idx].isTarget[mod] = true;
-            placed++;
-          }
+          const idx = Math.floor(Math.random() * totalTrials);
+          const p = partnerOf(idx);
+          if (!inRange(p) || seq[idx].isTarget[mod]) continue;
+          copyStim(seq[idx], seq[p], mod);
+          seq[idx].isTarget[mod] = true;
+          placed++;
         }
 
         const prob = lureRate / 100;
-        for (let i = nLevel + 1; i < totalTrials; i++) {
-          if (!seq[i].isTarget[mod] && Math.random() < prob) {
-            const offset = (Math.random() > 0.5 && i >= nLevel + 1) ? (nLevel - 1) : (nLevel + 1);
-            if (i - offset >= 0 && i - offset < totalTrials) {
-              if (mod === 'rot') {
-                seq[i].rotShape = seq[i - offset].rotShape;
-                if (seq[i].rotShape !== seq[i - nLevel].rotShape) seq[i].isLure[mod] = true;
-              } else if (mod === 'rel') {
-                seq[i].relCategory = seq[i - offset].relCategory;
-                if (seq[i].relCategory !== seq[i - nLevel].relCategory) seq[i].isLure[mod] = true;
-              } else {
-                seq[i][mod] = seq[i - offset][mod];
-                if (seq[i][mod] !== seq[i - nLevel][mod]) seq[i].isLure[mod] = true;
-              }
-            }
+        for (let i = 0; i < totalTrials; i++) {
+          const p = partnerOf(i);
+          if (!inRange(p) || seq[i].isTarget[mod]) continue;
+          if (Math.random() >= prob) continue;
+          if (mod === 'srot' && Math.random() < 0.5) {
+            // Mirrored-object foil near the partner or near the current trial.
+            const cands = [p - 1, p + 1, i - 1, i + 1].filter(inRange);
+            if (!cands.length) continue;
+            const s = seq[cands[Math.floor(Math.random() * cands.length)]];
+            const parts = String(s.srot).split('|');
+            seq[i].srot = parts[0] + '|' + parts[1] + '|' + parts[2] + '|1';
+            if (!sameStim(seq[i], seq[p], 'srot')) seq[i].isLure[mod] = true;
+            continue;
           }
+          const srcIdx = p + (Math.random() > 0.5 ? 1 : -1);
+          if (!inRange(srcIdx)) continue;
+          copyStim(seq[i], seq[srcIdx], mod);
+          if (!sameStim(seq[i], seq[p], mod)) seq[i].isLure[mod] = true;
         }
       });
       return seq;
@@ -2994,7 +3283,7 @@ Press [Space] to begin your session.`);
         finishGame(); return;
       }
 
-      userInputs = { pos: false, audio: false, aud2: false, rel: false, img: false, col: false, rot: false };
+      userInputs = { pos: false, audio: false, aud2: false, rel: false, img: false, col: false, rot: false, srot: false };
       clearCellDisplays();
       renderTrialStimuli(sequence[currentTrial]);
 
@@ -3010,6 +3299,7 @@ Press [Space] to begin your session.`);
       const useImg = document.getElementById('cfg-mod-img').checked;
       const useCol = document.getElementById('cfg-mod-col').checked;
       const useRot = document.getElementById('cfg-mod-rot').checked;
+      const useSrot = document.getElementById('cfg-mod-srot').checked;
 
       const cellIdx = usePos ? item.pos : 4;
       const cell = document.querySelector(`.bw-cell[data-idx="${cellIdx}"]`);
@@ -3034,6 +3324,12 @@ Press [Space] to begin your session.`);
         if (t) playTone(t.value);
       }
 
+      const srotBox = document.getElementById('srot-display');
+      if (srotBox) {
+        if (useSrot) { srotBox.style.display = 'block'; smDrawStimulus(item.srot); }
+        else srotBox.style.display = 'none';
+      }
+
       runDistractors();
     }
 
@@ -3043,6 +3339,8 @@ Press [Space] to begin your session.`);
       });
       const dd = document.getElementById('distractor-display');
       if (dd) dd.style.display = 'none';
+      const sb = document.getElementById('srot-display');
+      if (sb) sb.style.display = 'none';
       const grid = document.getElementById('bw-grid');
       if (grid) { grid.style.borderColor = ''; grid.style.boxShadow = ''; }
       const useRel = document.getElementById('cfg-mod-rel').checked;
@@ -3052,9 +3350,10 @@ Press [Space] to begin your session.`);
     }
 
     function evaluateTrial(idx) {
-      if (idx < nLevel) return;
+      const partnerIdx = sessionReverse ? idx + nLevel : idx - nLevel;
+      if (partnerIdx < 0 || partnerIdx >= totalTrials) return;
       const curr = sequence[idx];
-      const prev = sequence[idx - nLevel];
+      const prev = sequence[partnerIdx];
 
       const mods = [
         { key: 'pos', active: document.getElementById('cfg-mod-pos').checked, match: curr.pos === prev.pos },
@@ -3063,7 +3362,8 @@ Press [Space] to begin your session.`);
         { key: 'rel', active: document.getElementById('cfg-mod-rel').checked, match: curr.relCategory === prev.relCategory },
         { key: 'img', active: document.getElementById('cfg-mod-img').checked, match: curr.img === prev.img },
         { key: 'col', active: document.getElementById('cfg-mod-col').checked, match: curr.col === prev.col },
-        { key: 'rot', active: document.getElementById('cfg-mod-rot').checked, match: curr.rotShape === prev.rotShape }
+        { key: 'rot', active: document.getElementById('cfg-mod-rot').checked, match: curr.rotShape === prev.rotShape },
+        { key: 'srot', active: document.getElementById('cfg-mod-srot').checked, match: curr.srot === prev.srot }
       ];
 
       mods.forEach(m => {
@@ -3103,7 +3403,7 @@ Press [Space] to begin your session.`);
       const modStats = {};
       let totalHits = 0, totalMisses = 0, totalFA = 0, totalCR = 0;
 
-      ['pos', 'audio', 'aud2', 'rel', 'img', 'col', 'rot'].forEach(m => {
+      ['pos', 'audio', 'aud2', 'rel', 'img', 'col', 'rot', 'srot'].forEach(m => {
         const entries = sessionLogs.filter(l => l.mod === m);
         if (entries.length === 0) { modStats[m] = null; return; }
         let h = 0, mis = 0, fa = 0, cr = 0;
@@ -3152,7 +3452,9 @@ Press [Space] to begin your session.`);
         chamber: document.getElementById('cfg-log-chamber').checked ? `${document.getElementById('cfg-log-hours').value}h` : 'No',
         diet: document.getElementById('cfg-log-diet').value || 'Standard',
         notes: document.getElementById('cfg-log-notes').value || '-',
-        music: musicPlaying ? 'Yes' : 'No'
+        music: musicPlaying ? 'Yes' : 'No',
+        reverse: sessionReverse,
+        settings: sessionSettingsSnapshot || null
       };
 
       activeGoalFolderTag = null;
@@ -3178,7 +3480,8 @@ Press [Space] to begin your session.`);
             relAcc: modStats.rel ? modStats.rel.acc + '%' : 'Off',
             imgAcc: modStats.img ? modStats.img.acc + '%' : 'Off',
             colAcc: modStats.col ? modStats.col.acc + '%' : 'Off',
-            rotAcc: modStats.rot ? modStats.rot.acc + '%' : 'Off'
+            rotAcc: modStats.rot ? modStats.rot.acc + '%' : 'Off',
+            srotAcc: modStats.srot ? modStats.srot.acc + '%' : 'Off'
           };
           saveAllChallenges(challs);
         }
@@ -3240,14 +3543,14 @@ Living Brain Profile updated!`);
           <td style="color:#00ff66; font-weight:bold;">${r.acc}</td>
           <td style="color:#fff;">${r.gRating}</td>
           <td>${fmt(r.modStats.pos)}</td><td>${fmt(r.modStats.audio)}</td><td>${fmt(r.modStats.aud2)}</td><td>${fmt(r.modStats.rel)}</td>
-          <td>${fmt(r.modStats.img)}</td><td>${fmt(r.modStats.col)}</td><td>${fmt(r.modStats.rot)}</td>
+          <td>${fmt(r.modStats.img)}</td><td>${fmt(r.modStats.col)}</td><td>${fmt(r.modStats.rot)}</td><td>${fmt(r.modStats.srot)}</td>
           <td>${r.sleep}/10</td><td style="color:#00aaff;">${r.chamber}</td><td>${r.music || 'No'}</td>
         </tr>`;
       }
 
       const head = `<thead><tr>
         <th>Time</th><th>Folder</th><th>Status</th><th>N</th><th>Interval</th><th>Duration</th><th>Lures</th><th>Accuracy</th><th>Load Index</th>
-        <th>Pos</th><th>Audio</th><th>Audio 2</th><th>Relation</th><th>Img</th><th>Col</th><th>Rot</th><th>Sleep</th><th>Chamber</th><th>Music</th>
+        <th>Pos</th><th>Audio</th><th>Audio 2</th><th>Relation</th><th>Img</th><th>Col</th><th>Rot</th><th>Spat Rot</th><th>Sleep</th><th>Chamber</th><th>Music</th>
       </tr></thead>`;
 
       if (dateGrouping === 'DAYS') {
@@ -3290,7 +3593,7 @@ Living Brain Profile updated!`);
       if (history.length === 0) { alert("No records to export."); return; }
 
       const q = v => `"${String(v == null ? '' : v).replace(/"/g, '""')}"`;
-      const headers = ["User", "Date", "Time", "Timestamp", "Status", "Folder", "N-Level", "Interval", "Duration", "Lure %", "Accuracy", "Session Load Index", "Position Acc", "Audio Acc", "Audio 2 Acc", "Relation Acc", "Image Acc", "Color Acc", "Rotation Acc", "Sleep", "Energy", "Mood", "Chamber", "Diet", "Notes", "Music"];
+      const headers = ["User", "Date", "Time", "Timestamp", "Status", "Folder", "N-Level", "Interval", "Duration", "Lure %", "Accuracy", "Session Load Index", "Position Acc", "Audio Acc", "Audio 2 Acc", "Relation Acc", "Image Acc", "Color Acc", "Rotation Acc", "Spatial Rotation Acc", "Reverse", "Distractor Rate", "Settings Snapshot", "Sleep", "Energy", "Mood", "Chamber", "Diet", "Notes", "Music"];
       const rows = history.map(r => [
         q(activeUser), q(r.date), q(r.time), q(r.timestamp || ''), q(r.status || 'Completed'), q(r.folder || 'General'), q(r.nLevel), q(r.interval), q(r.duration || 'N/A'), q(r.lures), q(r.acc), q(r.gRating),
         q(r.modStats.pos ? r.modStats.pos.acc : 'N/A'),
@@ -3300,6 +3603,10 @@ Living Brain Profile updated!`);
         q(r.modStats.img ? r.modStats.img.acc : 'N/A'),
         q(r.modStats.col ? r.modStats.col.acc : 'N/A'),
         q(r.modStats.rot ? r.modStats.rot.acc : 'N/A'),
+        q(r.modStats.srot ? r.modStats.srot.acc : 'N/A'),
+        q(r.reverse ? 'Yes' : 'No'),
+        q(r.settings ? r.settings.distRate : ''),
+        q(r.settings ? JSON.stringify(r.settings) : ''),
         q(r.sleep), q(r.energy || ''), q(r.mood || ''), q(r.chamber), q(r.diet), q(r.notes || ''), q(r.music || 'No')
       ]);
 
@@ -3314,7 +3621,7 @@ Living Brain Profile updated!`);
     }
     // --- Init wiring (merged features) ---
     loadSavedCredentials();
-    ['cfg-mod-pos', 'cfg-mod-audio', 'cfg-mod-audio2', 'cfg-mod-rel', 'cfg-mod-img', 'cfg-mod-col', 'cfg-mod-rot', 'cfg-n-level', 'cfg-lures'].forEach(id => {
+    ['cfg-mod-pos', 'cfg-mod-audio', 'cfg-mod-audio2', 'cfg-mod-rel', 'cfg-mod-img', 'cfg-mod-col', 'cfg-mod-rot', 'cfg-mod-srot', 'cfg-reverse', 'cfg-n-level', 'cfg-lures'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.addEventListener('change', updateActiveModeHUD);
     });
@@ -3351,6 +3658,816 @@ Living Brain Profile updated!`);
         document.getElementById('custom-music-info').innerText = `Track loaded: ${f.name} (this session only)`;
       }
     });
+
+    /* =====================================================================
+       11. ITERATION 2 — SHARED BRAIN COMPONENT (ANATOMY TAB + PROFILE),
+           WHAT'S-UNDERNEATH CALLOUT, PEEL-BACK CORTEX, SPATIAL 3D ROTATION
+       =====================================================================
+       One component, two instances ('anatomy' and 'profile'). Renders an
+       anatomically-laid-out schematic SVG brain in 4 views (left lateral,
+       superior, right lateral, medial). Drag rotates between views; wheel /
+       buttons zoom. Region positions follow standard atlas layouts:
+       frontal pole anterior, Broca in inferior frontal, motor strip behind
+       the frontal lobe, superior/inferior parietal behind that, occipital
+       posterior, auditory cortex on the superior temporal gyrus, fusiform
+       on the inferior temporal surface; on the medial view the ACC sits
+       above the corpus callosum, precuneus in medial parietal, retrosplenial
+       behind the cingulate, and hippocampus / parahippocampal / entorhinal
+       in the medial temporal lobe. Deep structures are hidden under the
+       cortex on surface views until "Peel back cortex" is used.
+       All coloring is ESTIMATED training emphasis — schematic, never a
+       measurement of brain activity.
+       ===================================================================== */
+
+    const BRAIN_REGION_ALIAS = { parietal: 'spl' };
+
+    const BRAIN_REGIONS = {
+      dlpfc: { name: 'Dorsolateral Prefrontal Cortex (dlPFC)', short: 'dlPFC',
+        desc: 'The core working-memory buffer of the frontal lobe: holds and updates information across a delay, juggles multiple streams, and applies top-down control against distraction.',
+        history: 'Phineas Gage (1848) survived a tamping iron through his frontal lobes and emerged with a changed personality — the first famous evidence the frontal cortex carries executive function. Patricia Goldman-Rakic\'s work in the 1970s–90s pinned delay-period working memory to this region.',
+        training: 'Loaded by every modality; emphasis grows with N level and with more simultaneous streams.' },
+      rlpfc: { name: 'Rostrolateral Prefrontal Cortex (rlPFC / Frontal Pole, BA 10)', short: 'rlPFC',
+        desc: 'The front-most tip of the brain. Integrates relations between relations — analogy, second-order rules, and holding a goal in mind while handling sub-goals.',
+        history: 'One of the last cortical areas to be functionally mapped. Work by Paul Burgess and colleagues showed frontal-pole damage leaves routine tasks intact but wrecks multitasking and prospective memory — remembering to act on an intention later.',
+        training: 'Loaded most directly by Relational Word Reasoning; also by high-N play and reverse n-back.' },
+      acc: { name: 'Anterior Cingulate Cortex (ACC)', short: 'ACC',
+        desc: 'A medial frontal conflict monitor: it flags when a familiar-looking lure competes with the true target and recruits control to resolve the clash.',
+        history: 'James Papez placed the cingulate in his emotion circuit in 1937. Modern conflict-monitoring theory (Botvinick and colleagues, 2001) reframed the ACC as the brain\'s mismatch detector.',
+        training: 'Emphasis scales with interference (lure) rate — high-lure sessions are ACC sessions.' },
+      broca: { name: 'Broca\'s Area (Inferior Frontal Gyrus)', short: 'Broca',
+        desc: 'Classically left-sided inferior frontal cortex for speech production and verbal rehearsal — the articulatory side of the phonological loop that silently repeats letters and words.',
+        history: 'In 1861 Paul Broca described his patient Leborgne, who could utter only the syllable "Tan" after damage here — the first strong localization of a language function in the brain.',
+        training: 'Loaded by the Auditory Phonemes stream (subvocal rehearsal of letters) and relational word processing.' },
+      premotor: { name: 'Premotor & Motor Strip', short: 'Motor',
+        desc: 'Plans and executes movement — here, the timed button presses of the response keys and the sequencing of rapid responses at short intervals.',
+        history: 'Wilder Penfield mapped the motor homunculus in the 1930s–50s by stimulating awake patients\' cortex, drawing the distorted body map still printed in textbooks today.',
+        training: 'Lightly loaded by all play; more at fast intervals and by rotation responses.' },
+      spl: { name: 'Superior Parietal Lobule / Intraparietal Sulcus (SPL/IPS)', short: 'SPL',
+        desc: 'The dorsal spatial workspace: tracks positions, transforms coordinates, and performs mental rotation of objects in space.',
+        history: 'Rudolf Bálint described Bálint syndrome in 1909 — bilateral parietal damage that shatters spatial attention and reaching. Shepard & Metzler\'s 1971 chronometric rotation studies pointed to this dorsal system as the rotation engine.',
+        training: 'Loaded heavily by Spatial Position, in-plane Rotation, and Spatial 3D Rotation.' },
+      infparietal: { name: 'Inferior Parietal Lobule', short: 'InfPar',
+        desc: 'Integrates spatial, numerical, and categorical information; a relay between perception and the frontal control system, and part of the relational reasoning network.',
+        history: 'Josef Gerstmann described Gerstmann syndrome (1940) from inferior parietal lesions — agraphia, acalculia, and left–right confusion. Parietal lesions also cause hemispatial neglect, dramatized in Oliver Sacks\' case writing.',
+        training: 'Loaded by position binding and relational reasoning.' },
+      precuneus: { name: 'Precuneus', short: 'Precuneus',
+        desc: 'Medial parietal hub for visuospatial imagery — holding and inspecting scenes in the mind\'s eye — and a core node of the default-mode network.',
+        history: 'Marcus Raichle\'s PET work (2001) identified the precuneus/posterior cingulate as one of the most metabolically active regions at rest, anchoring the default-mode network concept.',
+        training: 'Loaded by position, image, and rotation work — the imagery side of spatial training.' },
+      occipital: { name: 'Occipital Visual Cortex (V1–V4)', short: 'Visual',
+        desc: 'Primary and early visual cortex: edges, contrast, and color (V4) — the entry point for every visual stimulus in the game.',
+        history: 'David Hubel and Torsten Wiesel (1959–62) discovered orientation-selective neurons here with microelectrodes in cats, winning the 1981 Nobel Prize and founding modern visual neuroscience.',
+        training: 'Loaded by Image (form) and Color (V4) streams, and by the visual side of every modality.' },
+      fusiform: { name: 'Fusiform Gyrus', short: 'Fusiform',
+        desc: 'Ventral visual cortex for high-level form: objects, shapes, and (in the fusiform face area) faces — the "what" pathway\'s recognition stage.',
+        history: 'Nancy Kanwisher identified the fusiform face area in 1997. Damage here causes prosopagnosia — inability to recognize familiar faces — described in Sacks\' "The Man Who Mistook His Wife for a Hat".',
+        training: 'Loaded by the Image stream and by color-form binding.' },
+      auditory: { name: 'Auditory Cortex (Superior Temporal Gyrus)', short: 'Auditory',
+        desc: 'Primary auditory cortex on the superior temporal gyrus: decodes pitch, timbre, and phonemes — the entry point for letters and tones.',
+        history: 'Richard Heschl described the transverse temporal gyri in 1878. Penfield\'s stimulations here produced buzzing, tones, and voices in awake patients.',
+        training: 'Loaded maximally by Auditory Phonemes and by the Audio 2 tone stream.' },
+      wernicke: { name: 'Wernicke\'s Area (Posterior Superior Temporal)', short: 'Wernicke',
+        desc: 'Speech comprehension cortex: maps sound onto meaning and keeps verbal material intelligible while it is held in mind.',
+        history: 'Carl Wernicke (1874) described patients who spoke fluently but understood nothing — receptive aphasia — complementing Broca\'s production deficit and founding the language-network model.',
+        training: 'Loaded by auditory letter streams and relational word meaning.' },
+      insula: { name: 'Insula', short: 'Insula',
+        desc: 'Cortex folded deep inside the lateral sulcus, beneath the temporal and frontal opercula. Interoception, salience, and the felt sense of effort.',
+        history: 'A. D. Craig\'s work (2002) established the insula as the interoceptive cortex. Naqvi and colleagues (2007) found smokers with insula damage could quit abruptly — the lesion erased the bodily urge.',
+        training: 'Deep to the lateral sulcus — not directly targeted, but engaged by salience/effort monitoring in hard sessions. Reveal it with Peel Back Cortex.' },
+      hippocampus: { name: 'Hippocampus', short: 'Hippo',
+        desc: 'Medial temporal binding engine: pattern separation (telling similar memories apart) and relational binding of items to contexts — positions, scenes, and associations.',
+        history: 'Patient H.M. (Henry Molaison) lost the ability to form new declarative memories after bilateral hippocampal removal in 1953 (Scoville & Milner, 1957). John O\'Keefe found place cells here in 1971 (Nobel 2014). Patient R.B. showed even a lesion limited to CA1 produces amnesia. Eleanor Maguire (2000) found London taxi drivers had enlarged posterior hippocampi.',
+        training: 'Loaded by position + image binding and relational reasoning, especially under high lure interference (pattern separation).' },
+      parahippocampal: { name: 'Parahippocampal Cortex', short: 'ParaHip',
+        desc: 'Medial temporal cortex wrapping the hippocampus: encodes spatial context and scenes — the scaffolding of places and layouts.',
+        history: 'Russell Epstein and Nancy Kanwisher (1998) identified the parahippocampal place area, which responds selectively to scenes and places rather than objects.',
+        training: 'Loaded by image/scene stimuli, spatial position context, and relational material.' },
+      entorhinal: { name: 'Entorhinal Cortex', short: 'Entorh',
+        desc: 'The gateway into the hippocampus: its grid cells tile space with a coordinate metric used for navigation and relational maps.',
+        history: 'Hafting, Fyhn, and the Mosers described grid cells here in 2005 (Nobel 2014). Heiko Braak showed the entorhinal cortex is among the first sites of Alzheimer\'s pathology.',
+        training: 'Engaged by spatial position work and scene/context binding alongside the hippocampus.' },
+      retrosplenial: { name: 'Retrosplenial Cortex', short: 'Retrosp',
+        desc: 'Posterior medial cortex behind the cingulate: translates between viewpoints (egocentric ↔ allocentric), heading direction, and scene orientation.',
+        history: 'Clinical cases of retrosplenial amnesia and topographical disorientation (Valenstein and colleagues, 1987) showed this small region is critical for finding one\'s way.',
+        training: 'Engaged by spatial position and rotation tasks that require viewpoint transformation.' },
+      basalganglia: { name: 'Basal Ganglia / Caudate', short: 'BasalG',
+        desc: 'Subcortical loops beneath the frontal and parietal cortex for habit, procedural learning, and gating what enters working memory.',
+        history: 'James Parkinson described the shaking palsy in 1817. H.M. could still learn motor skills (mirror drawing, Brenda Milner) with his hippocampus gone — proof this system learns independently of declarative memory.',
+        training: 'Procedural/gating support for all play; loaded by response sequencing and frontal control demands.' },
+      thalamus: { name: 'Thalamus', short: 'Thalamus',
+        desc: 'The central relay beneath the cortex: nearly all sensory input passes through it, and its frontal loops help sustain attention and working-memory activity.',
+        history: 'Thalamic strokes can produce dense amnesia resembling Korsakoff syndrome (Victor and colleagues, 1971), showing memory depends on this relay, not cortex alone.',
+        training: 'Relay/attention support for every modality; emphasis follows overall session load.' },
+      cerebellum: { name: 'Cerebellum', short: 'Cerebellum',
+        desc: 'Posterior-inferior structure for timing, prediction, and error correction — in movement and, increasingly recognized, in cognition and pacing.',
+        history: 'Marie-Jean-Pierre Flourens\' ablation studies (1824) tied the cerebellum to coordination. Jeremy Schmahmann described the cerebellar cognitive affective syndrome in 1998.',
+        training: 'Loaded by rapid-interval pacing and precise response timing.' },
+      amygdala: { name: 'Amygdala', short: 'Amygdala',
+        desc: 'Small medial-temporal nucleus for salience and emotional tagging — it marks experiences as important, modulating how strongly they are stored.',
+        history: 'Klüver and Bucy (1937) reported dramatic tameness after temporal lesions including the amygdala. Patient S.M., studied by Ralph Adolphs (1994), cannot recognize fear in faces after bilateral amygdala damage.',
+        training: 'Not directly targeted by n-back modes. It sits at the front of the hippocampus and tags experiences by salience, which can indirectly modulate how strongly hard sessions are encoded.' },
+      somatosensory: { name: 'Somatosensory Cortex (Postcentral Gyrus)', short: 'Somato',
+        desc: 'The strip just behind the motor cortex that maps touch, proprioception, and body position — your felt sense of where your fingers are on the keys.',
+        history: 'Penfield mapped the sensory homunculus alongside the motor one; the paracentral lobule (its medial continuation) serves the legs and feet.',
+        training: 'Not directly targeted by n-back modes; it supports the tactile/proprioceptive side of fast, accurate key presses.' },
+      brainstem: { name: 'Brainstem', short: 'Stem',
+        desc: 'The stalk connecting cortex to spinal cord: houses the reticular activating system (arousal/wakefulness), breathing and autonomic control, and the cranial nerve nuclei.',
+        history: 'Moruzzi and Magoun (1949) showed the reticular formation drives wakefulness — lesions produce coma, stimulation produces arousal. It is why sleep and alertness gate all cognition above it.',
+        training: 'Not directly targeted by n-back modes. Its arousal systems set the alertness ceiling for every session — which is why sleep matters more than any single drill.' }
+    };
+
+    // Per-modality estimated region weights (0-1). Used by BOTH the anatomy
+    // settings preview and the profile accumulation, so the two stay consistent.
+    const MOD_REGION_WEIGHTS = {
+      pos:   { spl: .9, infparietal: .6, precuneus: .7, dlpfc: .8, hippocampus: .6, premotor: .3, retrosplenial: .4, occipital: .3, thalamus: .3 },
+      audio: { auditory: 1.0, broca: .8, wernicke: .6, dlpfc: .6, acc: .4, thalamus: .3 },
+      aud2:  { auditory: .8, dlpfc: .5, acc: .4, thalamus: .3 },
+      rel:   { rlpfc: .9, hippocampus: .8, infparietal: .6, dlpfc: .7, parahippocampal: .5, wernicke: .4 },
+      img:   { occipital: .9, fusiform: .8, parahippocampal: .7, hippocampus: .5, dlpfc: .4 },
+      col:   { occipital: .9, fusiform: .5, dlpfc: .4 },
+      rot:   { spl: .9, precuneus: .7, premotor: .4, dlpfc: .5, occipital: .3 },
+      srot:  { spl: .9, precuneus: .8, premotor: .5, dlpfc: .5, occipital: .4 }
+    };
+
+    // What lies anatomically beneath each surface region (schematic depth stack).
+    const REGION_BENEATH = {
+      dlpfc: ['basalganglia', 'thalamus'], rlpfc: ['basalganglia'], broca: ['insula', 'basalganglia'],
+      premotor: ['basalganglia', 'thalamus'], spl: ['thalamus', 'retrosplenial'],
+      infparietal: ['thalamus', 'retrosplenial'], auditory: ['insula', 'hippocampus', 'amygdala'],
+      wernicke: ['insula', 'parahippocampal'], fusiform: ['parahippocampal', 'hippocampus'],
+      occipital: ['parahippocampal'], insula: ['basalganglia', 'amygdala'], acc: ['basalganglia'],
+      precuneus: ['retrosplenial'], retrosplenial: ['hippocampus'], parahippocampal: ['hippocampus'],
+      entorhinal: ['hippocampus'], hippocampus: [], amygdala: [], thalamus: [], basalganglia: [], cerebellum: [], somatosensory: ['thalamus'], brainstem: []
+    };
+
+    const BRAIN_GROUPS = {
+      visual:   { label: 'Visual', regions: ['occipital', 'fusiform'] },
+      spatial:  { label: 'Spatial', regions: ['spl', 'infparietal', 'precuneus', 'retrosplenial'] },
+      wm:       { label: 'Working Memory & Control', regions: ['dlpfc', 'rlpfc', 'acc', 'premotor', 'basalganglia', 'thalamus'] },
+      auditoryg:{ label: 'Auditory', regions: ['auditory', 'wernicke'] },
+      language: { label: 'Language', regions: ['broca', 'wernicke', 'auditory'] },
+      memory:   { label: 'Memory & Medial Temporal', regions: ['hippocampus', 'parahippocampal', 'entorhinal', 'amygdala', 'retrosplenial'] }
+    };
+
+    /* ---- View geometry (viewBox 0 0 520 400). Region entries: {d, lx, ly}. ---- */
+    const BRAIN_VIEWS = {
+      left: {
+        label: 'Left Lateral',
+        outline: 'M78,222 C52,178 60,118 112,80 C160,45 245,30 330,38 C415,46 472,88 482,148 C490,198 472,238 438,256 C420,266 404,262 396,248 C376,272 326,284 282,278 C238,272 206,262 178,262 C140,262 96,252 78,222 Z',
+        extra: '',
+        overlay: '<path d="M104,208 C180,196 260,192 336,196" fill="none" stroke="rgba(190,215,255,.28)" stroke-width="2"/><path d="M252,58 C262,104 276,148 292,186" fill="none" stroke="rgba(190,215,255,.28)" stroke-width="2"/><path d="M382,306 C410,296 446,298 462,310" fill="none" stroke="rgba(190,215,255,.25)" stroke-width="1.5"/><path d="M380,326 C408,316 448,318 464,330" fill="none" stroke="rgba(190,215,255,.25)" stroke-width="1.5"/><path d="M388,346 C412,338 442,340 456,348" fill="none" stroke="rgba(190,215,255,.25)" stroke-width="1.5"/>',
+        surface: {
+          rlpfc:      { d: 'M86,148 C80,118 98,92 126,84 C140,100 142,128 134,152 C118,166 98,164 86,148 Z', lx: 112, ly: 126 },
+          dlpfc:      { d: 'M132,78 C164,54 214,50 244,64 C250,96 242,130 220,150 C188,158 154,146 136,120 C126,104 124,90 132,78 Z', lx: 188, ly: 104 },
+          broca:      { d: 'M98,166 C114,154 142,154 156,168 C158,190 148,208 126,212 C106,214 92,196 98,166 Z', lx: 126, ly: 186 },
+          premotor:   { d: 'M248,62 C272,56 296,64 304,84 C308,122 302,162 286,188 C268,192 252,182 246,162 C238,130 238,90 248,62 Z', lx: 274, ly: 124 },
+          somatosensory: { d: 'M306,66 C318,58 334,62 340,76 C344,110 340,150 330,178 C318,182 308,172 304,152 C300,120 300,84 306,66 Z', lx: 322, ly: 122 },
+          spl:        { d: 'M330,56 C360,46 398,52 416,74 C420,102 406,128 380,138 C356,142 336,132 328,110 C322,88 322,68 330,56 Z', lx: 372, ly: 96 },
+          infparietal:{ d: 'M332,144 C360,132 392,140 404,164 C408,190 392,212 364,214 C340,216 324,196 326,172 C326,158 328,150 332,144 Z', lx: 366, ly: 178 },
+          auditory:   { d: 'M198,208 C226,194 268,192 294,204 C300,222 288,240 260,244 C226,248 198,234 198,208 Z', lx: 246, ly: 220 },
+          wernicke:   { d: 'M326,192 C352,182 386,188 398,206 C402,228 388,246 360,248 C334,248 320,220 326,192 Z', lx: 360, ly: 220 },
+          fusiform:   { d: 'M200,254 C244,244 318,246 354,258 C356,274 336,286 300,288 C254,290 206,278 200,254 Z', lx: 278, ly: 268 },
+          occipital:  { d: 'M424,94 C454,102 476,132 478,168 C479,206 464,236 440,250 C422,232 412,196 414,156 C415,126 416,106 424,94 Z', lx: 446, ly: 172 },
+          cerebellum: { d: 'M372,298 C392,280 448,280 466,300 C484,322 472,352 440,364 C404,374 368,356 366,328 C365,316 367,306 372,298 Z', lx: 416, ly: 328 },
+          brainstem:  { d: 'M398,292 C406,316 404,342 394,366 L370,366 C380,342 382,316 386,294 Z', lx: 388, ly: 330 }
+        },
+        deep: {
+          basalganglia:   { d: 'M244,140 C272,120 330,116 360,134 C330,128 282,130 256,150 Z', lx: 302, ly: 132 },
+          thalamus:       { d: 'M272,158 C294,148 326,152 334,168 C340,184 326,200 300,202 C274,202 260,186 264,172 C266,164 268,160 272,158 Z', lx: 300, ly: 182 },
+          insula:         { d: 'M170,174 C186,164 206,170 212,186 C214,204 200,218 182,216 C164,212 158,192 170,174 Z', lx: 188, ly: 196 },
+          amygdala:       { d: 'M214,228 C226,218 244,222 250,236 C254,250 242,262 226,260 C210,258 204,242 214,228 Z', lx: 230, ly: 246 },
+          entorhinal:     { d: 'M196,254 C210,244 228,246 234,258 C238,272 226,282 210,280 C194,276 188,264 196,254 Z', lx: 214, ly: 266 },
+          hippocampus:    { d: 'M262,232 C282,218 322,216 344,228 C356,240 348,258 324,262 C292,266 258,254 262,232 Z', lx: 304, ly: 244 },
+          parahippocampal:{ d: 'M232,268 C276,256 344,258 376,270 C378,284 354,294 312,296 C268,296 234,286 232,268 Z', lx: 304, ly: 282 }
+        }
+      },
+      medial: {
+        label: 'Medial (midline, left hemisphere)',
+        outline: 'M84,206 C60,160 74,104 128,72 C180,42 268,32 344,44 C424,56 472,100 478,156 C482,200 462,234 428,250 C400,262 372,258 352,246 C318,264 248,272 198,262 C148,254 102,240 84,206 Z',
+        extra: '<path d="M168,192 C204,148 296,138 350,172 C356,180 350,190 338,188 C296,162 224,164 190,198 C178,206 164,202 168,192 Z" fill="#39435a"/>',
+        overlay: '<path d="M150,150 C210,108 320,100 396,132" fill="none" stroke="rgba(190,215,255,.28)" stroke-width="2"/><path d="M382,296 C402,282 446,284 460,302" fill="none" stroke="rgba(190,215,255,.25)" stroke-width="1.5"/><path d="M380,318 C406,306 448,308 462,322" fill="none" stroke="rgba(190,215,255,.25)" stroke-width="1.5"/>',
+        surface: {
+          rlpfc:      { d: 'M94,166 C90,138 106,114 130,106 C144,122 146,150 136,170 C120,184 102,182 94,166 Z', lx: 118, ly: 146 },
+          dlpfc:      { d: 'M142,82 C178,56 234,48 270,58 C270,80 256,96 228,102 C192,110 158,102 142,82 Z', lx: 206, ly: 80 },
+          somatosensory: { d: 'M276,60 C296,50 320,56 332,68 C332,86 318,98 296,102 C280,102 270,80 276,60 Z', lx: 303, ly: 78 },
+          acc:        { d: 'M170,186 C184,148 226,128 268,128 C260,146 240,156 218,162 C198,168 184,176 170,186 Z', lx: 222, ly: 152 },
+          precuneus:  { d: 'M332,64 C368,54 412,64 430,90 C432,118 416,142 386,148 C356,150 334,128 330,100 C328,84 328,70 332,64 Z', lx: 380, ly: 104 },
+          retrosplenial: { d: 'M338,166 C358,154 386,158 396,174 C398,194 384,208 362,208 C342,206 332,186 338,166 Z', lx: 366, ly: 186 },
+          occipital:  { d: 'M430,148 C458,156 474,184 470,214 C466,242 446,256 426,252 C412,228 408,184 430,148 Z', lx: 446, ly: 200 },
+          basalganglia: { d: 'M240,176 C266,156 320,152 348,170 C320,164 274,166 250,186 Z', lx: 296, ly: 166 },
+          thalamus:   { d: 'M264,194 C286,184 316,188 324,202 C330,216 316,232 292,234 C266,234 254,218 256,206 C257,200 260,196 264,194 Z', lx: 292, ly: 214 },
+          amygdala:   { d: 'M194,200 C206,192 222,196 226,208 C228,220 218,230 204,228 C190,226 186,210 194,200 Z', lx: 208, ly: 212 },
+          hippocampus:{ d: 'M234,208 C250,194 284,192 300,206 C308,220 298,236 274,238 C248,240 228,228 234,208 Z', lx: 266, ly: 216 },
+          entorhinal: { d: 'M178,230 C192,220 210,222 216,234 C218,248 206,258 190,256 C174,252 168,242 178,230 Z', lx: 196, ly: 242 },
+          parahippocampal: { d: 'M198,238 C242,226 322,228 358,242 C358,258 334,270 290,272 C240,272 202,260 198,238 Z', lx: 300, ly: 254 },
+          cerebellum: { d: 'M382,290 C402,274 448,276 464,296 C476,318 462,344 434,352 C402,360 376,342 376,316 C376,304 378,296 382,290 Z', lx: 420, ly: 318 },
+          brainstem:  { d: 'M392,282 C398,304 396,330 388,352 L366,352 C374,330 376,304 380,284 Z', lx: 382, ly: 318 }
+        },
+        deep: {}
+      },
+      top: {
+        label: 'Superior (from above, frontal at top)',
+        outline: 'M260,34 C158,34 94,110 90,200 C88,292 158,366 260,366 C362,366 432,292 430,200 C426,110 362,34 260,34 Z',
+        extra: '',
+        overlay: '<path d="M260,40 L260,360" fill="none" stroke="rgba(190,215,255,.35)" stroke-width="2" stroke-dasharray="6 4"/><path d="M96,168 C170,150 350,150 424,168" fill="none" stroke="rgba(190,215,255,.28)" stroke-width="2"/>',
+        surface: {
+          rlpfc:      { d: ['M198,50 C226,38 254,42 258,58 C256,78 240,90 218,88 C200,84 190,64 198,50 Z', 'M322,50 C294,38 266,42 262,58 C264,78 280,90 302,88 C320,84 330,64 322,50 Z'], lx: 228, ly: 66 },
+          dlpfc:      { d: ['M134,84 C162,60 212,54 248,66 C254,96 242,126 214,138 C176,144 140,124 134,84 Z', 'M386,84 C358,60 308,54 272,66 C266,96 278,126 306,138 C344,144 380,124 386,84 Z'], lx: 192, ly: 102 },
+          premotor:   { d: ['M118,152 C152,134 212,130 250,140 C256,164 248,188 226,198 C180,206 130,192 118,152 Z', 'M402,152 C368,134 308,130 270,140 C264,164 272,188 294,198 C340,206 390,192 402,152 Z'], lx: 186, ly: 168 },
+          spl:        { d: ['M130,234 C162,212 216,206 250,216 C256,242 244,266 214,274 C174,280 136,264 130,234 Z', 'M390,234 C358,212 304,206 270,216 C264,242 276,266 306,274 C346,280 384,264 390,234 Z'], lx: 192, ly: 244 },
+          infparietal:{ d: ['M94,198 C108,182 128,182 138,202 C142,226 130,248 108,250 C90,234 86,214 94,198 Z', 'M426,198 C412,182 392,182 382,202 C378,226 390,248 412,250 C430,234 434,214 426,198 Z'], lx: 114, ly: 220 },
+          precuneus:  { d: ['M264,240 C282,232 298,240 300,258 C298,276 282,286 266,282 C258,264 258,248 264,240 Z', 'M256,240 C238,232 222,240 220,258 C222,276 238,286 254,282 C262,264 262,248 256,240 Z'], lx: 282, ly: 262 },
+          occipital:  { d: 'M198,328 C228,316 292,316 322,328 C328,348 308,364 260,364 C212,364 192,348 198,328 Z', lx: 260, ly: 344 }
+        },
+        deep: {
+          basalganglia: { d: 'M226,168 C244,156 276,156 294,168 C276,162 244,162 226,168 Z', lx: 260, ly: 158 },
+          thalamus:     { d: 'M238,196 C252,186 268,186 282,196 C290,208 282,222 260,224 C238,222 230,208 238,196 Z', lx: 260, ly: 208 }
+        }
+      }
+    };
+    const BRAIN_VIEW_ORDER = ['left', 'top', 'right', 'medial'];
+
+    const brainState = {
+      anatomy: { view: 'left', scale: 1, peeled: false, group: null, selected: null },
+      profile: { view: 'left', scale: 1, peeled: false, group: null, selected: null }
+    };
+
+    function brainViewDef(view) { return BRAIN_VIEWS[view === 'right' ? 'left' : view]; }
+
+    function brainGroupPaths(groupObj, groupClass) {
+      return Object.keys(groupObj).map(reg => {
+        const e = groupObj[reg];
+        const ds = Array.isArray(e.d) ? e.d : [e.d];
+        const paths = ds.map(d => `<path class="brain3-region" data-region="${reg}" d="${d}"><title>${BRAIN_REGIONS[reg].name}</title></path>`).join('');
+        return paths;
+      }).join('');
+    }
+    function brainGroupLabels(groupObj, isRight) {
+      return Object.keys(groupObj).map(reg => {
+        const e = groupObj[reg];
+        const x = isRight ? 520 - e.lx : e.lx;
+        return `<text class="brain3-label" x="${x}" y="${e.ly}">${BRAIN_REGIONS[reg].short}</text>`;
+      }).join('');
+    }
+
+    function ensureBrainMounted(instance) {
+      const mount = document.getElementById(instance + '-brain-mount');
+      if (!mount || mount.getAttribute('data-built')) return;
+      mount.setAttribute('data-built', '1');
+      const chips = Object.keys(BRAIN_GROUPS).map(k =>
+        `<button class="brain3-chip" data-group="${k}" onclick="brainGroupHighlight('${instance}','${k}')">${BRAIN_GROUPS[k].label}</button>`).join(' ');
+      mount.innerHTML = `
+        <div class="brain3-callout" id="${instance}-callout">Hover a surface area to see what lies beneath it · click any area for its description, history &amp; training relevance.</div>
+        <div class="brain3-wrap" id="${instance}-wrap">
+          <div class="brain3-svgbox" id="${instance}-svgbox"></div>
+        </div>
+        <div style="display:flex; gap:6px; flex-wrap:wrap; justify-content:center; align-items:center; margin-top:8px;">
+          <button class="brain3-ctl-btn" onclick="brainStepView('${instance}',-1)">&#10226; Rotate</button>
+          <span id="${instance}-viewlabel" style="color:#9fc3ff; font-size:12px; min-width:170px;"></span>
+          <button class="brain3-ctl-btn" onclick="brainStepView('${instance}',1)">Rotate &#10227;</button>
+          <button class="brain3-ctl-btn" onclick="brainZoom('${instance}',1.25)">+ Zoom</button>
+          <button class="brain3-ctl-btn" onclick="brainZoom('${instance}',0.8)">&minus; Zoom</button>
+          <button class="brain3-ctl-btn" onclick="brainZoomReset('${instance}')">Reset</button>
+          <button class="brain3-ctl-btn" id="${instance}-peel-btn" onclick="brainTogglePeel('${instance}')">PEEL BACK CORTEX</button>
+        </div>
+        <div style="display:flex; gap:5px; flex-wrap:wrap; justify-content:center; margin-top:7px;" id="${instance}-chips">${chips}</div>`;
+      const box = document.getElementById(instance + '-svgbox');
+      let dragging = false, dragX = 0, lastDragEnd = 0;
+      box.addEventListener('mousedown', (e) => { dragging = true; dragX = e.clientX; });
+      window.addEventListener('mousemove', (e) => {
+        if (!dragging) return;
+        const dx = e.clientX - dragX;
+        if (dx <= -60) { brainStepView(instance, 1); dragX = e.clientX; lastDragEnd = Date.now(); }
+        else if (dx >= 60) { brainStepView(instance, -1); dragX = e.clientX; lastDragEnd = Date.now(); }
+      });
+      window.addEventListener('mouseup', () => { dragging = false; });
+      box.addEventListener('wheel', (e) => { e.preventDefault(); brainZoom(instance, e.deltaY < 0 ? 1.12 : 0.89); }, { passive: false });
+      box.addEventListener('click', (e) => {
+        if (Date.now() - lastDragEnd < 250) return;
+        const p = e.target.closest ? e.target.closest('[data-region]') : null;
+        if (p) brainSelectRegion(instance, p.getAttribute('data-region'), false);
+      });
+      box.addEventListener('mouseover', (e) => {
+        const p = e.target.closest ? e.target.closest('[data-region]') : null;
+        if (p) brainCallout(instance, p.getAttribute('data-region'));
+      });
+      brainRender(instance);
+    }
+
+    function brainRender(instance) {
+      const st = brainState[instance];
+      const box = document.getElementById(instance + '-svgbox');
+      if (!box) return;
+      const def = brainViewDef(st.view);
+      const isRight = st.view === 'right';
+      const deepCls = st.view === 'medial' ? 'brain3-deep-g brain3-deep-native' : 'brain3-deep-g';
+      box.innerHTML = `
+      <svg viewBox="0 0 520 400" style="width:100%; max-height:400px; display:block;" aria-label="Schematic brain, ${def.label} view">
+        <g class="brain3-zoom" transform="translate(260 200) scale(${st.scale}) translate(-260 -200)">
+        <g ${isRight ? 'transform="translate(520,0) scale(-1,1)"' : ''}>
+          <path d="${def.outline}" fill="#131926" stroke="#3a4a66" stroke-width="2"/>
+          ${def.extra || ''}
+          <g class="${deepCls}">${brainGroupPaths(def.deep, 'deep')}${brainGroupLabels(def.deep, isRight)}</g>
+          <g class="brain3-surface-g">${brainGroupPaths(def.surface, 'surface')}${brainGroupLabels(def.surface, isRight)}</g>
+          ${def.overlay || ''}
+        </g>
+        </g>
+      </svg>`;
+      const wrap = document.getElementById(instance + '-wrap');
+      if (wrap) wrap.classList.toggle('peeled', st.peeled && st.view !== 'medial');
+      const lbl = document.getElementById(instance + '-viewlabel');
+      if (lbl) lbl.innerText = def.label + (st.view === 'right' ? ' (mirror)' : '');
+      const peelBtn = document.getElementById(instance + '-peel-btn');
+      if (peelBtn) peelBtn.classList.toggle('on', st.peeled && st.view !== 'medial');
+      brainPaint(instance);
+    }
+
+    function brainEmphasisFor(instance) {
+      if (instance === 'anatomy') return anatomyEmphasis();
+      return profileEmphasisCache || {};
+    }
+
+    function brainPaint(instance) {
+      const mount = document.getElementById(instance + '-brain-mount');
+      if (!mount) return;
+      const st = brainState[instance];
+      const emphasis = brainEmphasisFor(instance);
+      const untrained = (instance === 'profile' && profileShowUntrained) ? currentUntrained() : [];
+      const groupRegs = st.group ? (BRAIN_GROUPS[st.group] ? BRAIN_GROUPS[st.group].regions : []) : [];
+      mount.querySelectorAll('[data-region]').forEach(p => {
+        const reg = p.getAttribute('data-region');
+        const v = emphasis[reg] || 0;
+        const isDeep = !!p.closest('.brain3-deep-g');
+        p.style.fill = v > 0.02 ? getHeatmapColor(Math.round(v * 100)) : (isDeep ? '#1c2637' : '#26314a');
+        p.classList.toggle('brain3-selected', st.selected === reg);
+        p.classList.toggle('brain3-untrained', untrained.indexOf(reg) >= 0);
+        p.classList.toggle('brain3-grouphl', groupRegs.indexOf(reg) >= 0);
+      });
+    }
+
+    function brainStepView(instance, dir) {
+      const st = brainState[instance];
+      let idx = BRAIN_VIEW_ORDER.indexOf(st.view);
+      idx = (idx + dir + BRAIN_VIEW_ORDER.length) % BRAIN_VIEW_ORDER.length;
+      st.view = BRAIN_VIEW_ORDER[idx];
+      brainRender(instance);
+    }
+
+    function brainZoom(instance, factor) {
+      const st = brainState[instance];
+      st.scale = Math.max(0.6, Math.min(3.2, st.scale * factor));
+      const box = document.getElementById(instance + '-svgbox');
+      const g = box ? box.querySelector('.brain3-zoom') : null;
+      if (g) g.setAttribute('transform', `translate(260 200) scale(${st.scale}) translate(-260 -200)`);
+    }
+    function brainZoomReset(instance) { brainState[instance].scale = 1; brainZoom(instance, 1); }
+
+    function brainTogglePeel(instance) {
+      const st = brainState[instance];
+      if (st.view === 'medial') {
+        const c = document.getElementById(instance + '-callout');
+        if (c) c.innerHTML = 'The <strong>medial view</strong> already shows the deep &amp; medial structures directly — no peeling needed here.';
+        return;
+      }
+      st.peeled = !st.peeled;
+      brainRender(instance);
+    }
+
+    function brainGroupHighlight(instance, key) {
+      const st = brainState[instance];
+      st.group = (st.group === key) ? null : key;
+      document.querySelectorAll('#' + instance + '-chips .brain3-chip').forEach(ch => {
+        ch.classList.toggle('on', ch.getAttribute('data-group') === st.group);
+      });
+      brainPaint(instance);
+    }
+
+    function brainCallout(instance, reg) {
+      reg = BRAIN_REGION_ALIAS[reg] || reg;
+      const meta = BRAIN_REGIONS[reg];
+      const c = document.getElementById(instance + '-callout');
+      if (!meta || !c) return;
+      const beneath = REGION_BENEATH[reg] || [];
+      c.innerHTML = `<strong style="color:#fff;">${meta.name}</strong>` +
+        (beneath.length
+          ? ` &nbsp;·&nbsp; <span style="color:#8fb8dd;">Beneath:</span> ` + beneath.map(b => `<button class="brain3-beneath-btn" onclick="brainSelectRegion('${instance}','${b}',true)">${BRAIN_REGIONS[b].name}</button>`).join(' ')
+          : ` &nbsp;·&nbsp; <span style="color:#667788;">Deepest layer in this schematic — nothing beneath it here.</span>`);
+    }
+
+    function brainRegionViews(reg) {
+      return ['left', 'medial', 'top'].filter(v => BRAIN_VIEWS[v].surface[reg] || BRAIN_VIEWS[v].deep[reg]);
+    }
+
+    function brainSelectRegion(instance, reg, viaBeneath) {
+      reg = BRAIN_REGION_ALIAS[reg] || reg;
+      if (!BRAIN_REGIONS[reg]) return;
+      const st = brainState[instance];
+      const def = brainViewDef(st.view);
+      if (!def.surface[reg] && !def.deep[reg]) {
+        const views = brainRegionViews(reg);
+        if (views.length) st.view = views.indexOf('medial') >= 0 ? 'medial' : views[0];
+      }
+      const def2 = brainViewDef(st.view);
+      if (def2.deep[reg] && st.view !== 'medial' && !st.peeled) st.peeled = true;
+      st.selected = reg;
+      brainRender(instance);
+      brainCallout(instance, reg);
+      if (instance === 'anatomy') {
+        const meta = BRAIN_REGIONS[reg];
+        document.getElementById('anatomy-info-title').innerText = meta.name;
+        document.getElementById('anatomy-info-desc').innerHTML = `<strong style="color:#eee;">Description:</strong> ${meta.desc}`;
+        document.getElementById('anatomy-info-history').innerHTML = `<strong style="color:#eee;">History:</strong> ${meta.history}`;
+        document.getElementById('anatomy-info-training').innerHTML = `<strong style="color:#eee;">Training relevance:</strong> ${meta.training}` + regionSupportsHTML(reg);
+      } else {
+        inspectProfileRegion(reg);
+      }
+    }
+
+
+    /* ---- Per-area "what helps this area" (beyond n-back). Evidence labels are
+       qualitative summaries of the human literature: Stronger evidence / Some
+       evidence / Emerging. General guidance, not medical advice. ---- */
+    const REGION_SUPPORTS = {
+      hippocampus: [
+        { item: 'Aerobic exercise', ev: 'Stronger evidence', note: 'The best-supported human finding for this area: randomized trials (e.g. Erickson 2011) found aerobic training increased hippocampal volume and memory in older adults.' },
+        { item: 'Sleep', ev: 'Stronger evidence', note: 'Deep sleep is when hippocampal memories are replayed and consolidated into cortex; chronic short sleep reliably impairs new learning.' },
+        { item: 'Omega-3 DHA/EPA (oily fish, eggs)', ev: 'Some evidence', note: 'DHA is a structural fat of neuronal membranes; supplementation trials show modest memory signals, clearest when baseline intake is low.' },
+        { item: 'Novel learning & exploration', ev: 'Some evidence', note: 'Learning new skills and navigating new environments engage this system directly; animal work links novelty to plasticity here.' },
+        { item: 'Hyperbaric oxygen', ev: 'Emerging', note: 'Small studies report cognitive signals in specific clinical groups; evidence in healthy people is mixed and not established. Treat as experimental.' }
+      ],
+      parahippocampal: [
+        { item: 'Aerobic exercise', ev: 'Some evidence', note: 'Exercise benefits the medial temporal system broadly, including scene/context networks.' },
+        { item: 'Sleep', ev: 'Stronger evidence', note: 'Context and scene memories consolidate during sleep like other declarative memories.' },
+        { item: 'Real-world navigation practice', ev: 'Some evidence', note: 'Wayfinding without GPS engages parahippocampal/hippocampal mapping circuits.' },
+        { item: 'Omega-3 DHA', ev: 'Emerging', note: 'Structural membrane support; direct evidence for this specific area is thin.' }
+      ],
+      entorhinal: [
+        { item: 'Aerobic exercise', ev: 'Some evidence', note: 'Medial temporal structures benefit from exercise-driven blood flow and growth factors.' },
+        { item: 'Sleep', ev: 'Stronger evidence', note: 'Grid/place replay during sleep is part of memory consolidation.' },
+        { item: 'Metabolic health (blood sugar control)', ev: 'Some evidence', note: 'This is among the first areas affected in Alzheimer\'s; insulin resistance is a risk factor for medial temporal decline.' }
+      ],
+      retrosplenial: [
+        { item: 'Navigation & orientation practice', ev: 'Some evidence', note: 'Viewpoint-translation tasks (maps, orienteering, mental rotation of routes) engage this area.' },
+        { item: 'Sleep', ev: 'Some evidence', note: 'Scene/orientation memories consolidate offline.' },
+        { item: 'Aerobic exercise', ev: 'Emerging', note: 'General medial-temporal support; little area-specific human data.' }
+      ],
+      dlpfc: [
+        { item: 'Sleep', ev: 'Stronger evidence', note: 'The prefrontal cortex is the first casualty of sleep deprivation — working memory and control degrade measurably after one short night.' },
+        { item: 'Aerobic exercise', ev: 'Some evidence', note: 'Meta-analyses find small-to-moderate executive-function gains from regular aerobic training.' },
+        { item: 'Mindfulness meditation', ev: 'Some evidence', note: 'Attention-control practice shows modest working-memory and interference-resistance benefits in several trials.' },
+        { item: 'Creatine (from meat/fish or supplement)', ev: 'Emerging', note: 'Brain energy-buffer support; clearest signals in sleep-deprived or low-intake groups.' }
+      ],
+      rlpfc: [
+        { item: 'Sleep', ev: 'Some evidence', note: 'Prospective memory and multitasking suffer early with sleep loss.' },
+        { item: 'Analogical / relational practice', ev: 'Some evidence', note: 'Deliberate analogy, planning, and juggling-goal practice targets this system behaviorally.' },
+        { item: 'Aerobic exercise', ev: 'Emerging', note: 'Frontal executive support generally; little frontal-pole-specific data.' }
+      ],
+      acc: [
+        { item: 'Mindfulness meditation', ev: 'Some evidence', note: 'Conflict-monitoring and error-awareness measures improve with meditation training in several studies.' },
+        { item: 'Sleep', ev: 'Some evidence', note: 'Error monitoring and impulse control degrade with sleep loss.' },
+        { item: 'Aerobic exercise', ev: 'Some evidence', note: 'Executive-control networks, including cingulate function, benefit modestly.' }
+      ],
+      spl: [
+        { item: 'Spatial practice (rotation, maps, building)', ev: 'Some evidence', note: 'Spatial skills are trainable and this is their home turf; practice gains are real but mostly near-transfer.' },
+        { item: 'Aerobic exercise', ev: 'Some evidence', note: 'Parietal attention measures improve modestly with fitness.' },
+        { item: 'Sleep', ev: 'Some evidence', note: 'Visuospatial attention is sleep-sensitive.' }
+      ],
+      infparietal: [
+        { item: 'Aerobic exercise', ev: 'Some evidence', note: 'Attention-network support.' },
+        { item: 'Sleep', ev: 'Some evidence', note: 'Sustained attention and neglect-like lapses worsen with sleep loss.' },
+        { item: 'Number/quantity practice', ev: 'Emerging', note: 'This area houses quantity representations; direct training evidence is limited.' }
+      ],
+      precuneus: [
+        { item: 'Visualization / imagery practice', ev: 'Some evidence', note: 'Deliberate mental imagery engages precuneus scene-construction circuits.' },
+        { item: 'Sleep', ev: 'Some evidence', note: 'A default-mode hub; its connectivity is sleep- and rest-sensitive.' },
+        { item: 'Meditation', ev: 'Emerging', note: 'Self-referential/default-mode modulation reported; area-specific claims are early.' }
+      ],
+      occipital: [
+        { item: 'Sleep', ev: 'Some evidence', note: 'Visual learning consolidates during sleep; perception degrades with fatigue.' },
+        { item: 'Omega-3 DHA', ev: 'Some evidence', note: 'DHA is heavily concentrated in retina and visual cortex membranes.' },
+        { item: 'Lutein (egg yolks, leafy greens)', ev: 'Emerging', note: 'Accumulates in retina/brain; visual-processing-speed signals are preliminary.' }
+      ],
+      fusiform: [
+        { item: 'Perceptual expertise practice', ev: 'Some evidence', note: 'This cortex specializes with experience — faces, birds, cars, chess positions — depending on what you practice discriminating.' },
+        { item: 'Sleep', ev: 'Some evidence', note: 'Perceptual learning consolidates offline.' },
+        { item: 'Omega-3 DHA', ev: 'Emerging', note: 'General ventral-stream membrane support; area-specific evidence is thin.' }
+      ],
+      auditory: [
+        { item: 'Music / auditory training', ev: 'Some evidence', note: 'Musicians show measurably tuned auditory cortex; structured listening practice drives plasticity here.' },
+        { item: 'Sleep', ev: 'Some evidence', note: 'Auditory learning and speech-sound memory consolidate during sleep.' },
+        { item: 'Hearing protection', ev: 'Stronger evidence', note: 'Preventing noise damage protects the input this cortex depends on; hearing loss is a major modifiable dementia risk factor.' }
+      ],
+      wernicke: [
+        { item: 'Language learning & reading', ev: 'Some evidence', note: 'Active language use maintains comprehension networks.' },
+        { item: 'Sleep', ev: 'Some evidence', note: 'Word learning consolidates during sleep (lexical integration overnight).' },
+        { item: 'Hearing care', ev: 'Some evidence', note: 'Degraded input starves comprehension cortex of clean signal.' }
+      ],
+      broca: [
+        { item: 'Speaking / verbal practice', ev: 'Some evidence', note: 'Production practice (conversation, narration, freestyling) exercises this system directly.' },
+        { item: 'Sleep', ev: 'Some evidence', note: 'Verbal fluency drops with sleep loss.' },
+        { item: 'Vitamin B12 adequacy', ev: 'Some evidence', note: 'Deficiency injures nerves and myelin broadly, language networks included; meat/eggs cover it on a carnivore framework.' }
+      ],
+      insula: [
+        { item: 'Interoceptive meditation (body scan, breath focus)', ev: 'Some evidence', note: 'Attention-to-body practice measurably engages and can reshape insula responses.' },
+        { item: 'Sleep', ev: 'Some evidence', note: 'Interoceptive accuracy and emotional regulation degrade with sleep loss.' },
+        { item: 'Aerobic exercise', ev: 'Emerging', note: 'General salience-network support; area-specific evidence is early.' }
+      ],
+      basalganglia: [
+        { item: 'Aerobic exercise', ev: 'Stronger evidence', note: 'Exercise is the best-supported protector of dopaminergic/basal-ganglia function, including in Parkinson\'s research.' },
+        { item: 'Sleep', ev: 'Stronger evidence', note: 'Procedural/skill learning consolidates during sleep via these loops.' },
+        { item: 'Iron adequacy (not excess)', ev: 'Some evidence', note: 'Iron is a cofactor for dopamine synthesis; deficiency impairs this system. Red meat covers it; avoid supplementing without a measured deficiency.' }
+      ],
+      thalamus: [
+        { item: 'Sleep', ev: 'Stronger evidence', note: 'Sleep spindles — the thalamus\'s signature rhythm — are a core mechanism of memory consolidation.' },
+        { item: 'Thiamine (B1) adequacy', ev: 'Some evidence', note: 'Thiamine deficiency devastates thalamic memory circuits (Wernicke–Korsakoff); adequacy is cheap insurance from meat/eggs.' },
+        { item: 'Limiting alcohol', ev: 'Some evidence', note: 'Alcohol plus poor nutrition is the classic route to thalamic memory damage.' }
+      ],
+      cerebellum: [
+        { item: 'Coordination & balance practice', ev: 'Some evidence', note: 'Motor learning is this structure\'s native training signal.' },
+        { item: 'Sleep', ev: 'Some evidence', note: 'Motor-sequence consolidation is sleep-dependent.' },
+        { item: 'Limiting alcohol', ev: 'Stronger evidence', note: 'Chronic heavy alcohol use is directly toxic to the cerebellum (anterior lobe atrophy).' }
+      ],
+      amygdala: [
+        { item: 'Sleep', ev: 'Stronger evidence', note: 'Sleep loss markedly amplifies amygdala reactivity to negative stimuli; adequate sleep restores prefrontal regulation of it.' },
+        { item: 'Mindfulness meditation', ev: 'Some evidence', note: 'Reduced amygdala reactivity after meditation training is a replicated finding.' },
+        { item: 'Aerobic exercise', ev: 'Some evidence', note: 'Regular exercise lowers stress reactivity through this circuit.' }
+      ],
+      premotor: [
+        { item: 'Physical skill practice', ev: 'Stronger evidence', note: 'Deliberate motor practice is the direct driver of motor-cortex plasticity.' },
+        { item: 'Sleep', ev: 'Stronger evidence', note: 'Motor sequence learning consolidates during sleep.' },
+        { item: 'Protein adequacy', ev: 'Some evidence', note: 'Muscle and motor-system maintenance need adequate protein and energy.' }
+      ],
+      somatosensory: [
+        { item: 'Tactile/manual practice', ev: 'Some evidence', note: 'Skilled hand use (instruments, tools, typing) refines this cortex\'s maps.' },
+        { item: 'Sleep', ev: 'Some evidence', note: 'Sensorimotor learning consolidates offline.' },
+        { item: 'Vitamin B12 adequacy', ev: 'Some evidence', note: 'Deficiency causes numbness/tingling via sensory pathway injury.' }
+      ],
+      brainstem: [
+        { item: 'Sleep regularity', ev: 'Stronger evidence', note: 'The reticular activating system is the arousal engine; regular sleep-wake timing keeps it calibrated.' },
+        { item: 'Vitamin B12 adequacy', ev: 'Some evidence', note: 'Deficiency injures cord/brainstem pathways.' },
+        { item: 'Iodine & thyroid adequacy', ev: 'Some evidence', note: 'Thyroid hormone sets metabolic rate for the whole neuraxis; seafood/iodized salt or dairy cover it.' }
+      ],
+      _generic: [
+        { item: 'Sleep', ev: 'Stronger evidence', note: 'Every brain system consolidates and recalibrates during sleep; it is the single highest-yield support for cognition overall.' },
+        { item: 'Aerobic exercise', ev: 'Some evidence', note: 'Broad cerebrovascular and growth-factor support across regions.' },
+        { item: 'Nutrient adequacy (B12, choline, DHA, iron)', ev: 'Some evidence', note: 'Deficiencies in any of these measurably impair neural function; a nutrient-dense diet covers them.' }
+      ]
+    };
+
+    function regionSupportsHTML(reg) {
+      const list = REGION_SUPPORTS[reg] || REGION_SUPPORTS._generic;
+      if (!list || !list.length) return '';
+      const items = list.map(s => `<div style="margin:5px 0;"><strong style="color:#e7eefc;">${s.item}</strong> <span style="background:#1c2a44; color:#9fc3ff; border:1px solid #2b3c5c; padding:0 6px; font-size:10px; white-space:nowrap;">${s.ev}</span><br><span style="color:#aab6c8;">${s.note}</span></div>`).join('');
+      return `<details style="margin-top:8px; border:1px solid #22334d; background:#0a101c; padding:6px 10px; text-align:left;"><summary style="cursor:pointer; color:#ffd700; font-size:11px;">WHAT HELPS THIS AREA (beyond n-back)</summary><div style="margin-top:6px;">${items}</div><div style="font-size:10px; color:#778899; margin-top:4px;">Evidence labels are qualitative summaries of the human literature, not guarantees or prescriptions.</div></details>`;
+    }
+
+    /* ---- Anatomy preview: surface the HIDDEN areas the current settings train ---- */
+    const BRAIN_HIDDEN_REGIONS = ['hippocampus', 'parahippocampal', 'entorhinal', 'amygdala', 'insula', 'thalamus', 'basalganglia', 'acc', 'precuneus', 'retrosplenial'];
+    function updateAnatomyHiddenReadout() {
+      const div = document.getElementById('anatomy-hidden-readout');
+      if (!div) return;
+      const e = anatomyEmphasis();
+      const hits = BRAIN_HIDDEN_REGIONS.map(r => ({ r, v: e[r] || 0 })).filter(x => x.v > 0.02).sort((a, b) => b.v - a.v);
+      if (!hits.length) { div.style.display = 'none'; div.innerHTML = ''; return; }
+      const word = (v) => v >= 0.66 ? 'strong' : (v >= 0.33 ? 'moderate' : 'light');
+      div.style.display = 'block';
+      div.innerHTML = '<strong style="color:#fff;">Also training (below the surface):</strong> ' +
+        hits.map(x => `<button class="brain3-beneath-btn" onclick="brainSelectRegion('anatomy','${x.r}',true)">${BRAIN_REGIONS[x.r].name}</button> <span style="color:#c4b5fd;">— ${word(x.v)}</span>`).join(' &nbsp;');
+    }
+
+    /* ---------------- Anatomy tab: settings -> estimated activation ---------------- */
+    function readAnatomySettings() {
+      const g = (id) => { const el = document.getElementById(id); return el ? el.checked : false; };
+      const gv = (id, dflt) => { const el = document.getElementById(id); const v = el ? parseFloat(el.value) : NaN; return isNaN(v) ? dflt : v; };
+      return {
+        pos: g('ana-mod-pos'), audio: g('ana-mod-audio'), aud2: g('ana-mod-audio2'), rel: g('ana-mod-rel'),
+        img: g('ana-mod-img'), col: g('ana-mod-col'), rot: g('ana-mod-rot'), srot: g('ana-mod-srot'),
+        n: Math.max(1, Math.min(20, gv('ana-n', 2))), lures: Math.max(0, Math.min(100, gv('ana-lures', 87.5))),
+        reverse: g('ana-reverse')
+      };
+    }
+
+    // Estimated-emphasis model (documented, schematic): each active modality adds its
+    // region weights scaled by factor = 0.7 + 0.06*min(N,10) + 0.003*interference, so
+    // higher N and higher lure rates modestly raise the estimate; ACC additionally
+    // gains 0.004 per interference point (conflict monitoring); reverse n-back adds a
+    // dlPFC/ACC bump. Per-region sums clamp at 1 (= 100%).
+    function anatomyEmphasis() {
+      const s = readAnatomySettings();
+      const factor = 0.7 + 0.06 * Math.min(s.n, 10) + 0.003 * s.lures;
+      const out = {};
+      let anyMod = false;
+      Object.keys(MOD_REGION_WEIGHTS).forEach(m => {
+        if (!s[m]) return;
+        anyMod = true;
+        const w = MOD_REGION_WEIGHTS[m];
+        Object.keys(w).forEach(r => { out[r] = Math.min(1, (out[r] || 0) + w[r] * factor); });
+      });
+      if (anyMod) {
+        out.acc = Math.min(1, (out.acc || 0) + 0.004 * s.lures);
+        if (s.reverse) {
+          out.dlpfc = Math.min(1, (out.dlpfc || 0) + 0.15);
+          out.acc = Math.min(1, (out.acc || 0) + 0.10);
+        }
+      }
+      return out;
+    }
+
+    function updateAnatomyBrain() { brainPaint('anatomy'); updateAnatomyHiddenReadout(); }
+
+    let anatomyInitialized = false;
+    function initAnatomyTab() {
+      const pairs = [['cfg-mod-pos', 'ana-mod-pos'], ['cfg-mod-audio', 'ana-mod-audio'], ['cfg-mod-audio2', 'ana-mod-audio2'], ['cfg-mod-rel', 'ana-mod-rel'], ['cfg-mod-img', 'ana-mod-img'], ['cfg-mod-col', 'ana-mod-col'], ['cfg-mod-rot', 'ana-mod-rot'], ['cfg-mod-srot', 'ana-mod-srot'], ['cfg-reverse', 'ana-reverse']];
+      pairs.forEach(([a, b]) => { const s = document.getElementById(a), t = document.getElementById(b); if (s && t) t.checked = s.checked; });
+      const setV = (a, b) => { const s = document.getElementById(a), t = document.getElementById(b); if (s && t) t.value = s.value; };
+      setV('cfg-n-level', 'ana-n'); setV('cfg-lures', 'ana-lures'); setV('cfg-interval', 'ana-interval');
+      ensureBrainMounted('anatomy');
+      brainRender('anatomy');
+      updateAnatomyHiddenReadout();
+      if (!anatomyInitialized) { anatomyInitialized = true; brainSelectRegion('anatomy', 'dlpfc', false); }
+    }
+
+    /* ---------------- Profile: accumulated emphasis from saved records ---------------- */
+    let profileFilterMode = 'general';
+    let profileEmphasisCache = null;
+    let profileShowUntrained = false;
+    const PROFILE_FILTERS = {
+      general: ['pos', 'audio', 'aud2', 'rel', 'img', 'col', 'rot', 'srot'],
+      audio: ['audio', 'aud2'],
+      visual: ['pos', 'img', 'col'],
+      position: ['pos'],
+      imagecolor: ['img', 'col'],
+      relational: ['rel'],
+      rotation: ['rot', 'srot']
+    };
+
+    function recordMinutes(r) {
+      const m = String(r.duration || '').match(/([\d.]+)m/);
+      if (m) return parseFloat(m[1]);
+      const t = String(r.duration || '').match(/\/(\d+)t/);
+      const iv = parseFloat(r.interval) || 2.5;
+      return t ? (parseInt(t[1]) * iv / 60) : 2;
+    }
+
+    // Accumulation model: each saved session adds (region weight x session minutes)
+    // for every modality it actually used (from its modStats); the displayed
+    // intensity saturates as 1 - exp(-total/25), so early sessions count most.
+    function computeProfileEmphasis(filter, history) {
+      const mods = PROFILE_FILTERS[filter] || PROFILE_FILTERS.general;
+      const acc = {};
+      (history || []).forEach(r => {
+        if (!r.modStats) return;
+        const mins = Math.max(0.5, recordMinutes(r));
+        mods.forEach(m => {
+          if (!r.modStats[m]) return;
+          const w = MOD_REGION_WEIGHTS[m] || {};
+          Object.keys(w).forEach(reg => { acc[reg] = (acc[reg] || 0) + w[reg] * mins; });
+        });
+      });
+      const out = {};
+      Object.keys(acc).forEach(reg => { out[reg] = 1 - Math.exp(-acc[reg] / 25); });
+      return out;
+    }
+
+    function brainRegionRelevant(r, reg) {
+      if (!r.modStats) return false;
+      return Object.keys(MOD_REGION_WEIGHTS).some(m => r.modStats[m] && (MOD_REGION_WEIGHTS[m][reg] || 0) >= 0.4);
+    }
+
+    function trainableRegions() {
+      const s = new Set();
+      Object.keys(MOD_REGION_WEIGHTS).forEach(m => Object.keys(MOD_REGION_WEIGHTS[m]).forEach(r => s.add(r)));
+      return Array.from(s);
+    }
+
+    function currentUntrained() {
+      const e = profileEmphasisCache || {};
+      return trainableRegions().filter(r => (e[r] || 0) < 0.02);
+    }
+
+    function setProfileFilter(mode) {
+      profileFilterMode = mode;
+      document.querySelectorAll('.profile-filter-btn').forEach(b => b.classList.toggle('on', b.getAttribute('data-pfilter') === mode));
+      const history = JSON.parse(localStorage.getItem(`steeltrap_records_${activeUser}`) || '[]');
+      profileEmphasisCache = computeProfileEmphasis(mode, history);
+      brainPaint('profile');
+      renderUntrainedList();
+      inspectProfileRegion(selectedProfileRegion);
+    }
+
+    function toggleShowUntrained() {
+      profileShowUntrained = !profileShowUntrained;
+      const btn = document.getElementById('btn-show-untrained');
+      if (btn) btn.innerText = profileShowUntrained ? '◐ HIDE UNTRAINED AREAS' : '◐ SHOW UNTRAINED AREAS';
+      brainPaint('profile');
+      renderUntrainedList();
+    }
+
+    function renderUntrainedList() {
+      const div = document.getElementById('profile-untrained-list');
+      if (!div) return;
+      if (!profileShowUntrained) { div.style.display = 'none'; div.innerHTML = ''; return; }
+      const u = currentUntrained();
+      div.style.display = 'block';
+      div.innerHTML = u.length
+        ? `<strong>Trainable areas with no training emphasis yet under this filter (${u.length}):</strong> ` + u.map(r => BRAIN_REGIONS[r].name).join(' · ')
+        : 'Every trainable area has some training emphasis under this filter.';
+    }
+
+    /* ---------------- Arena HUD toggle ---------------- */
+    let hudBarVisible = true;
+    function toggleHudBar() {
+      hudBarVisible = !hudBarVisible;
+      const bar = document.getElementById('arena-live-metrics-bar');
+      if (bar) bar.style.display = hudBarVisible ? 'flex' : 'none';
+      const btn = document.getElementById('btn-toggle-hud');
+      if (btn) btn.innerText = hudBarVisible ? '📊 LIVE STATS: ON [H]' : '📊 LIVE STATS: OFF [H]';
+    }
+
+    /* =====================================================================
+       12. SPATIAL 3D ROTATION — Shepard-Metzler-style block objects.
+       Objects are assemblies of unit cubes. Rendering: rotate cube centers
+       (yaw around Y, then pitch around X), orthographic projection, draw
+       each cube's visible faces (rotated axis z-component > 0) as shaded
+       parallelograms, painter-sorted by depth. A stimulus key is
+       "objIdx|yaw|pitch|mirror"; mirror negates X before rotation, giving
+       the classic non-superimposable S-M foil. Match = identical key with
+       mirror flag 0 on both sides (mirrored copies never match).
+       ===================================================================== */
+    const SM_OBJECTS = [
+      [[0,0,0],[1,0,0],[2,0,0],[2,1,0],[2,2,0],[2,2,1],[2,2,2],[3,2,2]],
+      [[0,0,0],[0,1,0],[0,2,0],[1,2,0],[2,2,0],[2,2,1],[2,2,2],[2,3,2]],
+      [[0,0,0],[1,0,0],[1,0,1],[1,0,2],[1,1,2],[1,2,2],[2,2,2],[2,2,1]],
+      [[0,0,0],[0,0,1],[0,0,2],[0,1,2],[0,2,2],[1,2,2],[1,2,1],[1,2,0],[2,2,0]],
+      [[0,0,0],[1,0,0],[2,0,0],[2,0,1],[2,0,2],[2,1,2],[2,2,2],[3,2,2],[3,2,1]]
+    ];
+
+    function smRandomKey() {
+      const o = Math.floor(Math.random() * SM_OBJECTS.length);
+      const yaw = [0, 45, 90, 135, 180, 225, 270, 315][Math.floor(Math.random() * 8)];
+      const pitch = [-30, 0, 30][Math.floor(Math.random() * 3)];
+      return o + '|' + yaw + '|' + pitch + '|0';
+    }
+
+    function smParseKey(key) {
+      const p = String(key || '0|0|0|0').split('|');
+      return { obj: parseInt(p[0]) || 0, yaw: parseFloat(p[1]) || 0, pitch: parseFloat(p[2]) || 0, mir: p[3] === '1' };
+    }
+
+    function smDrawStimulus(key) {
+      const cv = document.getElementById('srot-canvas');
+      if (!cv || !cv.getContext) return;
+      const ctx = cv.getContext('2d');
+      if (!ctx) return;
+      const W = cv.width, H = cv.height;
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = '#05070c';
+      ctx.fillRect(0, 0, W, H);
+      const st = smParseKey(key);
+      const cubes = SM_OBJECTS[st.obj % SM_OBJECTS.length];
+      const yw = st.yaw * Math.PI / 180, pt = st.pitch * Math.PI / 180;
+      const rot = (x, y, z) => {
+        const X = x * Math.cos(yw) + z * Math.sin(yw);
+        const Z = -x * Math.sin(yw) + z * Math.cos(yw);
+        const Y2 = y * Math.cos(pt) - Z * Math.sin(pt);
+        const Z2 = y * Math.sin(pt) + Z * Math.cos(pt);
+        return [X, Y2, Z2];
+      };
+      const ax = rot(1, 0, 0), ay = rot(0, 1, 0), az = rot(0, 0, 1);
+      const S = 21, cx = W / 2, cy = H / 2;
+      const P = (v) => [cx + v[0] * S, cy - v[1] * S];
+      const add = (a, b, s) => [a[0] + b[0] * s, a[1] + b[1] * s, a[2] + b[2] * s];
+      const items = cubes.map(c => {
+        let x = c[0]; if (st.mir) x = -x;
+        return { ctr: rot(x - 1.5, c[1] - 1.25, c[2] - 1.0) };
+      }).sort((a, b) => a.ctr[2] - b.ctr[2]);
+      const faces = [
+        { axis: ax, others: [ay, az], color: '#7c5cd6' },
+        { axis: ay, others: [ax, az], color: '#c4b5fd' },
+        { axis: az, others: [ax, ay], color: '#5b21b6' }
+      ];
+      items.forEach(it => {
+        faces.forEach(f => {
+          if (f.axis[2] <= 0.05) return;
+          const c3 = add(it.ctr, f.axis, 0.5);
+          const [b, c] = f.others;
+          const corners = [
+            add(add(c3, b, -0.5), c, -0.5), add(add(c3, b, 0.5), c, -0.5),
+            add(add(c3, b, 0.5), c, 0.5), add(add(c3, b, -0.5), c, 0.5)
+          ].map(P);
+          ctx.beginPath();
+          ctx.moveTo(corners[0][0], corners[0][1]);
+          for (let k = 1; k < 4; k++) ctx.lineTo(corners[k][0], corners[k][1]);
+          ctx.closePath();
+          ctx.fillStyle = f.color;
+          ctx.fill();
+          ctx.strokeStyle = 'rgba(0,0,0,0.4)';
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        });
+      });
+    }
+
   </script>
 </body>
 </html>
